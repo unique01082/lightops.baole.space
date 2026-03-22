@@ -89,7 +89,7 @@ pub fn scan_folders(
                 .unwrap_or_default();
 
             let pair = pairs
-                .entry((parent, stem.into_owned()))
+                .entry((parent, stem))
                 .or_insert(FilePair { jpg: None, raw: None });
 
             if is_jpg {

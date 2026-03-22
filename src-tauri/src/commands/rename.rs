@@ -155,12 +155,6 @@ pub fn build_rename_plan(
         let base = if dt_str.is_empty() {
             format!("{}{:06}", opts.prefix, seq)
         } else {
-            format!("{}{}_{ :04}", opts.prefix, dt_str, seq)
-        };
-        // Note: formatting doesn't allow space before identifier; corrected:
-        let base = if dt_str.is_empty() {
-            format!("{}{:06}", opts.prefix, seq)
-        } else {
             format!("{}{}_{:04}", opts.prefix, dt_str, seq)
         };
 
