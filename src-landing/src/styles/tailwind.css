@@ -1,0 +1,19 @@
+@import 'tailwindcss' source(none);
+@source '../**/*.{js,ts,jsx,tsx}';
+
+@import 'tw-animate-css';
+
+/* Custom utilities for LightOps */
+@layer utilities {
+  .font-space-grotesk {
+    font-family: 'Space Grotesk', sans-serif;
+  }
+  
+  .font-inter {
+    font-family: 'Inter', sans-serif;
+  }
+  
+  .font-jetbrains-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}

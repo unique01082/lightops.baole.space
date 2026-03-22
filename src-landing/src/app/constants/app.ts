@@ -1,0 +1,18 @@
+export const APP_DATA = {
+  name: "LightOps",
+  tagline: "Every frame, perfectly named.",
+  subtitle: "Batch rename, copy, or move RAW + JPG photo files based on EXIF shooting date. Built for photographers who care about their file workflow.",
+  version: "0.1.0",
+  license: "MIT",
+  author: "Bao LE",
+  authorUrl: "https://baole.space",
+  githubRepo: "https://github.com/unique01082/lightops",
+  githubReleases: "https://github.com/unique01082/lightops/releases",
+  githubLatestRelease: "https://github.com/unique01082/lightops/releases/latest",
+  latestJsonEndpoint: "https://github.com/unique01082/lightops/releases/latest/download/latest.json",
+  techStack: ["Tauri 2", "Rust", "React", "TypeScript", "Tailwind CSS"],
+  platform: "Desktop (Windows / macOS / Linux)",
+  identifier: "space.baole.lightops",
+  partOfEcosystem: "baole.space",
+  ecosystemHome: "https://baole.space",
+} as const;
