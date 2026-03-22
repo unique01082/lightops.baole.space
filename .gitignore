@@ -1,0 +1,32 @@
+# Rust
+/src-tauri/target/
+/src-tauri/gen/
+
+# Node
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Tauri
+/src-tauri/WixTools/
