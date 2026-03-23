@@ -2,7 +2,7 @@ export const APP_DATA = {
   name: "LightOps",
   tagline: "Every frame, perfectly named.",
   subtitle: "Batch rename, copy, or move RAW + JPG photo files based on EXIF shooting date. Built for photographers who care about their file workflow.",
-  version: "0.1.1",
+  version: "1.0.0-beta",
   license: "MIT",
   author: "Bao LE",
   authorUrl: "https://baole.space",

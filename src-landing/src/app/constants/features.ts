@@ -70,4 +70,26 @@ export const FEATURES = [
     description: "LightOps checks GitHub Releases for new versions on startup and notifies you in-app. Update with one click — no manual downloads needed.",
     detail: "Uses Tauri's built-in updater plugin. Update channel: github.com/unique01082/lightops/releases.",
   },
+  {
+    id: "video-support",
+    icon: "🎬",
+    title: "Video File Support",
+    description: "Scan and rename companion video files (.mp4, .mov, .mts, .m4v, .avi, .mkv, .3gp) alongside your photos in a single pass.",
+    detail: "Reads EXIF datetime from video containers when available (Sony, Canon embed EXIF in MP4/MOV). Falls back to file modification time. Toggle via Advanced Options.",
+  },
+  {
+    id: "preset-manager",
+    icon: "🔖",
+    title: "Preset Manager",
+    description: "Save your entire configuration as a named preset and restore it with one click. Perfect for recurring workflows like different camera bodies or event types.",
+    detail: "Presets are stored as JSON files in your app data folder. Save, load, and delete them directly from the UI. Includes all settings: camera, format, prefix, output, file op, and more.",
+    highlight: true,
+  },
+  {
+    id: "log-table-mode",
+    icon: "📊",
+    title: "Log Table View",
+    description: "Switch the log panel between text and table mode. Table mode shows a clean STATUS / SOURCE / DESTINATION layout with clickable paths that open the folder in your OS file manager.",
+    detail: "Clickable path cells open the containing folder directly in Finder, Explorer, or your file manager. Fallback copies the path to clipboard.",
+  },
 ] as const;

@@ -1,5 +1,16 @@
 export const CHANGELOG = [
   {
+    version: "v1.0.0-beta",
+    date: "2026-03-23",
+    type: "Beta Release",
+    badgeColor: "accent_lightops",
+    highlights: [
+      "Video support: scan and rename .mp4, .mov, .mts, .m4v, .avi, .mkv, .3gp companion files alongside photos",
+      "Preset Manager: save, load, and delete named configuration presets stored locally",
+      "Log table mode: toggle between text log and table view with clickable paths that open folders in your OS file manager",
+    ],
+  },
+  {
     version: "v0.1.1",
     date: "2026-03-23",
     type: "Patch",

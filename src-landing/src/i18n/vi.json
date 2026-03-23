@@ -56,6 +56,18 @@
       {
         "title": "Cập nhật tự động",
         "description": "LightOps kiểm tra GitHub Releases để tìm phiên bản mới khi khởi động và thông báo trong ứng dụng. Cập nhật chỉ với một cú nhấp — không cần tải xuống thủ công."
+      },
+      {
+        "title": "Hỗ trợ file video",
+        "description": "Quét và đổi tên file video đi kèm (.mp4, .mov, .mts, .m4v, .avi, .mkv, .3gp) cùng lúc với ảnh trong một lần chạy."
+      },
+      {
+        "title": "Quản lý preset",
+        "description": "Lưu toàn bộ cấu hình thành một preset có tên và khôi phục bằng một cú nhấp. Hoàn hảo cho các quy trình lặp như máy ảnh hoặc loại sự kiện khác nhau."
+      },
+      {
+        "title": "Chế độ bảng nhật ký",
+        "description": "Chuyển đổi bảng nhật ký giữa dạng văn bản và dạng bảng. Dạng bảng hiển thị cột TRẠNG THÁI / NGUỒN / ĐÍCH với đường dẫn có thể nhấp để mở thư mục trong trình quản lý file."
       }
     ]
   },
@@ -145,6 +157,21 @@
     "title": "Có gì mới",
     "subtitle": "Lịch sử phát hành và cập nhật",
     "releases": [
+      {
+        "type": "Bản Beta",
+        "highlights": [
+          "Hỗ trợ video: quét và đổi tên file .mp4, .mov, .mts, .m4v, .avi, .mkv, .3gp đi kèm với ảnh",
+          "Quản lý preset: lưu, tải và xóa các cấu hình đã đặt tên được lưu cục bộ",
+          "Chế độ bảng nhật ký: chuyển đổi giữa dạng văn bản và dạng bảng với đường dẫn có thể nhấp để mở thư mục"
+        ]
+      },
+      {
+        "type": "Vá lỗi",
+        "highlights": [
+          "Giữ nguyên chữ hoa/thường của phần mở rộng khi đổi tên (vd: .JPG vẫn là .JPG, .NEF vẫn là .NEF)",
+          "Bộ đếm thứ tự (NNNN) nay đệm 4 chữ số thay vì 6"
+        ]
+      },
       {
         "type": "Phiên bản đầu tiên",
         "highlights": [

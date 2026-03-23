@@ -56,6 +56,18 @@
       {
         "title": "Automatic Updates",
         "description": "LightOps checks GitHub Releases for new versions on startup and notifies you in-app. Update with one click — no manual downloads needed."
+      },
+      {
+        "title": "Video File Support",
+        "description": "Scan and rename companion video files (.mp4, .mov, .mts, .m4v, .avi, .mkv, .3gp) alongside your photos in a single pass."
+      },
+      {
+        "title": "Preset Manager",
+        "description": "Save your entire configuration as a named preset and restore it with one click. Perfect for recurring workflows like different camera bodies or event types."
+      },
+      {
+        "title": "Log Table View",
+        "description": "Switch the log panel between text and table mode. Table mode shows STATUS / SOURCE / DESTINATION columns with clickable paths that open the folder in your OS file manager."
       }
     ]
   },
@@ -145,6 +157,21 @@
     "title": "What's New",
     "subtitle": "Release history and updates",
     "releases": [
+      {
+        "type": "Beta Release",
+        "highlights": [
+          "Video support: scan and rename .mp4, .mov, .mts, .m4v, .avi, .mkv, .3gp companion files alongside photos",
+          "Preset Manager: save, load, and delete named configuration presets stored locally",
+          "Log table mode: toggle between text log and table view with clickable paths that open folders in your OS file manager"
+        ]
+      },
+      {
+        "type": "Patch",
+        "highlights": [
+          "Preserve original extension case during rename (e.g. .JPG stays .JPG, .NEF stays .NEF)",
+          "Sequence counter (NNNN) now zero-pads to 4 digits instead of 6"
+        ]
+      },
       {
         "type": "Initial Release",
         "highlights": [
