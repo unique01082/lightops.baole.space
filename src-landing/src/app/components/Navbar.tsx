@@ -90,15 +90,6 @@ export function Navbar() {
 
           {/* Right side */}
           <div className="flex items-center gap-4">
-            <a
-              href={APP_DATA.ecosystemHome}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hidden lg:block text-white/40 text-xs hover:text-white/60 transition-colors"
-              style={{ fontFamily: "'Inter', sans-serif" }}
-            >
-              {t("nav.ecosystem")}
-            </a>
             <button
               onClick={toggleLanguage}
               className="text-white/60 hover:text-white transition-colors text-sm font-medium px-2 py-1 rounded border border-white/20 hover:border-white/40"
