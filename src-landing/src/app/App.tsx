@@ -7,21 +7,24 @@ import { Screenshots } from "./components/Screenshots";
 import { Changelog } from "./components/Changelog";
 import { OpenSource } from "./components/OpenSource";
 import { Footer } from "./components/Footer";
+import { GithubReleaseProvider } from "./hooks/GithubReleaseContext";
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e] text-white overflow-x-hidden">
-      <Navbar />
-      <main>
-        <Hero />
-        <Features />
-        <Download />
-        <HowItWorks />
-        <Screenshots />
-        <Changelog />
-        {false && <OpenSource />}
-      </main>
-      <Footer />
-    </div>
+    <GithubReleaseProvider>
+      <div className="min-h-screen bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e] text-white overflow-x-hidden">
+        <Navbar />
+        <main>
+          <Hero />
+          <Features />
+          <Download />
+          <HowItWorks />
+          <Screenshots />
+          <Changelog />
+          {false && <OpenSource />}
+        </main>
+        <Footer />
+      </div>
+    </GithubReleaseProvider>
   );
 }

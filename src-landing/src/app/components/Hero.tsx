@@ -8,9 +8,11 @@ import { BadgePill } from "./BadgePill";
 import { ApertureLogo } from "./ApertureLogo";
 import { AppMockup } from "./AppMockup";
 import { APP_DATA } from "../constants/app";
+import { useGithubReleaseContext } from "../hooks/GithubReleaseContext";
 
 export function Hero() {
   const { t } = useTranslation();
+  const release = useGithubReleaseContext();
 
   const scrollToDownload = () => {
     const element = document.getElementById("download");
@@ -61,7 +63,11 @@ export function Hero() {
             className="flex justify-center mb-6"
           >
             <BadgePill variant="gradient">
-              🏷️ {t("hero.badge", { version: APP_DATA.version, license: APP_DATA.license })}
+              🏷️{" "}
+              {t("hero.badge", {
+                version: release.version,
+                license: APP_DATA.license,
+              })}
             </BadgePill>
           </motion.div>
 

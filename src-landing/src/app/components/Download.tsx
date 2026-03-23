@@ -6,7 +6,7 @@ import { PlatformCard } from "./PlatformCard";
 import { BadgePill } from "./BadgePill";
 import { Star, GitFork, AlertCircle } from "lucide-react";
 import { APP_DATA } from "../constants/app";
-import { useGithubRelease } from "../hooks/useGithubRelease";
+import { useGithubReleaseContext } from "../hooks/GithubReleaseContext";
 import { AppleIcon, WindowIco } from "lucide-react";
 
 type OS = "windows" | "macos" | "linux" | "unknown";
@@ -22,7 +22,7 @@ function detectOS(): OS {
 export function Download() {
   const { t } = useTranslation();
   const detectedOS = useMemo(() => detectOS(), []);
-  const release = useGithubRelease();
+  const release = useGithubReleaseContext();
 
   const platformTexts = t("download.platforms", {
     returnObjects: true,
