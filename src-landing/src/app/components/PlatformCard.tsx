@@ -28,7 +28,7 @@ export function PlatformCard({
 }: PlatformCardProps) {
   return (
     <div
-      className={`relative bg-white/5 backdrop-blur-sm border rounded-2xl p-8 transition-all duration-300 hover:-translate-y-1 ${
+      className={`relative h-full bg-white/5 backdrop-blur-sm border rounded-2xl p-8 transition-all duration-300 hover:-translate-y-1 ${
         highlight
           ? "border-violet-500/50 shadow-lg shadow-violet-500/20"
           : "border-white/10 hover:border-white/20"

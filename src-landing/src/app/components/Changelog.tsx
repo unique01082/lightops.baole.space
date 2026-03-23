@@ -50,8 +50,7 @@ export function Changelog() {
 
                 {/* Highlights */}
                 <div className="space-y-3">
-                  {(releases[index]?.highlights ?? release.highlights).map(
-                    (highlight, i) => (
+                  {release.highlights.map((highlight, i) => (
                     <div key={i} className="flex items-start gap-3">
                       <div className="flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center mt-0.5">
                         <Check size={12} className="text-white" />

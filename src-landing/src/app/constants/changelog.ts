@@ -1,7 +1,17 @@
 export const CHANGELOG = [
   {
+    version: "v0.1.1",
+    date: "2026-03-23",
+    type: "Patch",
+    badgeColor: "accent_lightops",
+    highlights: [
+      "Preserve original extension case during rename (e.g. .JPG stays .JPG, .NEF stays .NEF)",
+      "Sequence counter (NNNN) now zero-pads to 4 digits instead of 6",
+    ],
+  },
+  {
     version: "v0.1.0",
-    date: "2026",
+    date: "2026-03",
     type: "Initial Release",
     badgeColor: "accent_lightops",
     highlights: [
