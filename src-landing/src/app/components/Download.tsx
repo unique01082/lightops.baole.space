@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { ScrollReveal } from "./ScrollReveal";
 import { SectionHeading } from "./SectionHeading";
 import { PlatformCard } from "./PlatformCard";
@@ -18,52 +19,69 @@ function detectOS(): OS {
 }
 
 export function Download() {
+  const { t } = useTranslation();
   const detectedOS = useMemo(() => detectOS(), []);
   const release = useGithubRelease();
+
+  const platformTexts = t("download.platforms", {
+    returnObjects: true,
+  }) as Array<{
+    name: string;
+    description: string;
+    primaryLabel: string;
+    secondaryLabel: string;
+    note: string;
+  }>;
 
   const platforms = useMemo(
     () => [
       {
-        name: "Windows",
+        name: platformTexts[0]?.name ?? "Windows",
         icon: "🪟",
-        description: "Windows 10 / 11 (64-bit)",
+        description: platformTexts[0]?.description ?? "Windows 10 / 11 (64-bit)",
         primaryButton: {
-          label: "Download .exe",
+          label: platformTexts[0]?.primaryLabel ?? "Download .exe",
           url: release.assets.windowsExe,
         },
         secondaryButton: {
-          label: "Download .msi",
+          label: platformTexts[0]?.secondaryLabel ?? "Download .msi",
           url: release.assets.windowsMsi,
         },
-        note: "NSIS installer · WiX MSI also available",
+        note: platformTexts[0]?.note ?? "NSIS installer · WiX MSI also available",
         highlight: detectedOS === "windows",
       },
       {
-        name: "macOS",
+        name: platformTexts[1]?.name ?? "macOS",
         icon: "🍎",
-        description: "macOS 11 Big Sur and later",
-        primaryButton: { label: "Download .dmg", url: release.assets.macDmg },
+        description: platformTexts[1]?.description ?? "macOS 11 Big Sur and later",
+        primaryButton: {
+          label: platformTexts[1]?.primaryLabel ?? "Download .dmg",
+          url: release.assets.macDmg,
+        },
         secondaryButton: {
-          label: "Download .app.tar.gz",
+          label: platformTexts[1]?.secondaryLabel ?? "Download .app.tar.gz",
           url: release.assets.macTarGz,
         },
-        note: "Universal binary (Intel + Apple Silicon)",
+        note: platformTexts[1]?.note ?? "Universal binary (Intel + Apple Silicon)",
         highlight: detectedOS === "macos",
       },
       {
-        name: "Linux",
+        name: platformTexts[2]?.name ?? "Linux",
         icon: "🐧",
-        description: "Ubuntu, Fedora, Arch and more",
+        description: platformTexts[2]?.description ?? "Ubuntu, Fedora, Arch and more",
         primaryButton: {
-          label: "Download .AppImage",
+          label: platformTexts[2]?.primaryLabel ?? "Download .AppImage",
           url: release.assets.linuxAppImage,
         },
-        secondaryButton: { label: ".deb / .rpm", url: release.releasePageUrl },
-        note: "AppImage · Debian · RPM packages",
+        secondaryButton: {
+          label: platformTexts[2]?.secondaryLabel ?? ".deb / .rpm",
+          url: release.releasePageUrl,
+        },
+        note: platformTexts[2]?.note ?? "AppImage · Debian · RPM packages",
         highlight: detectedOS === "linux",
       },
     ],
-    [detectedOS, release],
+    [detectedOS, release, platformTexts],
   );
 
   return (
@@ -71,8 +89,8 @@ export function Download() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <ScrollReveal>
           <SectionHeading
-            title="Download LightOps"
-            subtitle="Free, open source, no sign-up required. Pick your platform."
+            title={t("download.title")}
+            subtitle={t("download.subtitle")}
           />
         </ScrollReveal>
 
@@ -86,7 +104,7 @@ export function Download() {
               className="inline-block"
             >
               <BadgePill variant="gradient">
-                Latest: v{release.version}
+                {t("download.latest", { version: release.version })}
               </BadgePill>
             </a>
           </div>
@@ -171,14 +189,13 @@ export function Download() {
                   className="text-white font-semibold mb-2"
                   style={{ fontFamily: "'Space Grotesk', sans-serif" }}
                 >
-                  Already installed?
+                  {t("download.alreadyInstalledTitle")}
                 </h4>
                 <p
                   className="text-white/60 text-sm"
                   style={{ fontFamily: "'Inter', sans-serif" }}
                 >
-                  LightOps checks for updates automatically on startup. You'll
-                  be notified in-app when a new version is available.
+                  {t("download.alreadyInstalledDesc")}
                 </p>
               </div>
             </div>

@@ -72,12 +72,17 @@
     "scanning": "Scanning…"
   },
   "settings": {
-    "title": "Settings",
-    "language": "Language",
-    "defaultCamera": "Default Camera Preset",
+    "title": "SETTINGS",
+    "subtitle": "Default values applied on next launch",
+    "language": "LANGUAGE",
+    "defaults": "DEFAULTS",
+    "defaultCamera": "Default Camera",
     "defaultFileOp": "Default File Operation",
-    "defaultRecursive": "Recursive scan by default",
-    "defaultOrganize": "Organize by date by default"
+    "operationCopy": "Copy",
+    "operationMove": "Move",
+    "defaultRecursive": "Scan subfolders by default",
+    "defaultOrganize": "Organize by date by default",
+    "done": "Done"
   },
   "update": {
     "available": "Update available",

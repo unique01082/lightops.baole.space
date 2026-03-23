@@ -1,12 +1,22 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { ApertureLogo } from "./ApertureLogo";
 import { GradientButton } from "./GradientButton";
 import { Menu, X } from "lucide-react";
 import { APP_DATA } from "../constants/app";
 
 export function Navbar() {
+  const { t, i18n } = useTranslation();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const toggleLanguage = () => {
+    const next = i18n.language === "vi" ? "en" : "vi";
+    i18n.changeLanguage(next);
+    try {
+      localStorage.setItem("lightops-landing-language", next);
+    } catch {}
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -53,28 +63,28 @@ export function Navbar() {
               className="text-white/70 hover:text-white transition-colors"
               style={{ fontFamily: "'Inter', sans-serif" }}
             >
-              Features
+              {t("nav.features")}
             </button>
             <button
               onClick={() => scrollToSection("download")}
               className="text-white/70 hover:text-white transition-colors"
               style={{ fontFamily: "'Inter', sans-serif" }}
             >
-              Download
+              {t("nav.download")}
             </button>
             <button
               onClick={() => scrollToSection("how-it-works")}
               className="text-white/70 hover:text-white transition-colors"
               style={{ fontFamily: "'Inter', sans-serif" }}
             >
-              How It Works
+              {t("nav.howItWorks")}
             </button>
             <button
               onClick={() => scrollToSection("changelog")}
               className="text-white/70 hover:text-white transition-colors"
               style={{ fontFamily: "'Inter', sans-serif" }}
             >
-              Changelog
+              {t("nav.changelog")}
             </button>
           </div>
 
@@ -87,10 +97,18 @@ export function Navbar() {
               className="hidden lg:block text-white/40 text-xs hover:text-white/60 transition-colors"
               style={{ fontFamily: "'Inter', sans-serif" }}
             >
-              Part of the baole.space ecosystem
+              {t("nav.ecosystem")}
             </a>
+            <button
+              onClick={toggleLanguage}
+              className="text-white/60 hover:text-white transition-colors text-sm font-medium px-2 py-1 rounded border border-white/20 hover:border-white/40"
+              style={{ fontFamily: "'Inter', sans-serif" }}
+              title="Switch language"
+            >
+              {i18n.language === "vi" ? "EN" : "VI"}
+            </button>
             <GradientButton size="sm" href={APP_DATA.githubLatestRelease}>
-              Download
+              {t("nav.downloadBtn")}
             </GradientButton>
 
             {/* Mobile menu button */}
@@ -113,28 +131,35 @@ export function Navbar() {
               className="block w-full text-left text-white/70 hover:text-white py-2"
               style={{ fontFamily: "'Inter', sans-serif" }}
             >
-              Features
+              {t("nav.features")}
             </button>
             <button
               onClick={() => scrollToSection("download")}
               className="block w-full text-left text-white/70 hover:text-white py-2"
               style={{ fontFamily: "'Inter', sans-serif" }}
             >
-              Download
+              {t("nav.download")}
             </button>
             <button
               onClick={() => scrollToSection("how-it-works")}
               className="block w-full text-left text-white/70 hover:text-white py-2"
               style={{ fontFamily: "'Inter', sans-serif" }}
             >
-              How It Works
+              {t("nav.howItWorks")}
             </button>
             <button
               onClick={() => scrollToSection("changelog")}
               className="block w-full text-left text-white/70 hover:text-white py-2"
               style={{ fontFamily: "'Inter', sans-serif" }}
             >
-              Changelog
+              {t("nav.changelog")}
+            </button>
+            <button
+              onClick={toggleLanguage}
+              className="block w-full text-left text-white/50 hover:text-white py-2 text-sm"
+              style={{ fontFamily: "'Inter', sans-serif" }}
+            >
+              {i18n.language === "vi" ? "🇬🇧 English" : "🇻🇳 Tiếng Việt"}
             </button>
           </div>
         </div>

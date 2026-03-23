@@ -1,0 +1,169 @@
+{
+  "nav": {
+    "features": "Tính năng",
+    "download": "Tải xuống",
+    "howItWorks": "Cách hoạt động",
+    "changelog": "Lịch sử cập nhật",
+    "ecosystem": "Một phần của hệ sinh thái baole.space",
+    "downloadBtn": "Tải xuống"
+  },
+  "hero": {
+    "badge": "v{{version}} · Miễn phí & Mã nguồn mở · Giấy phép {{license}}",
+    "downloadNow": "Tải xuống ngay",
+    "starOnGithub": "⭐ Star trên GitHub →",
+    "alsoAvailable": "Cũng có sẵn cho macOS & Linux ↓"
+  },
+  "features": {
+    "title": "Mọi thứ bạn cần",
+    "subtitle": "Quản lý tệp hàng loạt mạnh mẽ được xây dựng riêng cho các nhiếp ảnh gia",
+    "items": [
+      {
+        "title": "Hỗ trợ nhiều thư mục nguồn",
+        "description": "Thêm nhiều thư mục nguồn cùng lúc — hoàn hảo để lấy ảnh từ nhiều thẻ SD hoặc thân máy ảnh trong một lần chạy."
+      },
+      {
+        "title": "Đổi tên dựa trên EXIF",
+        "description": "Đọc ngày và giờ chụp thực tế từ metadata EXIF của ảnh — không phải ngày tạo tệp, có thể thay đổi khi sao chép."
+      },
+      {
+        "title": "Hỗ trợ RAW đa máy ảnh",
+        "description": "Cài đặt sẵn cho Nikon (.nef, .nrw), Canon (.cr2, .cr3), Sony (.arw), Fujifilm (.raf), Panasonic (.rw2), Olympus (.orf), Pentax (.pef, .dng), Leica (.dng) và nhiều hơn nữa."
+      },
+      {
+        "title": "Định dạng tên tệp linh hoạt",
+        "description": "Chọn từ 4 định dạng ngày giờ, thêm tiền tố tùy chỉnh và đặt số thứ tự bắt đầu. Xem trước tên tệp đầu ra trong thời gian thực trước khi chạy."
+      },
+      {
+        "title": "Chế độ chạy thử",
+        "description": "Xem trước chính xác những gì sẽ xảy ra trước khi chạm vào bất kỳ tệp nào. Nhật ký hiển thị tất cả các đường dẫn nguồn → đích mà không thực hiện thao tác tệp."
+      },
+      {
+        "title": "Sao chép hoặc Di chuyển",
+        "description": "Chọn sao chép tệp (bản gốc không bị thay đổi) hoặc di chuyển chúng (bản gốc bị xóa sau khi chuyển thành công). Cảnh báo được hiển thị trước thao tác di chuyển."
+      },
+      {
+        "title": "Tổ chức vào thư mục con theo ngày",
+        "description": "Tự động tạo thư mục con YYYY-MM-DD bên trong thư mục đầu ra, nhóm các tệp đã đổi tên theo ngày chụp."
+      },
+      {
+        "title": "Xử lý cặp JPG + RAW",
+        "description": "Giữ các tệp JPG và RAW thành cặp. Bật 'Chỉ tệp đi kèm' để bỏ qua tệp không có tệp đối tác tương ứng."
+      },
+      {
+        "title": "Nhật ký màu sắc thời gian thực",
+        "description": "Xem mọi thao tác tệp diễn ra trong thời gian thực. Mỗi mục nhật ký hiển thị đường dẫn nguồn và đích đầy đủ với thẻ trạng thái được mã hóa bằng màu sắc."
+      },
+      {
+        "title": "Cập nhật tự động",
+        "description": "LightOps kiểm tra GitHub Releases để tìm phiên bản mới khi khởi động và thông báo trong ứng dụng. Cập nhật chỉ với một cú nhấp — không cần tải xuống thủ công."
+      }
+    ]
+  },
+  "download": {
+    "title": "Tải LightOps",
+    "subtitle": "Miễn phí, mã nguồn mở, không cần đăng ký. Chọn nền tảng của bạn.",
+    "latest": "Mới nhất: v{{version}}",
+    "platforms": [
+      {
+        "name": "Windows",
+        "description": "Windows 10 / 11 (64-bit)",
+        "primaryLabel": "Tải .exe",
+        "secondaryLabel": "Tải .msi",
+        "note": "Bộ cài NSIS · MSI WiX cũng có sẵn"
+      },
+      {
+        "name": "macOS",
+        "description": "macOS 11 Big Sur trở lên",
+        "primaryLabel": "Tải .dmg",
+        "secondaryLabel": "Tải .app.tar.gz",
+        "note": "Tệp nhị phân đa nền tảng (Intel + Apple Silicon)"
+      },
+      {
+        "name": "Linux",
+        "description": "Ubuntu, Fedora, Arch và nhiều hơn nữa",
+        "primaryLabel": "Tải .AppImage",
+        "secondaryLabel": ".deb / .rpm",
+        "note": "Gói AppImage · Debian · RPM"
+      }
+    ],
+    "alreadyInstalledTitle": "Đã cài đặt rồi?",
+    "alreadyInstalledDesc": "LightOps tự động kiểm tra cập nhật khi khởi động. Bạn sẽ được thông báo trong ứng dụng khi có phiên bản mới."
+  },
+  "howItWorks": {
+    "title": "Cách hoạt động",
+    "subtitle": "Từ thẻ SD đến thư viện được sắp xếp trong 4 bước đơn giản",
+    "steps": [
+      {
+        "title": "Thêm thư mục nguồn",
+        "description": "Kéo thả hoặc duyệt để thêm một hoặc nhiều thư mục chứa ảnh của bạn. Hoàn hảo để lấy ảnh từ nhiều thẻ SD cùng lúc."
+      },
+      {
+        "title": "Cấu hình cài đặt",
+        "description": "Chọn thương hiệu máy ảnh để tự động điền phần mở rộng RAW. Đặt định dạng tên tệp, tiền tố và thư mục đầu ra. Xem trước tên tệp đầu ra trong thời gian thực."
+      },
+      {
+        "title": "Xem trước với chạy thử",
+        "description": "Nhấn 'Chạy thử' để xem chính xác những gì sẽ xảy ra — đường dẫn nguồn và đích của từng tệp — mà không động vào tệp nào. Xem lại nhật ký đầy đủ trước khi xác nhận."
+      },
+      {
+        "title": "Chạy và thư giãn",
+        "description": "Nhấn 'Chạy'. Xem nhật ký thời gian thực khi LightOps đổi tên và sắp xếp tệp của bạn. Thanh tiến trình theo dõi từng tệp được xử lý."
+      }
+    ]
+  },
+  "screenshots": {
+    "title": "Giao diện",
+    "subtitle": "Gọn gàng, tối giản và mạnh mẽ — được thiết kế cho sự tập trung",
+    "states": [
+      {
+        "label": "Chờ / Sẵn sàng",
+        "description": "Trạng thái ban đầu sạch sẽ — thêm thư mục và cấu hình cài đặt của bạn."
+      },
+      {
+        "label": "Đang chạy thử",
+        "description": "Xem trước mọi thao tác đổi tên tệp trước khi xác nhận. Không có rủi ro."
+      },
+      {
+        "label": "Hoàn thành đổi tên",
+        "description": "Tất cả tệp đã được sắp xếp, nhật ký mã màu, thống kê một cái nhìn."
+      }
+    ],
+    "callouts": {
+      "multiSource": "Nhiều thư mục nguồn",
+      "realtimeLog": "Nhật ký màu thời gian thực",
+      "progressBar": "Thanh tiến trình màu sắc"
+    }
+  },
+  "changelog": {
+    "title": "Có gì mới",
+    "subtitle": "Lịch sử phát hành và cập nhật",
+    "releases": [
+      {
+        "type": "Phiên bản đầu tiên",
+        "highlights": [
+          "Phát hành công khai đầu tiên của LightOps",
+          "Hỗ trợ nhiều thư mục nguồn với kéo & thả",
+          "Đổi tên dựa trên EXIF sử dụng ngày/giờ chụp",
+          "Cài đặt sẵn máy ảnh: Nikon, Canon, Sony, Fujifilm, Panasonic, Olympus, Pentax, Leica",
+          "4 định dạng tên tệp với xem trước trực tiếp",
+          "Chế độ chạy thử để xem trước an toàn",
+          "Thao tác Sao chép hoặc Di chuyển tệp",
+          "Tổ chức vào thư mục con theo ngày",
+          "Xử lý cặp JPG + RAW",
+          "Bảng nhật ký mã màu thời gian thực",
+          "Hỗ trợ đa ngôn ngữ (Tiếng Anh + Tiếng Việt)"
+        ]
+      }
+    ]
+  },
+  "footer": {
+    "features": "Tính năng",
+    "download": "Tải xuống",
+    "howItWorks": "Cách hoạt động",
+    "changelog": "Lịch sử cập nhật",
+    "ecosystem": "Một phần của hệ sinh thái <accent>{{ecosystem}}</accent>",
+    "copyright": "© 2026 {{author}}",
+    "copyrightPrefix": "© 2026",
+    "madeWith": "Được tạo với ❤️ và rất nhiều ☕"
+  }
+}

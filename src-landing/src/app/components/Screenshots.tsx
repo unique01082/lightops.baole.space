@@ -1,39 +1,31 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ScrollReveal } from "./ScrollReveal";
 import { SectionHeading } from "./SectionHeading";
 import { AppMockup } from "./AppMockup";
 
-const SCREENSHOT_STATES = [
-  {
-    id: "idle",
-    label: "Idle / Ready",
-    description:
-      "Clean starting state — add folders and configure your settings.",
-  },
-  {
-    id: "dry-run",
-    label: "Dry Run Active",
-    description: "Preview every file rename before committing. Zero risk.",
-  },
-  {
-    id: "complete",
-    label: "Rename Complete",
-    description: "All files organized, color-coded log, stats at a glance.",
-  },
-] as const;
+type ScreenshotId = "idle" | "dry-run" | "complete";
+
+const SCREENSHOT_IDS: ScreenshotId[] = ["idle", "dry-run", "complete"];
 
 export function Screenshots() {
-  const [activeTab, setActiveTab] = useState<"idle" | "dry-run" | "complete">(
-    "complete",
-  );
+  const { t } = useTranslation();
+  const [activeTab, setActiveTab] = useState<ScreenshotId>("complete");
+
+  const states = t("screenshots.states", { returnObjects: true }) as Array<{
+    label: string;
+    description: string;
+  }>;
+
+  const activeIndex = SCREENSHOT_IDS.indexOf(activeTab);
 
   return (
     <section className="py-20 md:py-32 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <ScrollReveal>
           <SectionHeading
-            title="The Interface"
-            subtitle="Clean, minimal, and powerful — designed for focus"
+            title={t("screenshots.title")}
+            subtitle={t("screenshots.subtitle")}
           />
         </ScrollReveal>
 
@@ -41,18 +33,18 @@ export function Screenshots() {
           <div className="max-w-5xl mx-auto">
             {/* Tab switcher */}
             <div className="flex flex-wrap justify-center gap-2 sm:gap-4 mb-8">
-              {SCREENSHOT_STATES.map((state) => (
+              {SCREENSHOT_IDS.map((id, index) => (
                 <button
-                  key={state.id}
-                  onClick={() => setActiveTab(state.id)}
+                  key={id}
+                  onClick={() => setActiveTab(id)}
                   className={`px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-medium transition-all duration-300 text-sm sm:text-base ${
-                    activeTab === state.id
+                    activeTab === id
                       ? "bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white shadow-lg shadow-violet-500/30"
                       : "bg-white/5 text-white/60 hover:bg-white/10 hover:text-white/80 border border-white/10"
                   }`}
                   style={{ fontFamily: "'Space Grotesk', sans-serif" }}
                 >
-                  {state.label}
+                  {states[index]?.label ?? id}
                 </button>
               ))}
             </div>
@@ -69,24 +61,24 @@ export function Screenshots() {
               className="text-center text-white/60 mb-8"
               style={{ fontFamily: "'Inter', sans-serif" }}
             >
-              {SCREENSHOT_STATES.find((s) => s.id === activeTab)?.description}
+              {states[activeIndex]?.description}
             </p>
 
             {/* Feature callouts */}
             <div className="flex flex-wrap justify-center gap-6 text-sm text-white/50">
               <div className="flex items-center gap-2">
                 <span style={{ fontFamily: "'Inter', sans-serif" }}>
-                  Multi-source folders
+                  {t("screenshots.callouts.multiSource")}
                 </span>
               </div>
               <div className="flex items-center gap-2">
                 <span style={{ fontFamily: "'Inter', sans-serif" }}>
-                  Real-time color log
+                  {t("screenshots.callouts.realtimeLog")}
                 </span>
               </div>
               <div className="flex items-center gap-2">
                 <span style={{ fontFamily: "'Inter', sans-serif" }}>
-                  Gradient progress bar
+                  {t("screenshots.callouts.progressBar")}
                 </span>
               </div>
             </div>

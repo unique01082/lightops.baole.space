@@ -1,15 +1,21 @@
+import { useTranslation } from "react-i18next";
 import { ScrollReveal } from "./ScrollReveal";
 import { SectionHeading } from "./SectionHeading";
 import { STEPS } from "../constants/steps";
 
 export function HowItWorks() {
+  const { t } = useTranslation();
+  const steps = t("howItWorks.steps", { returnObjects: true }) as Array<{
+    title: string;
+    description: string;
+  }>;
   return (
     <section id="how-it-works" className="py-20 md:py-32 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <ScrollReveal>
           <SectionHeading
-            title="How It Works"
-            subtitle="From SD card to organized library in 4 simple steps"
+            title={t("howItWorks.title")}
+            subtitle={t("howItWorks.subtitle")}
           />
         </ScrollReveal>
 
@@ -37,13 +43,13 @@ export function HowItWorks() {
                         className="text-lg font-semibold text-white mb-3 text-center"
                         style={{ fontFamily: "'Space Grotesk', sans-serif" }}
                       >
-                        {step.title}
+                        {steps[index]?.title ?? step.title}
                       </h3>
                       <p
                         className="text-white/60 text-sm text-center leading-relaxed"
                         style={{ fontFamily: "'Inter', sans-serif" }}
                       >
-                        {step.description}
+                        {steps[index]?.description ?? step.description}
                       </p>
                     </div>
                   </div>
@@ -72,13 +78,13 @@ export function HowItWorks() {
                     className="text-lg font-semibold text-white mb-2"
                     style={{ fontFamily: "'Space Grotesk', sans-serif" }}
                   >
-                    {step.title}
+                    {steps[index]?.title ?? step.title}
                   </h3>
                   <p
                     className="text-white/60 text-sm leading-relaxed"
                     style={{ fontFamily: "'Inter', sans-serif" }}
                   >
-                    {step.description}
+                    {steps[index]?.description ?? step.description}
                   </p>
                 </div>
               </div>

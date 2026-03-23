@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { ScrollReveal } from "./ScrollReveal";
 import { SectionHeading } from "./SectionHeading";
 import { GhostButton } from "./GhostButton";
@@ -6,13 +7,19 @@ import { CHANGELOG } from "../constants/changelog";
 import { APP_DATA } from "../constants/app";
 
 export function Changelog() {
+  const { t } = useTranslation();
+  const releases = t("changelog.releases", { returnObjects: true }) as Array<{
+    type: string;
+    highlights: string[];
+  }>;
+
   return (
     <section id="changelog" className="py-20 md:py-32 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <ScrollReveal>
           <SectionHeading
-            title="What's New"
-            subtitle="Release history and updates"
+            title={t("changelog.title")}
+            subtitle={t("changelog.subtitle")}
           />
         </ScrollReveal>
 
@@ -30,7 +37,7 @@ export function Changelog() {
                       {release.version}
                     </h3>
                     <span className="px-3 py-1 rounded-full bg-gradient-to-r from-violet-500/20 to-fuchsia-500/20 text-violet-300 text-sm font-semibold border border-violet-500/30">
-                      {release.type}
+                      {releases[index]?.type ?? release.type}
                     </span>
                   </div>
                   <span
@@ -43,7 +50,8 @@ export function Changelog() {
 
                 {/* Highlights */}
                 <div className="space-y-3">
-                  {release.highlights.map((highlight, i) => (
+                  {(releases[index]?.highlights ?? release.highlights).map(
+                    (highlight, i) => (
                     <div key={i} className="flex items-start gap-3">
                       <div className="flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center mt-0.5">
                         <Check size={12} className="text-white" />

@@ -153,7 +153,7 @@ pub fn build_rename_plan(
         let seq = *c;
 
         let base = if dt_str.is_empty() {
-            format!("{}{:06}", opts.prefix, seq)
+            format!("{}{:04}", opts.prefix, seq)
         } else {
             format!("{}{}_{:04}", opts.prefix, dt_str, seq)
         };
@@ -172,7 +172,7 @@ pub fn build_rename_plan(
                 let ext = Path::new(filepath)
                     .extension()
                     .and_then(|e| e.to_str())
-                    .map(|e| format!(".{}", e.to_lowercase()))
+                    .map(|e| format!(".{}", e))
                     .unwrap_or_default();
 
                 plan.push(RenameEntry {

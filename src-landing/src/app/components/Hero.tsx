@@ -1,5 +1,6 @@
 import { ChevronDown } from "lucide-react";
 import { motion } from "motion/react";
+import { useTranslation } from "react-i18next";
 import { GradientOrb } from "./GradientOrb";
 import { GradientButton } from "./GradientButton";
 import { GhostButton } from "./GhostButton";
@@ -9,6 +10,8 @@ import { AppMockup } from "./AppMockup";
 import { APP_DATA } from "../constants/app";
 
 export function Hero() {
+  const { t } = useTranslation();
+
   const scrollToDownload = () => {
     const element = document.getElementById("download");
     if (element) {
@@ -58,8 +61,7 @@ export function Hero() {
             className="flex justify-center mb-6"
           >
             <BadgePill variant="gradient">
-              🏷️ v{APP_DATA.version} · Free & Open Source · {APP_DATA.license}{" "}
-              License
+              🏷️ {t("hero.badge", { version: APP_DATA.version, license: APP_DATA.license })}
             </BadgePill>
           </motion.div>
 
@@ -97,10 +99,10 @@ export function Hero() {
               href={APP_DATA.downloadSection}
               target="_self"
             >
-              Download Now
+              {t("hero.downloadNow")}
             </GradientButton>
             <GhostButton size="lg" href={APP_DATA.githubRepo}>
-              ⭐ Star on GitHub →
+              {t("hero.starOnGithub")}
             </GhostButton>
           </motion.div>
 
@@ -112,7 +114,7 @@ export function Hero() {
             className="text-white/50 text-sm hover:text-white/70 transition-colors"
             style={{ fontFamily: "'Inter', sans-serif" }}
           >
-            Also available for macOS & Linux ↓
+            {t("hero.alsoAvailable")}
           </motion.button>
         </div>
 

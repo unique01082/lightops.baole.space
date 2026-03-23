@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Globe, Settings as SettingsIcon } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -38,6 +39,7 @@ export function SettingsModal({
   onDefaultCameraChange, onDefaultFileOperationChange, onDefaultRecursiveScanChange,
   onDefaultOrganizeByDateChange, onLanguageChange
 }: SettingsModalProps) {
+  const { t } = useTranslation();
   return (
     <AnimatePresence>
       {isOpen && (
@@ -61,8 +63,8 @@ export function SettingsModal({
                 <div className="flex items-center gap-3">
                   <SettingsIcon className="w-5 h-5" style={{ color: '#8b5cf6' }} />
                   <div>
-                    <h2 className="text-xl text-white" style={{ fontFamily: 'var(--font-heading)' }}>SETTINGS</h2>
-                    <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>Default values applied on next launch</p>
+                    <h2 className="text-xl text-white" style={{ fontFamily: 'var(--font-heading)' }}>{t('settings.title')}</h2>
+                    <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>{t('settings.subtitle')}</p>
                   </div>
                 </div>
                 <button onClick={onClose} className="p-2 rounded-lg hover:bg-white/10 transition-colors">
@@ -74,7 +76,7 @@ export function SettingsModal({
                 <div>
                   <div className="flex items-center gap-2 mb-3">
                     <Globe className="w-4 h-4" style={{ color: 'var(--text-secondary)' }} />
-                    <h3 className="text-sm font-semibold text-white" style={{ fontFamily: 'var(--font-heading)' }}>LANGUAGE</h3>
+                    <h3 className="text-sm font-semibold text-white" style={{ fontFamily: 'var(--font-heading)' }}>{t('settings.language')}</h3>
                   </div>
                   <div className="flex gap-2">
                     {LANGUAGES.map(lang => (
@@ -97,10 +99,10 @@ export function SettingsModal({
                 <div className="h-px" style={{ background: 'var(--glass-divider)' }} />
 
                 <div>
-                  <h3 className="text-sm font-semibold text-white mb-4" style={{ fontFamily: 'var(--font-heading)' }}>DEFAULTS</h3>
+                  <h3 className="text-sm font-semibold text-white mb-4" style={{ fontFamily: 'var(--font-heading)' }}>{t('settings.defaults')}</h3>
                   <div className="space-y-3">
                     <div>
-                      <label className="block text-xs mb-1.5" style={{ color: 'var(--text-secondary)' }}>Default Camera</label>
+                      <label className="block text-xs mb-1.5" style={{ color: 'var(--text-secondary)' }}>{t('settings.defaultCamera')}</label>
                       <select
                         value={defaultCamera}
                         onChange={(e) => onDefaultCameraChange(e.target.value)}
@@ -113,7 +115,7 @@ export function SettingsModal({
                       </select>
                     </div>
                     <div>
-                      <label className="block text-xs mb-1.5" style={{ color: 'var(--text-secondary)' }}>Default File Operation</label>
+                      <label className="block text-xs mb-1.5" style={{ color: 'var(--text-secondary)' }}>{t('settings.defaultFileOp')}</label>
                       <div className="flex gap-2">
                         {(['copy', 'move'] as const).map(op => (
                           <button
@@ -126,12 +128,12 @@ export function SettingsModal({
                               borderColor: defaultFileOperation === op ? 'transparent' : 'var(--glass-border)',
                               color: defaultFileOperation === op ? 'white' : 'var(--text-secondary)'
                             }}
-                          >{op}</button>
+                          >{t(`settings.operation${op.charAt(0).toUpperCase() + op.slice(1)}`)}</button>
                         ))}
                       </div>
                     </div>
                     <div className="flex items-center justify-between py-2">
-                      <label className="text-sm" style={{ color: 'var(--text-primary)' }}>Scan subfolders by default</label>
+                      <label className="text-sm" style={{ color: 'var(--text-primary)' }}>{t('settings.defaultRecursive')}</label>
                       <button
                         onClick={() => onDefaultRecursiveScanChange(!defaultRecursiveScan)}
                         className="relative w-11 h-6 rounded-full flex-shrink-0"
@@ -145,7 +147,7 @@ export function SettingsModal({
                       </button>
                     </div>
                     <div className="flex items-center justify-between py-2">
-                      <label className="text-sm" style={{ color: 'var(--text-primary)' }}>Organize by date by default</label>
+                      <label className="text-sm" style={{ color: 'var(--text-primary)' }}>{t('settings.defaultOrganize')}</label>
                       <button
                         onClick={() => onDefaultOrganizeByDateChange(!defaultOrganizeByDate)}
                         className="relative w-11 h-6 rounded-full flex-shrink-0"
@@ -168,7 +170,7 @@ export function SettingsModal({
                   className="px-6 py-2.5 rounded-lg text-white transition-all"
                   style={{ background: 'var(--accent-lightops)' }}
                 >
-                  Done
+                  {t('settings.done')}
                 </button>
               </div>
             </motion.div>

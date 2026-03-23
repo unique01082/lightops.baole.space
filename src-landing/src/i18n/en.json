@@ -1,0 +1,169 @@
+{
+  "nav": {
+    "features": "Features",
+    "download": "Download",
+    "howItWorks": "How It Works",
+    "changelog": "Changelog",
+    "ecosystem": "Part of the baole.space ecosystem",
+    "downloadBtn": "Download"
+  },
+  "hero": {
+    "badge": "v{{version}} · Free & Open Source · {{license}} License",
+    "downloadNow": "Download Now",
+    "starOnGithub": "⭐ Star on GitHub →",
+    "alsoAvailable": "Also available for macOS & Linux ↓"
+  },
+  "features": {
+    "title": "Everything You Need",
+    "subtitle": "Powerful batch file management built specifically for photographers",
+    "items": [
+      {
+        "title": "Multi-Source Folder Support",
+        "description": "Add multiple source folders at once — perfect for pulling photos from several SD cards or camera bodies in a single run."
+      },
+      {
+        "title": "EXIF-Based Rename",
+        "description": "Reads the actual shooting date and time from your photo's EXIF metadata — not the file creation date, which can change during copy."
+      },
+      {
+        "title": "Multi-Camera RAW Support",
+        "description": "Built-in presets for Nikon (.nef, .nrw), Canon (.cr2, .cr3), Sony (.arw), Fujifilm (.raf), Panasonic (.rw2), Olympus (.orf), Pentax (.pef, .dng), Leica (.dng), and more."
+      },
+      {
+        "title": "Flexible Filename Formats",
+        "description": "Choose from 4 date-time formats, add a custom prefix, and set the starting sequence number. Preview the output filename in real time before running."
+      },
+      {
+        "title": "Dry Run Mode",
+        "description": "Preview exactly what will happen before touching a single file. The log shows all source → destination paths without performing any file operations."
+      },
+      {
+        "title": "Copy or Move Operations",
+        "description": "Choose to copy files (originals stay untouched) or move them (originals deleted after successful transfer). Warning is displayed before move operations."
+      },
+      {
+        "title": "Organize into Date Subfolders",
+        "description": "Automatically create YYYY-MM-DD subfolders inside the output folder, grouping your renamed files by shooting day."
+      },
+      {
+        "title": "Paired JPG + RAW Handling",
+        "description": "Keep JPG and RAW files paired together. Enable 'Only paired files' to skip any file that doesn't have a matching counterpart."
+      },
+      {
+        "title": "Real-Time Color-Coded Log",
+        "description": "Watch every file operation happen in real time. Each log entry shows the full source path and destination path with color-coded status tags."
+      },
+      {
+        "title": "Automatic Updates",
+        "description": "LightOps checks GitHub Releases for new versions on startup and notifies you in-app. Update with one click — no manual downloads needed."
+      }
+    ]
+  },
+  "download": {
+    "title": "Download LightOps",
+    "subtitle": "Free, open source, no sign-up required. Pick your platform.",
+    "latest": "Latest: v{{version}}",
+    "platforms": [
+      {
+        "name": "Windows",
+        "description": "Windows 10 / 11 (64-bit)",
+        "primaryLabel": "Download .exe",
+        "secondaryLabel": "Download .msi",
+        "note": "NSIS installer · WiX MSI also available"
+      },
+      {
+        "name": "macOS",
+        "description": "macOS 11 Big Sur and later",
+        "primaryLabel": "Download .dmg",
+        "secondaryLabel": "Download .app.tar.gz",
+        "note": "Universal binary (Intel + Apple Silicon)"
+      },
+      {
+        "name": "Linux",
+        "description": "Ubuntu, Fedora, Arch and more",
+        "primaryLabel": "Download .AppImage",
+        "secondaryLabel": ".deb / .rpm",
+        "note": "AppImage · Debian · RPM packages"
+      }
+    ],
+    "alreadyInstalledTitle": "Already installed?",
+    "alreadyInstalledDesc": "LightOps checks for updates automatically on startup. You'll be notified in-app when a new version is available."
+  },
+  "howItWorks": {
+    "title": "How It Works",
+    "subtitle": "From SD card to organized library in 4 simple steps",
+    "steps": [
+      {
+        "title": "Add Your Source Folders",
+        "description": "Drag and drop or browse to add one or more folders containing your photos. Perfect for pulling from multiple SD cards simultaneously."
+      },
+      {
+        "title": "Configure Your Settings",
+        "description": "Choose your camera brand to auto-fill RAW extensions. Set a filename format, prefix, and output folder. Preview the output filename in real time."
+      },
+      {
+        "title": "Preview with Dry Run",
+        "description": "Click 'Dry Run' to see exactly what will happen — every file's source and destination path — without touching any files. Review the full log before committing."
+      },
+      {
+        "title": "Run and Relax",
+        "description": "Hit 'Run'. Watch the real-time log as LightOps renames and organizes your files. A progress bar tracks every file processed."
+      }
+    ]
+  },
+  "screenshots": {
+    "title": "The Interface",
+    "subtitle": "Clean, minimal, and powerful — designed for focus",
+    "states": [
+      {
+        "label": "Idle / Ready",
+        "description": "Clean starting state — add folders and configure your settings."
+      },
+      {
+        "label": "Dry Run Active",
+        "description": "Preview every file rename before committing. Zero risk."
+      },
+      {
+        "label": "Rename Complete",
+        "description": "All files organized, color-coded log, stats at a glance."
+      }
+    ],
+    "callouts": {
+      "multiSource": "Multi-source folders",
+      "realtimeLog": "Real-time color log",
+      "progressBar": "Gradient progress bar"
+    }
+  },
+  "changelog": {
+    "title": "What's New",
+    "subtitle": "Release history and updates",
+    "releases": [
+      {
+        "type": "Initial Release",
+        "highlights": [
+          "Initial public release of LightOps",
+          "Multi-source folder support with drag & drop",
+          "EXIF-based rename using shooting date/time",
+          "Camera presets: Nikon, Canon, Sony, Fujifilm, Panasonic, Olympus, Pentax, Leica",
+          "4 filename formats with live preview",
+          "Dry run mode for safe preview",
+          "Copy or Move file operations",
+          "Organize into date subfolders",
+          "Paired JPG + RAW handling",
+          "Real-time color-coded log panel",
+          "i18n support (English + Vietnamese)"
+        ]
+      }
+    ]
+  },
+  "footer": {
+    "features": "Features",
+    "download": "Download",
+    "howItWorks": "How It Works",
+    "changelog": "Changelog",
+    "ecosystem": "Part of the <accent>{{ecosystem}}</accent> ecosystem",
+    "copyright": "© 2026 {{author}}",
+    "copyrightPrefix": "© 2026",
+    "madeWith": "Made with ❤️ and a lot of ☕"
+  }
+}

@@ -72,12 +72,17 @@
     "scanning": "Đang quét…"
   },
   "settings": {
-    "title": "Cài đặt",
-    "language": "Ngôn ngữ",
+    "title": "CÀI ĐẶT",
+    "subtitle": "Giá trị mặc định áp dụng lần khởi động tiếp theo",
+    "language": "NGÔN NGỮ",
+    "defaults": "MẶC ĐỊNH",
     "defaultCamera": "Loại máy mặc định",
     "defaultFileOp": "Kiểu xử lý mặc định",
-    "defaultRecursive": "Quét đệ quy mặc định",
-    "defaultOrganize": "Sắp xếp theo ngày mặc định"
+    "operationCopy": "Sao chép",
+    "operationMove": "Di chuyển",
+    "defaultRecursive": "Quét thư mục con mặc định",
+    "defaultOrganize": "Sắp xếp theo ngày mặc định",
+    "done": "Xong"
   },
   "update": {
     "available": "Có bản cập nhật",

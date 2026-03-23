@@ -1,16 +1,23 @@
+import { useTranslation } from "react-i18next";
 import { ScrollReveal } from "./ScrollReveal";
 import { SectionHeading } from "./SectionHeading";
 import { FeatureCard } from "./FeatureCard";
 import { FEATURES } from "../constants/features";
 
 export function Features() {
+  const { t } = useTranslation();
+  const items = t("features.items", { returnObjects: true }) as Array<{
+    title: string;
+    description: string;
+  }>;
+
   return (
     <section id="features" className="py-20 md:py-32 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <ScrollReveal>
           <SectionHeading
-            title="Everything You Need"
-            subtitle="Powerful batch file management built specifically for photographers"
+            title={t("features.title")}
+            subtitle={t("features.subtitle")}
           />
         </ScrollReveal>
 
@@ -19,8 +26,8 @@ export function Features() {
             <ScrollReveal key={feature.id} delay={index * 0.1}>
               <FeatureCard
                 icon={feature.icon}
-                title={feature.title}
-                description={feature.description}
+                title={items[index]?.title ?? feature.title}
+                description={items[index]?.description ?? feature.description}
                 highlight={feature.highlight}
               />
             </ScrollReveal>

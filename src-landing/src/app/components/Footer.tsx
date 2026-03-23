@@ -1,7 +1,9 @@
+import { useTranslation } from "react-i18next";
 import { ApertureLogo } from "./ApertureLogo";
 import { APP_DATA } from "../constants/app";
 
 export function Footer() {
+  const { t } = useTranslation();
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
@@ -32,28 +34,28 @@ export function Footer() {
               className="text-white/60 hover:text-white transition-colors text-sm"
               style={{ fontFamily: "'Inter', sans-serif" }}
             >
-              Features
+              {t("footer.features")}
             </button>
             <button
               onClick={() => scrollToSection("download")}
               className="text-white/60 hover:text-white transition-colors text-sm"
               style={{ fontFamily: "'Inter', sans-serif" }}
             >
-              Download
+              {t("footer.download")}
             </button>
             <button
               onClick={() => scrollToSection("how-it-works")}
               className="text-white/60 hover:text-white transition-colors text-sm"
               style={{ fontFamily: "'Inter', sans-serif" }}
             >
-              How It Works
+              {t("footer.howItWorks")}
             </button>
             <button
               onClick={() => scrollToSection("changelog")}
               className="text-white/60 hover:text-white transition-colors text-sm"
               style={{ fontFamily: "'Inter', sans-serif" }}
             >
-              Changelog
+              {t("footer.changelog")}
             </button>
             <a
               href={APP_DATA.githubRepo}
@@ -75,7 +77,7 @@ export function Footer() {
               className="text-white/50 hover:text-white/70 transition-colors text-sm"
               style={{ fontFamily: "'Inter', sans-serif" }}
             >
-              Part of the <span className="text-violet-400">baole.space</span>{" "}
+              Part of the <span className="text-violet-400">{APP_DATA.partOfEcosystem}</span>{" "}
               ecosystem
             </a>
           </div>
@@ -85,7 +87,7 @@ export function Footer() {
         <div className="pt-8 border-t border-white/10">
           <div className="flex flex-col md:flex-row justify-center items-center gap-2 md:gap-4 text-white/40 text-sm">
             <span style={{ fontFamily: "'Inter', sans-serif" }}>
-              © 2026{" "}
+              {t("footer.copyrightPrefix")}{" "}
               <a
                 href={APP_DATA.authorUrl}
                 target="_blank"
@@ -97,7 +99,7 @@ export function Footer() {
             </span>
             <span className="hidden md:inline">·</span>
             <span style={{ fontFamily: "'Inter', sans-serif" }}>
-              Made with ❤️ and a lot of ☕
+              {t("footer.madeWith")}
             </span>
           </div>
         </div>
