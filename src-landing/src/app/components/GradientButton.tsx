@@ -2,13 +2,21 @@ import { ReactNode } from "react";
 
 interface GradientButtonProps {
   children: ReactNode;
+  target?: string;
   onClick?: () => void;
   href?: string;
   size?: "sm" | "md" | "lg";
   className?: string;
 }
 
-export function GradientButton({ children, onClick, href, size = "md", className = "" }: GradientButtonProps) {
+export function GradientButton({
+  children,
+  target = "_blank",
+  onClick,
+  href,
+  size = "md",
+  className = "",
+}: GradientButtonProps) {
   const sizeClasses = {
     sm: "px-4 py-2 text-sm",
     md: "px-6 py-3 text-base",
@@ -19,7 +27,12 @@ export function GradientButton({ children, onClick, href, size = "md", className
 
   if (href) {
     return (
-      <a href={href} target="_blank" rel="noopener noreferrer" className={classes}>
+      <a
+        href={href}
+        target={target}
+        rel="noopener noreferrer"
+        className={classes}
+      >
         {children}
       </a>
     );

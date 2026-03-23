@@ -75,8 +75,8 @@ export function Footer() {
               className="text-white/50 hover:text-white/70 transition-colors text-sm"
               style={{ fontFamily: "'Inter', sans-serif" }}
             >
-              Part of the{" "}
-              <span className="text-violet-400">baole.space</span> ecosystem
+              Part of the <span className="text-violet-400">baole.space</span>{" "}
+              ecosystem
             </a>
           </div>
         </div>
@@ -85,7 +85,7 @@ export function Footer() {
         <div className="pt-8 border-t border-white/10">
           <div className="flex flex-col md:flex-row justify-center items-center gap-2 md:gap-4 text-white/40 text-sm">
             <span style={{ fontFamily: "'Inter', sans-serif" }}>
-              © 2025{" "}
+              © 2026{" "}
               <a
                 href={APP_DATA.authorUrl}
                 target="_blank"
@@ -93,16 +93,11 @@ export function Footer() {
                 className="hover:text-white/60 transition-colors"
               >
                 {APP_DATA.author}
-              </a>{" "}
-              — {APP_DATA.license} License
+              </a>
             </span>
             <span className="hidden md:inline">·</span>
             <span style={{ fontFamily: "'Inter', sans-serif" }}>
-              Built with Tauri + Rust + React
-            </span>
-            <span className="hidden md:inline">·</span>
-            <span style={{ fontFamily: "'Inter', sans-serif" }}>
-              Made with ❤️ and +0.3 EV
+              Made with ❤️ and a lot of ☕
             </span>
           </div>
         </div>

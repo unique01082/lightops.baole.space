@@ -1,7 +1,7 @@
 export const CHANGELOG = [
   {
     version: "v0.1.0",
-    date: "2025",
+    date: "2026",
     type: "Initial Release",
     badgeColor: "accent_lightops",
     highlights: [
@@ -15,7 +15,6 @@ export const CHANGELOG = [
       "Organize into date subfolders",
       "Paired JPG + RAW handling",
       "Real-time color-coded log panel",
-      "Automatic update check via GitHub Releases",
       "i18n support (English + Vietnamese)",
     ],
   },

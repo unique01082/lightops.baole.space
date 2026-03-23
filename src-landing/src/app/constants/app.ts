@@ -15,4 +15,5 @@ export const APP_DATA = {
   identifier: "space.baole.lightops",
   partOfEcosystem: "baole.space",
   ecosystemHome: "https://baole.space",
+  downloadSection: "#download",
 } as const;

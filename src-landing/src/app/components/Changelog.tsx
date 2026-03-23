@@ -61,13 +61,15 @@ export function Changelog() {
             </ScrollReveal>
           ))}
 
-          <ScrollReveal delay={0.4}>
-            <div className="flex justify-center">
-              <GhostButton href={APP_DATA.githubReleases}>
-                📋 View Full Changelog on GitHub →
-              </GhostButton>
-            </div>
-          </ScrollReveal>
+          {false && (
+            <ScrollReveal delay={0.4}>
+              <div className="flex justify-center">
+                <GhostButton href={APP_DATA.githubReleases}>
+                  📋 View Full Changelog on GitHub →
+                </GhostButton>
+              </div>
+            </ScrollReveal>
+          )}
         </div>
       </div>
     </section>

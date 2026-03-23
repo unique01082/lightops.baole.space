@@ -39,6 +39,17 @@ export function Hero() {
             </div>
           </motion.div>
 
+          {/* Heading */}
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="text-6xl/24 md:text-7xl/28 lg:text-8xl/30 font-bold mb-6 bg-gradient-to-r from-violet-500 to-fuchsia-500 bg-clip-text text-transparent"
+            style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+          >
+            {APP_DATA.name}
+          </motion.h1>
+
           {/* Badge */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -51,17 +62,6 @@ export function Hero() {
               License
             </BadgePill>
           </motion.div>
-
-          {/* Heading */}
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-6xl md:text-7xl lg:text-8xl font-bold mb-6 bg-gradient-to-r from-violet-500 to-fuchsia-500 bg-clip-text text-transparent"
-            style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-          >
-            {APP_DATA.name}
-          </motion.h1>
 
           {/* Tagline */}
           <motion.p
@@ -92,8 +92,12 @@ export function Hero() {
             transition={{ duration: 0.5, delay: 0.5 }}
             className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8"
           >
-            <GradientButton size="lg" href={APP_DATA.githubLatestRelease}>
-              Download for Windows
+            <GradientButton
+              size="lg"
+              href={APP_DATA.downloadSection}
+              target="_self"
+            >
+              Download Now
             </GradientButton>
             <GhostButton size="lg" href={APP_DATA.githubRepo}>
               ⭐ Star on GitHub →

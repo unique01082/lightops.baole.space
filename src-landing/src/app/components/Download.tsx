@@ -1,12 +1,71 @@
+import { useMemo } from "react";
 import { ScrollReveal } from "./ScrollReveal";
 import { SectionHeading } from "./SectionHeading";
 import { PlatformCard } from "./PlatformCard";
 import { BadgePill } from "./BadgePill";
 import { Star, GitFork, AlertCircle } from "lucide-react";
-import { PLATFORMS } from "../constants/platforms";
 import { APP_DATA } from "../constants/app";
+import { useGithubRelease } from "../hooks/useGithubRelease";
+
+type OS = "windows" | "macos" | "linux" | "unknown";
+
+function detectOS(): OS {
+  const ua = navigator.userAgent;
+  if (/windows/i.test(ua)) return "windows";
+  if (/macintosh|mac os x/i.test(ua)) return "macos";
+  if (/linux/i.test(ua)) return "linux";
+  return "unknown";
+}
 
 export function Download() {
+  const detectedOS = useMemo(() => detectOS(), []);
+  const release = useGithubRelease();
+
+  const platforms = useMemo(
+    () => [
+      {
+        name: "Windows",
+        icon: "🪟",
+        description: "Windows 10 / 11 (64-bit)",
+        primaryButton: {
+          label: "Download .exe",
+          url: release.assets.windowsExe,
+        },
+        secondaryButton: {
+          label: "Download .msi",
+          url: release.assets.windowsMsi,
+        },
+        note: "NSIS installer · WiX MSI also available",
+        highlight: detectedOS === "windows",
+      },
+      {
+        name: "macOS",
+        icon: "🍎",
+        description: "macOS 11 Big Sur and later",
+        primaryButton: { label: "Download .dmg", url: release.assets.macDmg },
+        secondaryButton: {
+          label: "Download .app.tar.gz",
+          url: release.assets.macTarGz,
+        },
+        note: "Universal binary (Intel + Apple Silicon)",
+        highlight: detectedOS === "macos",
+      },
+      {
+        name: "Linux",
+        icon: "🐧",
+        description: "Ubuntu, Fedora, Arch and more",
+        primaryButton: {
+          label: "Download .AppImage",
+          url: release.assets.linuxAppImage,
+        },
+        secondaryButton: { label: ".deb / .rpm", url: release.releasePageUrl },
+        note: "AppImage · Debian · RPM packages",
+        highlight: detectedOS === "linux",
+      },
+    ],
+    [detectedOS, release],
+  );
+
   return (
     <section id="download" className="py-20 md:py-32 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -21,19 +80,21 @@ export function Download() {
         <ScrollReveal delay={0.1}>
           <div className="flex justify-center mb-12">
             <a
-              href={APP_DATA.githubReleases}
+              href={release.releasePageUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-block"
             >
-              <BadgePill variant="gradient">Latest: v{APP_DATA.version}</BadgePill>
+              <BadgePill variant="gradient">
+                Latest: v{release.version}
+              </BadgePill>
             </a>
           </div>
         </ScrollReveal>
 
         {/* Platform cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          {PLATFORMS.map((platform, index) => (
+          {platforms.map((platform, index) => (
             <ScrollReveal key={platform.name} delay={0.1 + index * 0.1}>
               <PlatformCard {...platform} />
             </ScrollReveal>
@@ -41,60 +102,64 @@ export function Download() {
         </div>
 
         {/* GitHub links */}
-        <ScrollReveal delay={0.4}>
-          <div className="flex flex-wrap justify-center gap-4 mb-8">
-            <a
-              href={APP_DATA.githubRepo}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 text-white/70 hover:text-white transition-colors"
-              style={{ fontFamily: "'Inter', sans-serif" }}
-            >
-              <Star size={16} />
-              <span>Star on GitHub</span>
-            </a>
-            <span className="text-white/30">·</span>
-            <a
-              href={APP_DATA.githubReleases}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 text-white/70 hover:text-white transition-colors"
-              style={{ fontFamily: "'Inter', sans-serif" }}
-            >
-              <GitFork size={16} />
-              <span>View all releases</span>
-            </a>
-            <span className="text-white/30">·</span>
-            <a
-              href={`${APP_DATA.githubRepo}/issues`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 text-white/70 hover:text-white transition-colors"
-              style={{ fontFamily: "'Inter', sans-serif" }}
-            >
-              <AlertCircle size={16} />
-              <span>Report a bug</span>
-            </a>
-          </div>
-        </ScrollReveal>
+        {false && (
+          <ScrollReveal delay={0.4}>
+            <div className="flex flex-wrap justify-center gap-4 mb-8">
+              <a
+                href={APP_DATA.githubRepo}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 text-white/70 hover:text-white transition-colors"
+                style={{ fontFamily: "'Inter', sans-serif" }}
+              >
+                <Star size={16} />
+                <span>Star on GitHub</span>
+              </a>
+              <span className="text-white/30">·</span>
+              <a
+                href={APP_DATA.githubReleases}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 text-white/70 hover:text-white transition-colors"
+                style={{ fontFamily: "'Inter', sans-serif" }}
+              >
+                <GitFork size={16} />
+                <span>View all releases</span>
+              </a>
+              <span className="text-white/30">·</span>
+              <a
+                href={`${APP_DATA.githubRepo}/issues`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 text-white/70 hover:text-white transition-colors"
+                style={{ fontFamily: "'Inter', sans-serif" }}
+              >
+                <AlertCircle size={16} />
+                <span>Report a bug</span>
+              </a>
+            </div>
+          </ScrollReveal>
+        )}
 
-        <ScrollReveal delay={0.5}>
-          <p
-            className="text-white/50 text-center text-sm mb-8 max-w-3xl mx-auto"
-            style={{ fontFamily: "'Inter', sans-serif" }}
-          >
-            All releases are signed and available on{" "}
-            <a
-              href={APP_DATA.githubReleases}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-violet-400 hover:text-violet-300 transition-colors"
+        {false && (
+          <ScrollReveal delay={0.5}>
+            <p
+              className="text-white/50 text-center text-sm mb-8 max-w-3xl mx-auto"
+              style={{ fontFamily: "'Inter', sans-serif" }}
             >
-              GitHub Releases
-            </a>
-            . Source code is MIT licensed.
-          </p>
-        </ScrollReveal>
+              All releases are signed and available on{" "}
+              <a
+                href={APP_DATA.githubReleases}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-violet-400 hover:text-violet-300 transition-colors"
+              >
+                GitHub Releases
+              </a>
+              . Source code is MIT licensed.
+            </p>
+          </ScrollReveal>
+        )}
 
         {/* Auto-update note */}
         <ScrollReveal delay={0.6}>
@@ -112,8 +177,8 @@ export function Download() {
                   className="text-white/60 text-sm"
                   style={{ fontFamily: "'Inter', sans-serif" }}
                 >
-                  LightOps checks for updates automatically on startup. You'll be notified in-app when a new version
-                  is available.
+                  LightOps checks for updates automatically on startup. You'll
+                  be notified in-app when a new version is available.
                 </p>
               </div>
             </div>

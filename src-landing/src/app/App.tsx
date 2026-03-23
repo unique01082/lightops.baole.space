@@ -19,7 +19,7 @@ export default function App() {
         <HowItWorks />
         <Screenshots />
         <Changelog />
-        <OpenSource />
+        {false && <OpenSource />}
       </main>
       <Footer />
     </div>
