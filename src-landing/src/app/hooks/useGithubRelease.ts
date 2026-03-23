@@ -4,6 +4,8 @@ import { APP_DATA } from "../constants/app";
 export interface ReleaseAssets {
   windowsExe: string;
   windowsMsi: string;
+  windowsArm64Exe: string;
+  windowsArm64Msi: string;
   macDmg: string;
   macTarGz: string;
   linuxAppImage: string;
@@ -24,6 +26,8 @@ const FALLBACK_URL = APP_DATA.githubLatestRelease;
 const INITIAL_ASSETS: ReleaseAssets = {
   windowsExe: FALLBACK_URL,
   windowsMsi: FALLBACK_URL,
+  windowsArm64Exe: FALLBACK_URL,
+  windowsArm64Msi: FALLBACK_URL,
   macDmg: FALLBACK_URL,
   macTarGz: FALLBACK_URL,
   linuxAppImage: FALLBACK_URL,
@@ -65,8 +69,10 @@ export function useGithubRelease(): GithubRelease {
             (data.tag_name as string)?.replace(/^v/, "") ?? APP_DATA.version,
           releasePageUrl: (data.html_url as string) ?? FALLBACK_URL,
           assets: {
-            windowsExe: findAsset(rawAssets, (n) => n.endsWith("-setup.exe")),
-            windowsMsi: findAsset(rawAssets, (n) => n.endsWith(".msi")),
+            windowsExe: findAsset(rawAssets, (n) => n.endsWith("-setup.exe") && !n.toLowerCase().includes("arm64") && !n.toLowerCase().includes("aarch64")),
+            windowsMsi: findAsset(rawAssets, (n) => n.endsWith(".msi") && !n.toLowerCase().includes("arm64") && !n.toLowerCase().includes("aarch64")),
+            windowsArm64Exe: findAsset(rawAssets, (n) => n.endsWith("-setup.exe") && (n.toLowerCase().includes("arm64") || n.toLowerCase().includes("aarch64"))),
+            windowsArm64Msi: findAsset(rawAssets, (n) => n.endsWith(".msi") && (n.toLowerCase().includes("arm64") || n.toLowerCase().includes("aarch64"))),
             macDmg: findAsset(rawAssets, (n) => n.endsWith(".dmg")),
             macTarGz: findAsset(rawAssets, (n) => n.endsWith(".app.tar.gz")),
             linuxAppImage: findAsset(rawAssets, (n) => n.endsWith(".AppImage")),

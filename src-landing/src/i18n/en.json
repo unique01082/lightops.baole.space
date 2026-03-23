@@ -65,11 +65,18 @@
     "latest": "Latest: v{{version}}",
     "platforms": [
       {
-        "name": "Windows",
+        "name": "Windows x64",
         "description": "Windows 10 / 11 (64-bit)",
         "primaryLabel": "Download .exe",
         "secondaryLabel": "Download .msi",
         "note": "NSIS installer · WiX MSI also available"
+      },
+      {
+        "name": "Windows ARM64",
+        "description": "Windows 10 / 11 (ARM64)",
+        "primaryLabel": "Download .exe",
+        "secondaryLabel": "Download .msi",
+        "note": "For Snapdragon X · Surface Pro ARM devices"
       },
       {
         "name": "macOS",
@@ -80,7 +87,7 @@
       },
       {
         "name": "Linux",
-        "description": "Ubuntu, Fedora, Arch and more",
+        "description": "Ubuntu, Fedora, Arch,...",
         "primaryLabel": "Download .AppImage",
         "secondaryLabel": ".deb / .rpm",
         "note": "AppImage · Debian · RPM packages"

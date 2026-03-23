@@ -37,7 +37,7 @@ export function Download() {
   const platforms = useMemo(
     () => [
       {
-        name: platformTexts[0]?.name ?? "Windows",
+        name: platformTexts[0]?.name ?? "Windows x64",
         icon: (
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -65,7 +65,35 @@ export function Download() {
         highlight: detectedOS === "windows",
       },
       {
-        name: platformTexts[1]?.name ?? "macOS",
+        name: platformTexts[1]?.name ?? "Windows ARM64",
+        icon: (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            className="bi bi-windows"
+            viewBox="0 0 16 16"
+          >
+            <path d="M6.555 1.375 0 2.237v5.45h6.555zM0 13.795l6.555.933V8.313H0zm7.278-5.4.026 6.378L16 16V8.395zM16 0 7.33 1.244v6.414H16z"></path>
+          </svg>
+        ),
+        description: platformTexts[1]?.description ?? "Windows 10 / 11 (ARM64)",
+        primaryButton: {
+          label: platformTexts[1]?.primaryLabel ?? "Download .exe",
+          url: release.assets.windowsArm64Exe,
+        },
+        secondaryButton: {
+          label: platformTexts[1]?.secondaryLabel ?? "Download .msi",
+          url: release.assets.windowsArm64Msi,
+        },
+        note:
+          platformTexts[1]?.note ??
+          "For Snapdragon X · Surface Pro ARM devices",
+        highlight: detectedOS === "windows",
+      },
+      {
+        name: platformTexts[2]?.name ?? "macOS",
         icon: (
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -80,21 +108,21 @@ export function Download() {
           </svg>
         ),
         description:
-          platformTexts[1]?.description ?? "macOS 11 Big Sur and later",
+          platformTexts[2]?.description ?? "macOS 11 Big Sur and later",
         primaryButton: {
-          label: platformTexts[1]?.primaryLabel ?? "Download .dmg",
+          label: platformTexts[2]?.primaryLabel ?? "Download .dmg",
           url: release.assets.macDmg,
         },
         secondaryButton: {
-          label: platformTexts[1]?.secondaryLabel ?? "Download .app.tar.gz",
+          label: platformTexts[2]?.secondaryLabel ?? "Download .app.tar.gz",
           url: release.assets.macTarGz,
         },
         note:
-          platformTexts[1]?.note ?? "Universal binary (Intel + Apple Silicon)",
+          platformTexts[2]?.note ?? "Universal binary (Intel + Apple Silicon)",
         highlight: detectedOS === "macos",
       },
       {
-        name: platformTexts[2]?.name ?? "Linux",
+        name: platformTexts[3]?.name ?? "Linux",
         icon: (
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -112,16 +140,16 @@ export function Download() {
           </svg>
         ),
         description:
-          platformTexts[2]?.description ?? "Ubuntu, Fedora, Arch and more",
+          platformTexts[3]?.description ?? "Ubuntu, Fedora, Arch,...",
         primaryButton: {
-          label: platformTexts[2]?.primaryLabel ?? "Download .AppImage",
+          label: platformTexts[3]?.primaryLabel ?? "Download .AppImage",
           url: release.assets.linuxAppImage,
         },
         secondaryButton: {
-          label: platformTexts[2]?.secondaryLabel ?? ".deb / .rpm",
+          label: platformTexts[3]?.secondaryLabel ?? ".deb / .rpm",
           url: release.releasePageUrl,
         },
-        note: platformTexts[2]?.note ?? "AppImage · Debian · RPM packages",
+        note: platformTexts[3]?.note ?? "AppImage · Debian · RPM packages",
         highlight: detectedOS === "linux",
       },
     ],
@@ -155,7 +183,7 @@ export function Download() {
         </ScrollReveal>
 
         {/* Platform cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           {platforms.map((platform, index) => (
             <ScrollReveal key={platform.name} delay={0.1 + index * 0.1}>
               <PlatformCard {...platform} />

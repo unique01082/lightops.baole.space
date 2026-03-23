@@ -65,11 +65,18 @@
     "latest": "Mới nhất: v{{version}}",
     "platforms": [
       {
-        "name": "Windows",
+        "name": "Windows x64",
         "description": "Windows 10 / 11 (64-bit)",
         "primaryLabel": "Tải .exe",
         "secondaryLabel": "Tải .msi",
         "note": "Bộ cài NSIS · MSI WiX cũng có sẵn"
+      },
+      {
+        "name": "Windows ARM64",
+        "description": "Windows 10 / 11 (ARM64)",
+        "primaryLabel": "Tải .exe",
+        "secondaryLabel": "Tải .msi",
+        "note": "Dành cho thiết bị Snapdragon X · Surface Pro ARM"
       },
       {
         "name": "macOS",
