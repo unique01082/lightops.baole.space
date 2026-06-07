@@ -99,7 +99,7 @@ export function LogPanel({ entries, isDryRun, stats, onClear }: LogPanelProps) {
     return (
       <button
         onClick={() => openPath(path)}
-        title={`Open folder: ${path}`}
+        title={t('shared.openFolder', { path })}
         className="text-left w-full truncate hover:underline decoration-dotted underline-offset-2 transition-opacity hover:opacity-80"
         style={{
           color: 'var(--text-primary)',
@@ -112,7 +112,7 @@ export function LogPanel({ entries, isDryRun, stats, onClear }: LogPanelProps) {
         {path}
       </button>
     );
-  }, []);
+  }, [t]);
 
   return (
     <div
@@ -223,8 +223,10 @@ export function LogPanel({ entries, isDryRun, stats, onClear }: LogPanelProps) {
           >
             {entries.length > visibleEntries.length && (
               <div className="mb-3 text-xs" style={{ color: 'var(--text-muted)' }}>
-                Showing latest {visibleEntries.length.toLocaleString()} of{' '}
-                {entries.length.toLocaleString()} log entries.
+                {t('log.showingLatest', {
+                  visible: visibleEntries.length.toLocaleString(),
+                  total: entries.length.toLocaleString(),
+                })}
               </div>
             )}
             {visibleEntries.map((entry, index) => (

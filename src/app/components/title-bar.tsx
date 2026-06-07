@@ -1,6 +1,7 @@
 import { getCurrentWindow } from '@tauri-apps/api/window';
 import { Aperture, Bell, Minus, Settings, Square, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface UpdateInfo {
   available: boolean;
@@ -20,10 +21,11 @@ export function TitleBar({
   language,
   onLanguageChange,
 }: TitleBarProps) {
+  const { t } = useTranslation();
   const [isMaximized, setIsMaximized] = useState(false);
+  const appWindow = getCurrentWindow();
 
   useEffect(() => {
-    const appWindow = getCurrentWindow();
     appWindow.isMaximized().then(setIsMaximized);
     const unlisten = appWindow.onResized(() => {
       appWindow.isMaximized().then(setIsMaximized);
@@ -51,7 +53,7 @@ export function TitleBar({
             LightOps
           </h1>
           <span className="text-xs opacity-45" style={{ color: 'var(--text-muted)' }}>
-            Photo File Manager
+            {t('titleBar.subtitle')}
           </span>
         </div>
       </div>
@@ -66,7 +68,7 @@ export function TitleBar({
             }}
           >
             <Bell className="w-3 h-3" />
-            <span>Update v{updateInfo.version}</span>
+            <span>{t('titleBar.updateAvailable', { version: updateInfo.version })}</span>
           </div>
         )}
         {/* Language toggle */}
@@ -91,7 +93,7 @@ export function TitleBar({
         <button
           onClick={onSettingsClick}
           className="p-2 rounded-lg hover:bg-white/10 transition-colors"
-          aria-label="Settings"
+          aria-label={t('titleBar.settings')}
         >
           <Settings className="w-4 h-4" style={{ color: 'var(--text-secondary)' }} />
         </button>
@@ -99,21 +101,21 @@ export function TitleBar({
           <button
             onClick={() => appWindow.minimize()}
             className="w-7 h-7 rounded flex items-center justify-center hover:bg-white/10 transition-colors"
-            aria-label="Minimize"
+            aria-label={t('titleBar.minimize')}
           >
             <Minus className="w-3.5 h-3.5" style={{ color: 'var(--text-secondary)' }} />
           </button>
           <button
             onClick={() => appWindow.toggleMaximize()}
             className="w-7 h-7 rounded flex items-center justify-center hover:bg-white/10 transition-colors"
-            aria-label={isMaximized ? 'Restore' : 'Maximize'}
+            aria-label={isMaximized ? t('titleBar.restore') : t('titleBar.maximize')}
           >
             <Square className="w-3 h-3" style={{ color: 'var(--text-secondary)' }} />
           </button>
           <button
             onClick={() => appWindow.close()}
             className="w-7 h-7 rounded flex items-center justify-center hover:bg-red-500/70 transition-colors group"
-            aria-label="Close"
+            aria-label={t('titleBar.close')}
           >
             <X
               className="w-3.5 h-3.5 group-hover:text-white transition-colors"

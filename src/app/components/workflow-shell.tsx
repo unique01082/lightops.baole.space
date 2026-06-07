@@ -1,7 +1,8 @@
 import { CheckCircle, Circle, HelpCircle, Loader2 } from 'lucide-react';
 import type { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 
-export type WorkflowStepKey = 'source' | 'rules' | 'review' | 'results';
+export type WorkflowStepKey = 'source' | 'scan' | 'rules' | 'review' | 'results';
 
 export interface WorkflowStep {
   key: WorkflowStepKey;
@@ -30,6 +31,7 @@ export function WorkflowShell({
   onOpenHelp,
   children,
 }: WorkflowShellProps) {
+  const { t } = useTranslation();
   return (
     <div className="relative z-10 flex h-full min-h-0 gap-4 p-4">
       <aside
@@ -44,7 +46,7 @@ export function WorkflowShell({
             LightOps
           </p>
           <h1 className="mt-1 text-lg text-white" style={{ fontFamily: 'var(--font-heading)' }}>
-            Workflow
+            {t('workflowShell.title')}
           </h1>
         </div>
 
@@ -108,7 +110,7 @@ export function WorkflowShell({
           >
             <span className="flex items-center gap-2">
               <HelpCircle className="h-3.5 w-3.5" />
-              Help
+              {t('workflowShell.help')}
             </span>
             <kbd
               className="rounded border px-1.5 py-0.5"

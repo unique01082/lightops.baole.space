@@ -72,7 +72,7 @@ export function SourceFoldersPanel({
                 <button
                   onClick={() => onRemoveFolder(index)}
                   className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded hover:bg-red-500/20"
-                  aria-label="Remove folder"
+                  aria-label={t('sourceFolders.removeTooltip')}
                 >
                   <X className="w-3 h-3 text-red-400" />
                 </button>

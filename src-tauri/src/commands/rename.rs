@@ -1,12 +1,12 @@
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
+use std::sync::Arc;
 use std::sync::{
     atomic::{AtomicBool, Ordering},
     OnceLock,
 };
-use std::sync::Arc;
 
-use chrono::NaiveDateTime;
+use chrono::{Duration, NaiveDateTime};
 use serde::{Deserialize, Serialize};
 use tauri::Emitter;
 
@@ -35,6 +35,14 @@ pub struct RenameOptions {
     pub only_paired: bool,
     pub start_num: u32,
     pub include_video: bool,
+    pub time_offsets: Option<Vec<TimeOffset>>,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct TimeOffset {
+    pub folder: String,
+    pub offset_ms: Option<i64>,
+    pub offset_minutes: Option<i64>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -90,15 +98,25 @@ pub struct ExecuteResult {
     pub cancelled: bool,
 }
 
+fn offset_for_path(path: &str, offsets: &[TimeOffset]) -> i64 {
+    let file_path = Path::new(path);
+    offsets
+        .iter()
+        .find(|offset| file_path.starts_with(Path::new(&offset.folder)))
+        .map(|offset| {
+            offset
+                .offset_ms
+                .unwrap_or_else(|| offset.offset_minutes.unwrap_or(0) * 60 * 1000)
+        })
+        .unwrap_or(0)
+}
+
 // ── Commands ─────────────────────────────────────────────────────────────────
 
 /// Build the rename plan from a list of FilePairs.
 /// Returns sorted entries (by EXIF datetime) and the count of skipped pairs.
 #[tauri::command]
-pub fn build_rename_plan(
-    pairs: Vec<FilePair>,
-    opts: RenameOptions,
-) -> BuildPlanResult {
+pub fn build_rename_plan(pairs: Vec<FilePair>, opts: RenameOptions) -> BuildPlanResult {
     let mut timed: Vec<(NaiveDateTime, FilePair)> = Vec::new();
     let mut skipped_count = 0usize;
 
@@ -154,7 +172,18 @@ pub fn build_rename_plan(
             });
 
         match ts {
-            Some(dt) => timed.push((dt, pair)),
+            Some(dt) => {
+                let offsets = opts.time_offsets.as_deref().unwrap_or(&[]);
+                let reference_path = pair
+                    .raw
+                    .as_deref()
+                    .or(pair.jpg.as_deref())
+                    .or(pair.video.as_deref())
+                    .unwrap_or_default();
+                let adjusted_dt =
+                    dt + Duration::milliseconds(offset_for_path(reference_path, offsets));
+                timed.push((adjusted_dt, pair));
+            }
             None => skipped_count += 1,
         }
     }
@@ -226,7 +255,10 @@ pub fn build_rename_plan(
         }
     }
 
-    BuildPlanResult { plan, skipped_count }
+    BuildPlanResult {
+        plan,
+        skipped_count,
+    }
 }
 
 /// Cancel a running execute_plan.
@@ -294,7 +326,11 @@ pub async fn execute_plan(
                         destination: None,
                         message: Some("Process stopped by user.".into()),
                     },
-                    stats: ExecuteStats { ok, skip: 0, error: errors },
+                    stats: ExecuteStats {
+                        ok,
+                        skip: 0,
+                        error: errors,
+                    },
                 },
             );
             break;
@@ -331,7 +367,11 @@ pub async fn execute_plan(
         // Dry-run: just log without touching files
         if opts.dry_run {
             let op_label = if opts.output_dir.is_some() {
-                if opts.file_op == "move" { "MOVE" } else { "COPY" }
+                if opts.file_op == "move" {
+                    "MOVE"
+                } else {
+                    "COPY"
+                }
             } else {
                 "RENAME"
             };
@@ -347,7 +387,11 @@ pub async fn execute_plan(
                         destination: Some(new_path.to_string_lossy().into_owned()),
                         message: None,
                     },
-                    stats: ExecuteStats { ok, skip: 0, error: errors },
+                    stats: ExecuteStats {
+                        ok,
+                        skip: 0,
+                        error: errors,
+                    },
                 },
             );
             continue;
@@ -367,7 +411,11 @@ pub async fn execute_plan(
                         destination: Some(dest_dir.to_string_lossy().into_owned()),
                         message: Some(format!("Cannot create dir: {}", e)),
                     },
-                    stats: ExecuteStats { ok, skip: 0, error: errors },
+                    stats: ExecuteStats {
+                        ok,
+                        skip: 0,
+                        error: errors,
+                    },
                 },
             );
             continue;
@@ -394,7 +442,11 @@ pub async fn execute_plan(
                             destination: Some(new_path.to_string_lossy().into_owned()),
                             message: Some("Destination already exists".into()),
                         },
-                        stats: ExecuteStats { ok, skip: errors, error: 0 },
+                        stats: ExecuteStats {
+                            ok,
+                            skip: errors,
+                            error: 0,
+                        },
                     },
                 );
                 continue;
@@ -426,7 +478,11 @@ pub async fn execute_plan(
                             destination: Some(new_path.to_string_lossy().into_owned()),
                             message: None,
                         },
-                        stats: ExecuteStats { ok, skip: 0, error: errors },
+                        stats: ExecuteStats {
+                            ok,
+                            skip: 0,
+                            error: errors,
+                        },
                     },
                 );
             }
@@ -443,12 +499,20 @@ pub async fn execute_plan(
                             destination: Some(new_path.to_string_lossy().into_owned()),
                             message: Some(e.to_string()),
                         },
-                        stats: ExecuteStats { ok, skip: 0, error: errors },
+                        stats: ExecuteStats {
+                            ok,
+                            skip: 0,
+                            error: errors,
+                        },
                     },
                 );
             }
         }
     }
 
-    Ok(ExecuteResult { ok, errors, cancelled })
+    Ok(ExecuteResult {
+        ok,
+        errors,
+        cancelled,
+    })
 }

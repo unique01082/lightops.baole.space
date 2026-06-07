@@ -23,6 +23,16 @@
     "rawExtensions": "Phần mở rộng RAW",
     "rawPlaceholder": ".nef .nrw",
     "fileType": "Loại file",
+    "detectedTitle": "Máy ảnh đã phát hiện",
+    "description": "Loại máy ảnh và phần mở rộng RAW lấy từ bước Quét. Phần mở rộng gốc của file sẽ được giữ nguyên khi đổi tên.",
+    "rawExtensionsLabel": "Phần mở rộng RAW:",
+    "noneDetected": "Không phát hiện",
+    "jpgOnly": "Chỉ JPG",
+    "stats": {
+      "jpg": "JPG",
+      "raw": "RAW",
+      "video": "Video"
+    },
     "fileTypes": {
       "both": "JPG + RAW",
       "jpg": "Chỉ JPG",
@@ -52,7 +62,14 @@
     "moveWarning": "File gốc sẽ bị xóa",
     "organizeByDate": "Tạo thư mục con YYYY-MM-DD/ trong đích",
     "onlyPaired": "Bỏ qua file lẻ (chỉ cặp JPG+RAW)",
-    "includeVideo": "Bao gồm file video (.mp4, .mov, .mts)"
+    "includeVideo": "Bao gồm file video (.mp4, .mov, .mts)",
+    "topLevelOnly": "Chỉ cấp trên cùng",
+    "dateFoldersOn": "Bật thư mục theo ngày",
+    "dateFoldersOff": "Tắt thư mục theo ngày",
+    "pairedOnly": "Chỉ file theo cặp",
+    "singlesAllowed": "Cho phép file lẻ",
+    "videosOn": "Bật video",
+    "videosOff": "Tắt video"
   },
   "actions": {
     "run": "Chạy",
@@ -68,14 +85,16 @@
     "viewTable": "Dạng bảng",
     "tableStatus": "TRẠNG THÁI",
     "tableSource": "NGUỒN",
-    "tableDestination": "ĐÍCH"
+    "tableDestination": "ĐÍCH",
+    "showingLatest": "Đang hiển thị {{visible}} trong {{total}} mục log mới nhất."
   },
   "status": {
     "ready": "Sẵn sàng",
     "processing": "Đang xử lý…",
     "complete": "Hoàn thành",
     "stopped": "Đã dừng",
-    "scanning": "Đang quét…"
+    "scanning": "Đang quét…",
+    "error": "Lỗi"
   },
   "settings": {
     "title": "CÀI ĐẶT",
@@ -94,9 +113,238 @@
     "available": "Có bản cập nhật",
     "install": "Cài đặt & Khởi động lại"
   },
+  "titleBar": {
+    "subtitle": "Trình quản lý file ảnh",
+    "updateAvailable": "Bản cập nhật v{{version}}",
+    "settings": "Cài đặt",
+    "minimize": "Thu nhỏ",
+    "restore": "Khôi phục",
+    "maximize": "Phóng to",
+    "close": "Đóng"
+  },
   "errors": {
     "noFolders": "Vui lòng thêm ít nhất một thư mục nguồn.",
     "noRawExt": "Vui lòng nhập phần mở rộng RAW (vd: .nef .nrw)"
+  },
+  "shared": {
+    "help": "Trợ giúp",
+    "unknownCamera": "Máy ảnh không rõ",
+    "referenceTime": "Mốc tham chiếu",
+    "invalidSyntax": "Cú pháp không hợp lệ",
+    "sample": "Mẫu",
+    "capture": "Chụp",
+    "extensions": "Phần mở rộng",
+    "timeOffset": "Độ lệch thời gian",
+    "positiveOffsetHint": "Giá trị dương sẽ đẩy thời điểm của máy ảnh này muộn hơn; giá trị âm sẽ kéo sớm hơn. Dùng thanh cân chỉnh phía trên để nhập chính xác theo mili giây.",
+    "openFolder": "Mở thư mục: {{path}}",
+    "unknownError": "Lỗi không xác định"
+  },
+  "workflow": {
+    "source": {
+      "eyebrow": "Bước 1",
+      "title": "Nguồn",
+      "description": "Chọn các thư mục LightOps sẽ quét và nơi file đã đổi tên sẽ được đưa tới.",
+      "navDescription": "Thư mục và đích",
+      "selected": "Đã chọn {{count}} thư mục nguồn",
+      "empty": "Thêm ít nhất một thư mục nguồn để tiếp tục.",
+      "continue": "Tiếp tục sang Quét"
+    },
+    "scan": {
+      "eyebrow": "Bước 2",
+      "title": "Quét",
+      "description": "Phát hiện một ảnh mẫu cho mỗi thư mục nguồn và căn chỉnh đồng hồ máy ảnh trước khi áp dụng quy tắc.",
+      "navDescription": "Máy ảnh và độ lệch đồng hồ",
+      "back": "Quay lại",
+      "scan": "Quét nguồn",
+      "scanning": "Đang quét...",
+      "continue": "Tiếp tục sang Quy tắc",
+      "emptyTitle": "Quét các thư mục nguồn",
+      "emptyBody": "LightOps đọc ảnh đầu tiên trong mỗi thư mục để phát hiện metadata máy ảnh và loại file.",
+      "equalizerTitle": "Tinh chỉnh đồng hồ máy ảnh",
+      "equalizerEyebrow": "Bộ cân chỉnh đồng hồ",
+      "equalizerRange": "Thanh trượt từ -1h đến +1h. Nhập tay có thể lớn hơn.",
+      "equalizerSyntax": "Cú pháp: -1m4d13h25p15s234ms",
+      "equalizerUnits": "m=30 ngày, d=ngày, h=giờ, p=phút, s=giây, ms=mili giây",
+      "exactOffset": "độ lệch chính xác",
+      "samples": "Mẫu: {{file}}",
+      "samplesMissing": "Không tìm thấy ảnh",
+      "capture": "Chụp: {{value}}",
+      "captureMissing": "Không rõ",
+      "extensions": "Phần mở rộng: {{value}}",
+      "extensionsMissing": "Không có"
+    },
+    "rules": {
+      "eyebrow": "Bước 3",
+      "title": "Quy tắc",
+      "description": "Xác định cách file được ghép, đặt tên và sắp xếp.",
+      "navDescription": "Thiết lập máy ảnh và đổi tên",
+      "back": "Quay lại",
+      "savePreset": "Lưu preset",
+      "continue": "Xem lại & Chạy"
+    },
+    "review": {
+      "eyebrow": "Bước 4",
+      "processingTitle": "Đang xử lý",
+      "title": "Xem lại & Chạy",
+      "navDescription": "Chạy thử hoặc thực thi",
+      "processingDescription": "Cấu hình sẽ bị khóa trong lúc LightOps xử lý kế hoạch.",
+      "description": "Xác nhận cấu hình trước khi thử nghiệm hoặc chạy thật.",
+      "stop": "Dừng",
+      "back": "Quay lại Quy tắc",
+      "sourceLabel": "Nguồn",
+      "destination": "Đích",
+      "camera": "Máy ảnh",
+      "fileType": "Loại file",
+      "rename": "Đổi tên",
+      "renameInPlace": "Đổi tên tại chỗ",
+      "advanced": "Nâng cao",
+      "clockEqualizer": "Bộ cân chỉnh đồng hồ máy ảnh",
+      "moveWarning": "Chế độ Move sẽ xóa file gốc sau khi di chuyển thành công.",
+      "logsBuffered": "Log được đệm để giữ giao diện phản hồi mượt."
+    },
+    "results": {
+      "eyebrow": "Bước 5",
+      "title": "Kết quả",
+      "description": "Xem kết quả của chạy thử hoặc chạy thật.",
+      "navDescription": "Log và đầu ra",
+      "back": "Quay lại Quy tắc",
+      "filters": {
+        "all": "Tất cả",
+        "ok": "OK",
+        "dry": "Thử",
+        "skip": "Bỏ qua",
+        "warn": "Cảnh báo",
+        "error": "Lỗi"
+      }
+    },
+    "run": {
+      "scanFailed": "Quét thất bại: {{error}}",
+      "scanFirst": "Hãy quét thư mục nguồn trước khi chạy.",
+      "dryRunStarted": "ĐÃ BẮT ĐẦU CHẠY THỬ",
+      "processingStarted": "ĐÃ BẮT ĐẦU XỬ LÝ",
+      "scanningFolders": "Đang quét {{count}} thư mục...",
+      "foundGroups": "Phát hiện {{total}} nhóm · {{paired}} theo cặp · {{jpgOnly}} chỉ JPG · {{rawOnly}} chỉ RAW{{video}}",
+      "videoCount": " · {{count}} video",
+      "noFilesFound": "Không tìm thấy file nào trong các thư mục đã chọn.",
+      "skippedGroups": "Đã bỏ qua {{count}} nhóm - không có EXIF đọc được.",
+      "nothingToRename": "Không có gì để đổi tên.",
+      "renamingFiles": "Đang đổi tên {{count}} file...",
+      "stoppedAt": "Đã dừng ở {{ok}} / {{total}} file",
+      "completedSection": "HOÀN THÀNH",
+      "wouldBeRenamed": "sẽ được đổi tên",
+      "renamedSuccessfully": "đã được đổi tên thành công",
+      "errorsCount": ", {{count}} lỗi",
+      "completed": "Hoàn tất: {{ok}} file {{mode}}{{errors}}",
+      "error": "Lỗi: {{error}}"
+    },
+    "welcome": {
+      "title": "Bắt đầu với đồng hồ máy ảnh sạch sẽ.",
+      "body": "Quét từng thư mục nguồn, phát hiện metadata máy ảnh từ ảnh đầu tiên, rồi căn chỉnh độ lệch thời gian trước khi LightOps tạo kế hoạch đổi tên.",
+      "addSource": "Thêm thư mục nguồn",
+      "openWorkflow": "Mở quy trình",
+      "eyebrow": "Quy trình mới",
+      "steps": {
+        "source": {
+          "title": "1. Nguồn",
+          "body": "Chọn tất cả thư mục máy ảnh và đích."
+        },
+        "scan": {
+          "title": "2. Quét & Cân chỉnh",
+          "body": "Phát hiện metadata máy ảnh và sửa đồng hồ đang nhanh hoặc chậm."
+        },
+        "rules": {
+          "title": "3. Quy tắc",
+          "body": "Chọn cách xử lý JPG/RAW dựa trên định dạng thư mục đã phát hiện."
+        },
+        "review": {
+          "title": "4. Xem lại",
+          "body": "Xem từng thư mục nguồn, thử nghiệm rồi chạy."
+        },
+        "results": {
+          "title": "5. Kết quả",
+          "body": "Kiểm tra trạng thái, bộ lọc và log đầu ra sau khi thực thi."
+        }
+      }
+    },
+    "savePreset": {
+      "eyebrow": "Chân trang quy tắc",
+      "title": "Lưu preset",
+      "nameLabel": "Tên preset",
+      "placeholder": "Import đám cưới, Nikon JPG+RAW...",
+      "cancel": "Hủy",
+      "save": "Lưu",
+      "saving": "Đang lưu...",
+      "close": "Đóng hộp thoại lưu preset"
+    }
+  },
+  "info": {
+    "pages": {
+      "help": "Trợ giúp",
+      "shortcuts": "Phím tắt",
+      "about": "Tác giả"
+    },
+    "titles": {
+      "help": "LightOps hoạt động như thế nào",
+      "shortcuts": "Phím tắt bàn phím",
+      "about": "Thông tin tác giả & ứng dụng"
+    },
+    "help": {
+      "body": "LightOps quét thư mục nguồn, ghép file JPG/RAW theo thư mục và phần gốc tên file, áp dụng độ lệch đồng hồ máy ảnh, tạo kế hoạch đổi tên từ thời điểm chụp đã hiệu chỉnh, rồi sao chép, di chuyển hoặc đổi tên file.",
+      "steps": {
+        "source": {
+          "title": "1. Nguồn",
+          "body": "Chọn một hoặc nhiều thư mục nguồn và một thư mục đích tuỳ chọn."
+        },
+        "scan": {
+          "title": "2. Quét",
+          "body": "Phát hiện ảnh đầu tiên trong mỗi thư mục nguồn và cân chỉnh đồng hồ máy ảnh."
+        },
+        "rules": {
+          "title": "3. Quy tắc",
+          "body": "Xem lại định dạng máy ảnh đã phát hiện, chọn loại file, định dạng đổi tên và các tuỳ chọn nâng cao."
+        },
+        "review": {
+          "title": "4. Xem lại",
+          "body": "Kiểm tra từng thư mục nguồn, chạy thử rồi thực thi khi sẵn sàng."
+        },
+        "results": {
+          "title": "5. Kết quả",
+          "body": "Xem đầu ra dạng văn bản hoặc bảng sau khi chạy thử hoặc thực thi."
+        }
+      }
+    },
+    "shortcuts": {
+      "addSource": "Thêm thư mục nguồn",
+      "chooseOutput": "Chọn thư mục đích",
+      "goSource": "Đi tới Nguồn",
+      "goScan": "Đi tới Quét",
+      "goRules": "Đi tới Quy tắc",
+      "goReview": "Đi tới Xem lại",
+      "goResults": "Đi tới Kết quả",
+      "dryRun": "Chạy thử",
+      "run": "Chạy",
+      "stop": "Dừng xử lý",
+      "settings": "Cài đặt",
+      "help": "Trợ giúp LightOps",
+      "showHelp": "Hiện trợ giúp",
+      "keyboard": "Phím tắt bàn phím"
+    },
+    "about": {
+      "title": "LightOps",
+      "body": "Trình quản lý file ảnh trên desktop cho việc dọn thẻ máy ảnh nhanh.",
+      "author": "Tác giả: Bao Le. LightOps là một phần của bộ công cụ baole.space và dùng bộ icon LightOps từ baole.space.",
+      "stack": "Ứng dụng được xây dựng bằng Tauri, Rust, React và TypeScript. Các thao tác file chạy trong Rust; giao diện cung cấp quy trình thân thiện với bàn phím và menu hệ điều hành gốc."
+    }
+  },
+  "workflowShell": {
+    "title": "Quy trình",
+    "help": "Trợ giúp"
+  },
+  "errorBoundary": {
+    "recovered": "LightOps đã khôi phục sau lỗi",
+    "title": "Quay về đầu",
+    "body": "Giao diện quy trình gặp lỗi chạy thời gian thực. LightOps đã thu thập các lỗi gần nhất bên dưới; quay về đầu để tiếp tục mà không cần khởi động lại ứng dụng.",
+    "return": "Quay về đầu"
   },
   "presets": {
     "title": "PRESET",

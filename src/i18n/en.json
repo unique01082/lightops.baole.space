@@ -23,6 +23,16 @@
     "rawExtensions": "RAW Extensions",
     "rawPlaceholder": ".nef .nrw",
     "fileType": "File Type",
+    "detectedTitle": "Detected cameras",
+    "description": "Camera type and RAW extensions come from the Scan step. Original file extensions are preserved during rename.",
+    "rawExtensionsLabel": "RAW extensions:",
+    "noneDetected": "None detected",
+    "jpgOnly": "JPG only",
+    "stats": {
+      "jpg": "JPG",
+      "raw": "RAW",
+      "video": "Video"
+    },
     "fileTypes": {
       "both": "JPG + RAW",
       "jpg": "JPG only",
@@ -52,7 +62,14 @@
     "moveWarning": "Original files will be deleted",
     "organizeByDate": "Create YYYY-MM-DD/ subfolders in output",
     "onlyPaired": "Skip unpaired JPG or RAW",
-    "includeVideo": "Include video files (.mp4, .mov, .mts)"
+    "includeVideo": "Include video files (.mp4, .mov, .mts)",
+    "topLevelOnly": "Top-level only",
+    "dateFoldersOn": "Date folders on",
+    "dateFoldersOff": "Date folders off",
+    "pairedOnly": "Paired only",
+    "singlesAllowed": "Singles allowed",
+    "videosOn": "Videos on",
+    "videosOff": "Videos off"
   },
   "actions": {
     "run": "Run",
@@ -68,14 +85,16 @@
     "viewTable": "Table log",
     "tableStatus": "STATUS",
     "tableSource": "SOURCE",
-    "tableDestination": "DESTINATION"
+    "tableDestination": "DESTINATION",
+    "showingLatest": "Showing latest {{visible}} of {{total}} log entries."
   },
   "status": {
     "ready": "Ready",
     "processing": "Processing…",
     "complete": "Complete",
     "stopped": "Stopped",
-    "scanning": "Scanning…"
+    "scanning": "Scanning…",
+    "error": "Error"
   },
   "settings": {
     "title": "SETTINGS",
@@ -94,9 +113,238 @@
     "available": "Update available",
     "install": "Install & Restart"
   },
+  "titleBar": {
+    "subtitle": "Photo File Manager",
+    "updateAvailable": "Update v{{version}}",
+    "settings": "Settings",
+    "minimize": "Minimize",
+    "restore": "Restore",
+    "maximize": "Maximize",
+    "close": "Close"
+  },
   "errors": {
     "noFolders": "Please add at least one source folder.",
     "noRawExt": "Please enter RAW extensions (e.g. .nef .nrw)"
+  },
+  "shared": {
+    "help": "Help",
+    "unknownCamera": "Unknown camera",
+    "referenceTime": "Reference time",
+    "invalidSyntax": "Invalid syntax",
+    "sample": "Sample",
+    "capture": "Capture",
+    "extensions": "Extensions",
+    "timeOffset": "Time offset",
+    "positiveOffsetHint": "Positive values push this camera later; negative values pull it earlier. Use the equalizer above for exact millisecond input.",
+    "openFolder": "Open folder: {{path}}",
+    "unknownError": "Unknown error"
+  },
+  "workflow": {
+    "source": {
+      "eyebrow": "Step 1",
+      "title": "Source",
+      "description": "Choose the folders LightOps will scan and where renamed files should go.",
+      "navDescription": "Folders and destination",
+      "selected": "{{count}} source folder(s) selected",
+      "empty": "Add at least one source folder to continue.",
+      "continue": "Continue to Scan"
+    },
+    "scan": {
+      "eyebrow": "Step 2",
+      "title": "Scan",
+      "description": "Detect one sample image per source folder and align camera clocks before rules.",
+      "navDescription": "Cameras and clock offsets",
+      "back": "Back",
+      "scan": "Scan Sources",
+      "scanning": "Scanning...",
+      "continue": "Continue to Rules",
+      "emptyTitle": "Scan source folders",
+      "emptyBody": "LightOps reads the first image in each folder to detect camera metadata and file types.",
+      "equalizerTitle": "Fine tune camera clocks",
+      "equalizerEyebrow": "Clock Equalizer",
+      "equalizerRange": "Slider range is -1h to +1h. Manual input can be larger.",
+      "equalizerSyntax": "Syntax: -1m4d13h25p15s234ms",
+      "equalizerUnits": "m=30 days, d=day, h=hour, p=minute, s=second, ms=millisecond",
+      "exactOffset": "exact offset",
+      "samples": "Sample: {{file}}",
+      "samplesMissing": "No image found",
+      "capture": "Capture: {{value}}",
+      "captureMissing": "Unknown",
+      "extensions": "Extensions: {{value}}",
+      "extensionsMissing": "None"
+    },
+    "rules": {
+      "eyebrow": "Step 3",
+      "title": "Rules",
+      "description": "Define how files are matched, named, and organized.",
+      "navDescription": "Camera and rename settings",
+      "back": "Back",
+      "savePreset": "Save Preset",
+      "continue": "Review & Run"
+    },
+    "review": {
+      "eyebrow": "Step 4",
+      "processingTitle": "Processing",
+      "title": "Review & Run",
+      "navDescription": "Dry run or execute",
+      "processingDescription": "Configuration is locked while LightOps processes the plan.",
+      "description": "Confirm the configuration before dry run or execution.",
+      "stop": "Stop",
+      "back": "Back to Rules",
+      "sourceLabel": "Sources",
+      "destination": "Destination",
+      "camera": "Camera",
+      "fileType": "File type",
+      "rename": "Rename",
+      "renameInPlace": "Rename in-place",
+      "advanced": "Advanced",
+      "clockEqualizer": "Camera clock equalizer",
+      "moveWarning": "Move mode deletes originals after successful move.",
+      "logsBuffered": "Logs are buffered to keep the interface responsive."
+    },
+    "results": {
+      "eyebrow": "Step 5",
+      "title": "Results",
+      "description": "Inspect the dry run or execution output.",
+      "navDescription": "Logs and output",
+      "back": "Back to Rules",
+      "filters": {
+        "all": "All",
+        "ok": "OK",
+        "dry": "Dry",
+        "skip": "Skipped",
+        "warn": "Warn",
+        "error": "Error"
+      }
+    },
+    "run": {
+      "scanFailed": "Scan failed: {{error}}",
+      "scanFirst": "Scan source folders before running.",
+      "dryRunStarted": "DRY RUN STARTED",
+      "processingStarted": "PROCESSING STARTED",
+      "scanningFolders": "Scanning {{count}} folder(s)...",
+      "foundGroups": "Found {{total}} groups · {{paired}} paired · {{jpgOnly}} JPG-only · {{rawOnly}} RAW-only{{video}}",
+      "videoCount": " · {{count}} video",
+      "noFilesFound": "No files found in the selected folders.",
+      "skippedGroups": "{{count}} group(s) skipped - no readable EXIF data.",
+      "nothingToRename": "Nothing to rename.",
+      "renamingFiles": "Renaming {{count}} files...",
+      "stoppedAt": "Stopped at {{ok}} / {{total}} files",
+      "completedSection": "COMPLETED",
+      "wouldBeRenamed": "would be renamed",
+      "renamedSuccessfully": "renamed successfully",
+      "errorsCount": ", {{count}} error(s)",
+      "completed": "Completed: {{ok}} file(s) {{mode}}{{errors}}",
+      "error": "Error: {{error}}"
+    },
+    "welcome": {
+      "title": "Start with clean camera clocks.",
+      "body": "Scan each source folder, detect the first image's camera metadata, then align clock offsets before LightOps builds the rename plan.",
+      "addSource": "Add source folder",
+      "openWorkflow": "Open workflow",
+      "eyebrow": "New workflow",
+      "steps": {
+        "source": {
+          "title": "1. Source",
+          "body": "Pick all camera folders and destination."
+        },
+        "scan": {
+          "title": "2. Scan & Equalize",
+          "body": "Detect camera metadata and correct clocks that are ahead or behind."
+        },
+        "rules": {
+          "title": "3. Rules",
+          "body": "Choose JPG/RAW behavior based on detected folder formats."
+        },
+        "review": {
+          "title": "4. Review",
+          "body": "See every source folder, dry run, then execute."
+        },
+        "results": {
+          "title": "5. Results",
+          "body": "Inspect status, filters, and output logs after execution."
+        }
+      }
+    },
+    "savePreset": {
+      "eyebrow": "Rules footer",
+      "title": "Save preset",
+      "nameLabel": "Preset name",
+      "placeholder": "Wedding import, Nikon JPG+RAW...",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving...",
+      "close": "Close save preset dialog"
+    }
+  },
+  "info": {
+    "pages": {
+      "help": "Help",
+      "shortcuts": "Shortcuts",
+      "about": "Author"
+    },
+    "titles": {
+      "help": "How LightOps Works",
+      "shortcuts": "Keyboard Shortcuts",
+      "about": "Author & App Info"
+    },
+    "help": {
+      "body": "LightOps scans source folders, pairs JPG/RAW files by folder and filename stem, applies camera clock offsets, builds a rename plan from corrected capture time, then copies, moves, or renames files.",
+      "steps": {
+        "source": {
+          "title": "1. Source",
+          "body": "Choose one or more source folders and an optional output folder."
+        },
+        "scan": {
+          "title": "2. Scan",
+          "body": "Detect the first image in each source folder and equalize camera clocks."
+        },
+        "rules": {
+          "title": "3. Rules",
+          "body": "Review detected camera formats, choose file type, rename format, and advanced options."
+        },
+        "review": {
+          "title": "4. Review",
+          "body": "Check every source folder, dry run, then execute when ready."
+        },
+        "results": {
+          "title": "5. Results",
+          "body": "Review output as text or table after a dry run or execution."
+        }
+      }
+    },
+    "shortcuts": {
+      "addSource": "Add source folder",
+      "chooseOutput": "Choose output folder",
+      "goSource": "Go to Source",
+      "goScan": "Go to Scan",
+      "goRules": "Go to Rules",
+      "goReview": "Go to Review",
+      "goResults": "Go to Results",
+      "dryRun": "Dry run",
+      "run": "Run",
+      "stop": "Stop processing",
+      "settings": "Settings",
+      "help": "LightOps help",
+      "showHelp": "Show help",
+      "keyboard": "Keyboard shortcuts"
+    },
+    "about": {
+      "title": "LightOps",
+      "body": "Desktop photo file manager for fast camera-card cleanup.",
+      "author": "Author: Bao Le. LightOps is part of the baole.space tool family and uses the LightOps icon set from baole.space.",
+      "stack": "The app is built with Tauri, Rust, React, and TypeScript. File operations run in Rust; the UI provides a keyboard-friendly workflow and native OS menus."
+    }
+  },
+  "workflowShell": {
+    "title": "Workflow",
+    "help": "Help"
+  },
+  "errorBoundary": {
+    "recovered": "LightOps recovered an error",
+    "title": "Return to start",
+    "body": "The workflow UI hit a runtime error. LightOps collected the last errors below; return to the start to continue without restarting the app.",
+    "return": "Return to start"
   },
   "presets": {
     "title": "PRESETS",

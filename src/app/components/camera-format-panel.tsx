@@ -1,36 +1,32 @@
-import { ChevronDown } from 'lucide-react';
+import { Camera, FileStack } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import type { SourceMetadata } from './workflow-steps';
 
 interface CameraFormatPanelProps {
-  cameraPreset: string;
+  metadata: SourceMetadata[];
   rawExtensions: string;
   fileType: 'both' | 'jpg' | 'raw';
-  onCameraChange: (value: string) => void;
-  onRawExtensionsChange: (value: string) => void;
+  allowedFileTypes?: Array<'both' | 'jpg' | 'raw'>;
   onFileTypeChange: (value: 'both' | 'jpg' | 'raw') => void;
 }
 
-const CAMERA_PRESETS = [
-  { value: 'nikon', label: 'Nikon', extensions: '.nef .nrw' },
-  { value: 'canon', label: 'Canon', extensions: '.cr2 .cr3' },
-  { value: 'sony', label: 'Sony', extensions: '.arw' },
-  { value: 'fujifilm', label: 'Fujifilm', extensions: '.raf' },
-  { value: 'panasonic', label: 'Panasonic', extensions: '.rw2' },
-  { value: 'olympus', label: 'Olympus', extensions: '.orf' },
-  { value: 'pentax', label: 'Pentax', extensions: '.dng .pef' },
-  { value: 'leica', label: 'Leica', extensions: '.dng' },
-  { value: 'custom', label: 'Custom', extensions: '' },
-];
+function cameraName(item: SourceMetadata, unknownCamera: string) {
+  return [item.camera_make, item.camera_model].filter(Boolean).join(' ') || unknownCamera;
+}
 
 export function CameraFormatPanel({
-  cameraPreset,
+  metadata,
   rawExtensions,
   fileType,
-  onCameraChange,
-  onRawExtensionsChange,
+  allowedFileTypes = ['both', 'jpg', 'raw'],
   onFileTypeChange,
 }: CameraFormatPanelProps) {
   const { t } = useTranslation();
+  const unknownCamera = t('shared.unknownCamera');
+  const totalJpg = metadata.reduce((sum, item) => sum + item.jpg_count, 0);
+  const totalRaw = metadata.reduce((sum, item) => sum + item.raw_count, 0);
+  const totalVideo = metadata.reduce((sum, item) => sum + item.video_count, 0);
+
   return (
     <div
       className="rounded-2xl p-4 backdrop-blur-lg border"
@@ -41,62 +37,67 @@ export function CameraFormatPanel({
       }}
     >
       <div className="mb-3">
-        <h2 className="text-white" style={{ fontFamily: 'var(--font-heading)' }}>
-          {t('cameraFormat.title')}
-        </h2>
+        <div className="flex items-center gap-2">
+          <Camera className="h-4 w-4" style={{ color: 'var(--accent)' }} />
+          <h2 className="text-white" style={{ fontFamily: 'var(--font-heading)' }}>
+            {t('cameraFormat.detectedTitle')}
+          </h2>
+        </div>
+        <p className="mt-1 text-xs" style={{ color: 'var(--text-muted)' }}>
+          {t('cameraFormat.description')}
+        </p>
       </div>
 
-      <div className="space-y-2.5">
-        <div>
-          <label className="block text-xs mb-1" style={{ color: 'var(--text-secondary)' }}>
-            {t('cameraFormat.preset')}
-          </label>
-          <div className="relative">
-            <select
-              value={cameraPreset}
-              onChange={(e) => {
-                onCameraChange(e.target.value);
-                const preset = CAMERA_PRESETS.find((p) => p.value === e.target.value);
-                if (preset && preset.extensions) {
-                  onRawExtensionsChange(preset.extensions);
-                }
-              }}
-              className="w-full px-3 py-2 pr-8 rounded-lg border backdrop-blur-sm text-sm appearance-none cursor-pointer"
-              style={{
-                background: 'var(--input-background)',
-                borderColor: 'var(--glass-border)',
-                color: 'var(--text-primary)',
-              }}
-            >
-              {CAMERA_PRESETS.map((preset) => (
-                <option key={preset.value} value={preset.value} className="bg-[#1a1535]">
-                  {preset.label}
-                </option>
-              ))}
-            </select>
-            <ChevronDown
-              className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
-              style={{ color: 'var(--text-muted)' }}
-            />
+      <div className="space-y-3">
+        <div className="grid gap-2 md:grid-cols-3">
+          <div className="rounded-xl border p-3" style={{ borderColor: 'var(--glass-border)' }}>
+            <p className="text-xs uppercase tracking-[0.2em]" style={{ color: 'var(--text-muted)' }}>
+              {t('cameraFormat.stats.jpg')}
+            </p>
+            <p className="mt-1 text-lg text-white">{totalJpg}</p>
+          </div>
+          <div className="rounded-xl border p-3" style={{ borderColor: 'var(--glass-border)' }}>
+            <p className="text-xs uppercase tracking-[0.2em]" style={{ color: 'var(--text-muted)' }}>
+              {t('cameraFormat.stats.raw')}
+            </p>
+            <p className="mt-1 text-lg text-white">{totalRaw}</p>
+          </div>
+          <div className="rounded-xl border p-3" style={{ borderColor: 'var(--glass-border)' }}>
+            <p className="text-xs uppercase tracking-[0.2em]" style={{ color: 'var(--text-muted)' }}>
+              {t('cameraFormat.stats.video')}
+            </p>
+            <p className="mt-1 text-lg text-white">{totalVideo}</p>
           </div>
         </div>
 
         <div>
-          <label className="block text-xs mb-1" style={{ color: 'var(--text-secondary)' }}>
-            {t('cameraFormat.rawExtensions')}
-          </label>
-          <input
-            type="text"
-            value={rawExtensions}
-            onChange={(e) => onRawExtensionsChange(e.target.value)}
-            placeholder={t('cameraFormat.rawPlaceholder')}
-            className="w-full px-3 py-2 rounded-lg border backdrop-blur-sm text-sm"
-            style={{
-              background: 'var(--input-background)',
-              borderColor: 'var(--glass-border)',
-              color: 'var(--text-primary)',
-            }}
-          />
+          <div className="mb-2 flex items-center gap-2">
+            <FileStack className="h-4 w-4" style={{ color: 'var(--accent)' }} />
+            <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>
+              {t('cameraFormat.rawExtensionsLabel')} {rawExtensions || t('cameraFormat.noneDetected')}
+            </span>
+          </div>
+          <div className="grid gap-2">
+            {metadata.map((item) => (
+              <div
+                key={item.folder}
+                className="rounded-xl border px-3 py-2"
+                style={{ borderColor: 'var(--glass-border)', background: 'rgba(255,255,255,0.04)' }}
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <p className="truncate text-sm text-white" title={cameraName(item, unknownCamera)}>
+                    {cameraName(item, unknownCamera)}
+                  </p>
+                  <p className="shrink-0 text-xs" style={{ color: 'var(--text-muted)' }}>
+                    {item.raw_extensions.join(' ') || t('cameraFormat.jpgOnly')}
+                  </p>
+                </div>
+                <p className="mt-1 truncate text-xs" title={item.folder} style={{ color: 'var(--text-muted)' }}>
+                  {item.folder}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
 
         <div>
@@ -113,8 +114,9 @@ export function CameraFormatPanel({
             ).map((option) => (
               <button
                 key={option.value}
+                disabled={!allowedFileTypes.includes(option.value)}
                 onClick={() => onFileTypeChange(option.value)}
-                className="flex-1 px-3 py-2 rounded-full text-xs transition-all"
+                className="flex-1 px-3 py-2 rounded-full text-xs transition-all disabled:cursor-not-allowed disabled:opacity-35"
                 style={{
                   background:
                     fileType === option.value

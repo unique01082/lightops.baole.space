@@ -1,4 +1,5 @@
 import { Aperture, BookOpen, Keyboard, UserRound, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export type InfoPage = 'help' | 'shortcuts' | 'about';
 
@@ -8,34 +9,36 @@ interface InfoModalProps {
   onClose: () => void;
 }
 
-const pages: Array<{
-  key: InfoPage;
-  label: string;
-  icon: typeof BookOpen;
-}> = [
-  { key: 'help', label: 'Help', icon: BookOpen },
-  { key: 'shortcuts', label: 'Shortcuts', icon: Keyboard },
-  { key: 'about', label: 'Author', icon: UserRound },
-];
-
-const shortcuts = [
-  ['Add source folder', '⌘/Ctrl O'],
-  ['Choose output folder', '⌘/Ctrl ⇧ O'],
-  ['Go to Source', '⌘/Ctrl 1'],
-  ['Go to Rules', '⌘/Ctrl 2'],
-  ['Go to Review', '⌘/Ctrl 3'],
-  ['Go to Results', '⌘/Ctrl 4'],
-  ['Dry run', '⌘/Ctrl ⇧ Enter'],
-  ['Run', '⌘/Ctrl Enter'],
-  ['Stop processing', 'Esc'],
-  ['Settings', '⌘/Ctrl ,'],
-  ['LightOps help', 'F1'],
-  ['Show help', '?'],
-  ['Keyboard shortcuts', '⌘/Ctrl /'],
-];
-
 export function InfoModal({ page, onPageChange, onClose }: InfoModalProps) {
+  const { t } = useTranslation();
   if (!page) return null;
+
+  const pages: Array<{
+    key: InfoPage;
+    label: string;
+    icon: typeof BookOpen;
+  }> = [
+    { key: 'help', label: t('info.pages.help'), icon: BookOpen },
+    { key: 'shortcuts', label: t('info.pages.shortcuts'), icon: Keyboard },
+    { key: 'about', label: t('info.pages.about'), icon: UserRound },
+  ];
+
+  const shortcuts = [
+    [t('info.shortcuts.addSource'), '⌘/Ctrl O'],
+    [t('info.shortcuts.chooseOutput'), '⌘/Ctrl ⇧ O'],
+    [t('info.shortcuts.goSource'), '⌘/Ctrl 1'],
+    [t('info.shortcuts.goScan'), '⌘/Ctrl 2'],
+    [t('info.shortcuts.goRules'), '⌘/Ctrl 3'],
+    [t('info.shortcuts.goReview'), '⌘/Ctrl 4'],
+    [t('info.shortcuts.goResults'), '⌘/Ctrl 5'],
+    [t('info.shortcuts.dryRun'), '⌘/Ctrl ⇧ Enter'],
+    [t('info.shortcuts.run'), '⌘/Ctrl Enter'],
+    [t('info.shortcuts.stop'), 'Esc'],
+    [t('info.shortcuts.settings'), '⌘/Ctrl ,'],
+    [t('info.shortcuts.help'), 'F1'],
+    [t('info.shortcuts.showHelp'), '?'],
+    [t('info.shortcuts.keyboard'), '⌘/Ctrl /'],
+  ];
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-6 backdrop-blur-sm">
@@ -94,9 +97,9 @@ export function InfoModal({ page, onPageChange, onClose }: InfoModalProps) {
                 LightOps
               </p>
               <h2 id="lightops-info-title" className="mt-1 text-xl text-white">
-                {page === 'help' && 'How LightOps Works'}
-                {page === 'shortcuts' && 'Keyboard Shortcuts'}
-                {page === 'about' && 'Author & App Info'}
+                {page === 'help' && t('info.titles.help')}
+                {page === 'shortcuts' && t('info.titles.shortcuts')}
+                {page === 'about' && t('info.titles.about')}
               </h2>
             </div>
             <button
@@ -115,22 +118,14 @@ export function InfoModal({ page, onPageChange, onClose }: InfoModalProps) {
                 className="space-y-4 text-sm leading-relaxed"
                 style={{ color: 'var(--text-secondary)' }}
               >
-                <p>
-                  LightOps scans source folders, pairs JPG/RAW files by folder and filename stem,
-                  builds a rename plan from capture time, then copies, moves, or renames files.
-                </p>
+                <p>{t('info.help.body')}</p>
                 <div className="grid gap-3 md:grid-cols-2">
                   {[
-                    [
-                      '1. Source',
-                      'Choose one or more source folders and an optional output folder.',
-                    ],
-                    [
-                      '2. Rules',
-                      'Pick camera RAW extensions, file type, rename format, and advanced options.',
-                    ],
-                    ['3. Review', 'Check the summary, run a dry run, then execute when ready.'],
-                    ['4. Results', 'Review output as text or table after a dry run or execution.'],
+                    [t('info.help.steps.source.title'), t('info.help.steps.source.body')],
+                    [t('info.help.steps.scan.title'), t('info.help.steps.scan.body')],
+                    [t('info.help.steps.rules.title'), t('info.help.steps.rules.body')],
+                    [t('info.help.steps.review.title'), t('info.help.steps.review.body')],
+                    [t('info.help.steps.results.title'), t('info.help.steps.results.body')],
                   ].map(([title, body]) => (
                     <div
                       key={title}
@@ -198,18 +193,12 @@ export function InfoModal({ page, onPageChange, onClose }: InfoModalProps) {
                     }}
                   />
                   <div>
-                    <h3 className="text-lg text-white">LightOps</h3>
-                    <p>Desktop photo file manager for fast camera-card cleanup.</p>
+                    <h3 className="text-lg text-white">{t('info.about.title')}</h3>
+                    <p>{t('info.about.body')}</p>
                   </div>
                 </div>
-                <p>
-                  Author: Bao Le. LightOps is part of the baole.space tool family and uses the
-                  LightOps icon set from baole.space.
-                </p>
-                <p>
-                  The app is built with Tauri, Rust, React, and TypeScript. File operations run in
-                  Rust; the UI provides a keyboard-friendly workflow and native OS menus.
-                </p>
+                <p>{t('info.about.author')}</p>
+                <p>{t('info.about.stack')}</p>
               </div>
             )}
           </div>

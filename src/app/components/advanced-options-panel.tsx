@@ -19,16 +19,16 @@ interface AdvancedOptionsPanelProps {
 function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
   return (
     <button
+      type="button"
       onClick={() => onChange(!checked)}
       className="relative w-11 h-6 rounded-full transition-colors flex-shrink-0"
       style={{
         background: checked ? 'var(--accent)' : 'var(--switch-background)',
       }}
     >
-      <motion.div
-        animate={{ x: checked ? 20 : 2 }}
-        transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-        className="absolute top-1 w-4 h-4 bg-white rounded-full"
+      <span
+        className="absolute top-1 h-4 w-4 rounded-full bg-white transition-transform duration-200"
+        style={{ transform: `translateX(${checked ? 20 : 2}px)` }}
       />
     </button>
   );
@@ -50,11 +50,11 @@ export function AdvancedOptionsPanel({
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(!collapsible);
   const summary = [
-    recursiveScan ? t('advanced.recursive') : 'Top-level only',
+    recursiveScan ? t('advanced.recursive') : t('advanced.topLevelOnly'),
     t(`advanced.${fileOperation}`),
-    organizeByDate ? 'Date folders' : 'No date folders',
-    onlyPaired ? 'Paired only' : 'Singles allowed',
-    includeVideo ? 'Videos on' : 'Videos off',
+    organizeByDate ? t('advanced.dateFoldersOn') : t('advanced.dateFoldersOff'),
+    onlyPaired ? t('advanced.pairedOnly') : t('advanced.singlesAllowed'),
+    includeVideo ? t('advanced.videosOn') : t('advanced.videosOff'),
   ].join(' · ');
 
   return (

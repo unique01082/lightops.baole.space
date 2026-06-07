@@ -36,7 +36,13 @@ fn preset_path(dir: &PathBuf, name: &str) -> PathBuf {
     // Sanitize name: replace any filesystem-unsafe chars with underscore
     let safe: String = name
         .chars()
-        .map(|c| if c.is_ascii_alphanumeric() || c == '-' || c == '_' || c == ' ' { c } else { '_' })
+        .map(|c| {
+            if c.is_ascii_alphanumeric() || c == '-' || c == '_' || c == ' ' {
+                c
+            } else {
+                '_'
+            }
+        })
         .collect();
     dir.join(format!("{}.json", safe))
 }
@@ -49,8 +55,8 @@ pub async fn save_preset(app: tauri::AppHandle, preset: Preset) -> Result<(), St
     }
     let dir = presets_dir(&app)?;
     let path = preset_path(&dir, &preset.name);
-    let json = serde_json::to_string_pretty(&preset)
-        .map_err(|e| format!("Serialization error: {}", e))?;
+    let json =
+        serde_json::to_string_pretty(&preset).map_err(|e| format!("Serialization error: {}", e))?;
     fs::write(&path, json).map_err(|e| format!("Cannot write preset: {}", e))
 }
 
@@ -84,8 +90,8 @@ pub async fn list_presets(app: tauri::AppHandle) -> Result<Vec<String>, String> 
 pub async fn load_preset(app: tauri::AppHandle, name: String) -> Result<Preset, String> {
     let dir = presets_dir(&app)?;
     let path = preset_path(&dir, &name);
-    let data = fs::read_to_string(&path)
-        .map_err(|e| format!("Cannot read preset '{}': {}", name, e))?;
+    let data =
+        fs::read_to_string(&path).map_err(|e| format!("Cannot read preset '{}': {}", name, e))?;
     serde_json::from_str(&data).map_err(|e| format!("Invalid preset data: {}", e))
 }
 

@@ -231,6 +231,7 @@ pub fn run() {
         .plugin(tauri_plugin_updater::Builder::new().build())
         .invoke_handler(tauri::generate_handler![
             scan_folders,
+            scan_source_metadata,
             build_rename_plan,
             execute_plan,
             cancel_execution,
