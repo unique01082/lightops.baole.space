@@ -10,12 +10,12 @@ interface OutputFolderPanelProps {
 export function OutputFolderPanel({ outputFolder, onBrowse, onChange }: OutputFolderPanelProps) {
   const { t } = useTranslation();
   return (
-    <div 
+    <div
       className="rounded-2xl p-4 backdrop-blur-lg border"
       style={{
         background: 'var(--glass-bg)',
         borderColor: 'var(--glass-border)',
-        boxShadow: '0 8px 32px 0 rgba(139, 92, 246, 0.1)'
+        boxShadow: '0 8px 32px 0 rgba(139, 92, 246, 0.1)',
       }}
     >
       <div className="mb-3">
@@ -26,7 +26,7 @@ export function OutputFolderPanel({ outputFolder, onBrowse, onChange }: OutputFo
           {t('outputFolder.subtitle')}
         </p>
       </div>
-      
+
       <div className="flex gap-2">
         <input
           type="text"
@@ -37,7 +37,7 @@ export function OutputFolderPanel({ outputFolder, onBrowse, onChange }: OutputFo
           style={{
             background: 'var(--input-background)',
             borderColor: 'var(--glass-border)',
-            color: 'var(--text-primary)'
+            color: 'var(--text-primary)',
           }}
         />
         <button
@@ -45,14 +45,14 @@ export function OutputFolderPanel({ outputFolder, onBrowse, onChange }: OutputFo
           className="px-4 py-2 rounded-lg border flex items-center gap-2 hover:bg-white/5 transition-colors"
           style={{
             borderColor: 'var(--glass-border)',
-            color: 'var(--text-secondary)'
+            color: 'var(--text-secondary)',
           }}
         >
           <FolderOpen className="w-4 h-4" />
           <span className="text-sm">{t('outputFolder.browse')}</span>
         </button>
       </div>
-      
+
       <div className="mt-3 flex items-center gap-2 text-xs" style={{ color: 'var(--text-muted)' }}>
         <span>📁</span>
         <span>{t('outputFolder.hint')}</span>

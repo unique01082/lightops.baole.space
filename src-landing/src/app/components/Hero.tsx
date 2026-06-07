@@ -1,23 +1,23 @@
-import { ChevronDown } from "lucide-react";
-import { motion } from "motion/react";
-import { useTranslation } from "react-i18next";
-import { GradientOrb } from "./GradientOrb";
-import { GradientButton } from "./GradientButton";
-import { GhostButton } from "./GhostButton";
-import { BadgePill } from "./BadgePill";
-import { ApertureLogo } from "./ApertureLogo";
-import { AppMockup } from "./AppMockup";
-import { APP_DATA } from "../constants/app";
-import { useGithubReleaseContext } from "../hooks/GithubReleaseContext";
+import { ChevronDown } from 'lucide-react';
+import { motion } from 'motion/react';
+import { useTranslation } from 'react-i18next';
+import { APP_DATA } from '../constants/app';
+import { useGithubReleaseContext } from '../hooks/GithubReleaseContext';
+import { ApertureLogo } from './ApertureLogo';
+import { AppMockup } from './AppMockup';
+import { BadgePill } from './BadgePill';
+import { GhostButton } from './GhostButton';
+import { GradientButton } from './GradientButton';
+import { GradientOrb } from './GradientOrb';
 
 export function Hero() {
   const { t } = useTranslation();
   const release = useGithubReleaseContext();
 
   const scrollToDownload = () => {
-    const element = document.getElementById("download");
+    const element = document.getElementById('download');
     if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
+      element.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
@@ -63,8 +63,8 @@ export function Hero() {
             className="flex justify-center mb-6"
           >
             <BadgePill variant="gradient">
-              🏷️{" "}
-              {t("hero.badge", {
+              🏷️{' '}
+              {t('hero.badge', {
                 version: release.version,
                 license: APP_DATA.license,
               })}
@@ -100,15 +100,11 @@ export function Hero() {
             transition={{ duration: 0.5, delay: 0.5 }}
             className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8"
           >
-            <GradientButton
-              size="lg"
-              href={APP_DATA.downloadSection}
-              target="_self"
-            >
-              {t("hero.downloadNow")}
+            <GradientButton size="lg" href={APP_DATA.downloadSection} target="_self">
+              {t('hero.downloadNow')}
             </GradientButton>
             <GhostButton size="lg" href={APP_DATA.githubRepo}>
-              {t("hero.starOnGithub")}
+              {t('hero.starOnGithub')}
             </GhostButton>
           </motion.div>
 
@@ -120,7 +116,7 @@ export function Hero() {
             className="text-white/50 text-sm hover:text-white/70 transition-colors"
             style={{ fontFamily: "'Inter', sans-serif" }}
           >
-            {t("hero.alsoAvailable")}
+            {t('hero.alsoAvailable')}
           </motion.button>
         </div>
 
@@ -144,10 +140,7 @@ export function Hero() {
         transition={{ duration: 1, delay: 1.5 }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2"
       >
-        <motion.div
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
-        >
+        <motion.div animate={{ y: [0, 10, 0] }} transition={{ duration: 2, repeat: Infinity }}>
           <ChevronDown className="text-white/30" size={32} />
         </motion.div>
       </motion.div>

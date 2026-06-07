@@ -5,18 +5,13 @@ interface FeatureCardProps {
   highlight?: boolean;
 }
 
-export function FeatureCard({
-  icon,
-  title,
-  description,
-  highlight = false,
-}: FeatureCardProps) {
+export function FeatureCard({ icon, title, description, highlight = false }: FeatureCardProps) {
   return (
     <div
       className={`group relative h-full bg-white/5 backdrop-blur-sm border rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg ${
         highlight
-          ? "border-violet-500/50 hover:border-violet-500 shadow-violet-500/10"
-          : "border-white/10 hover:border-white/20 hover:shadow-violet-500/5"
+          ? 'border-violet-500/50 hover:border-violet-500 shadow-violet-500/10'
+          : 'border-white/10 hover:border-white/20 hover:shadow-violet-500/5'
       }`}
     >
       {/* Gradient accent - full border for highlight, left edge for others */}
@@ -41,10 +36,7 @@ export function FeatureCard({
         >
           {title}
         </h3>
-        <p
-          className="text-white/60 leading-relaxed"
-          style={{ fontFamily: "'Inter', sans-serif" }}
-        >
+        <p className="text-white/60 leading-relaxed" style={{ fontFamily: "'Inter', sans-serif" }}>
           {description}
         </p>
       </div>

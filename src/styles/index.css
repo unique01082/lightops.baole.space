@@ -1,6 +1,6 @@
-@import "./fonts.css";
-@import "./tailwind.css";
-@import "./theme.css";
+@import './fonts.css';
+@import './tailwind.css';
+@import './theme.css';
 
 /* Custom scrollbar styles for dark theme */
 * {
@@ -50,8 +50,30 @@ body,
 
 /* Prevent layout thrash on interactive elements */
 button,
-[role="button"] {
+[role='button'] {
   cursor: default;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid rgba(139, 92, 246, 0.9);
+  outline-offset: 2px;
+}
+
+.progress-stripes {
+  animation: progress-stripes 1.4s linear infinite;
+}
+
+@keyframes progress-stripes {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(200%);
+  }
 }
 
 /* Allow text selection in log and inputs */

@@ -1,5 +1,3 @@
-import { motion } from 'motion/react';
-
 interface ProgressBarProps {
   current: number;
   total: number;
@@ -11,32 +9,34 @@ export function ProgressBar({ current, total, status }: ProgressBarProps) {
 
   const getGradient = () => {
     switch (status) {
-      case 'complete':   return 'var(--accent-success)';
-      case 'stopped':    return 'var(--accent-warning)';
-      case 'error':      return 'var(--accent-danger)';
-      case 'processing': return 'var(--accent-lightops)';
-      default:           return 'transparent';
+      case 'complete':
+        return 'var(--accent-success)';
+      case 'stopped':
+        return 'var(--accent-warning)';
+      case 'error':
+        return 'var(--accent-danger)';
+      case 'processing':
+        return 'var(--accent-lightops)';
+      default:
+        return 'transparent';
     }
   };
 
   return (
     <div className="h-2 relative overflow-hidden" style={{ background: 'rgba(0, 0, 0, 0.2)' }}>
-      <motion.div
-        className="h-full relative"
-        initial={{ width: 0 }}
-        animate={{ width: `${percentage}%` }}
-        transition={{ duration: 0.3, ease: 'easeOut' }}
-        style={{ background: getGradient() }}
+      <div
+        className="h-full relative transition-[width] duration-200 ease-out"
+        style={{ background: getGradient(), width: `${percentage}%` }}
       >
         {status === 'processing' && (
-          <motion.div
-            className="absolute inset-0"
-            style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)' }}
-            animate={{ x: ['-100%', '200%'] }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}
+          <div
+            className="absolute inset-0 progress-stripes"
+            style={{
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
+            }}
           />
         )}
-      </motion.div>
+      </div>
       {total > 0 && (
         <div
           className="absolute inset-0 flex items-center justify-center text-xs font-medium"

@@ -1,22 +1,21 @@
-import { useMemo } from "react";
-import { useTranslation } from "react-i18next";
-import { ScrollReveal } from "./ScrollReveal";
-import { SectionHeading } from "./SectionHeading";
-import { PlatformCard } from "./PlatformCard";
-import { BadgePill } from "./BadgePill";
-import { Star, GitFork, AlertCircle } from "lucide-react";
-import { APP_DATA } from "../constants/app";
-import { useGithubReleaseContext } from "../hooks/GithubReleaseContext";
-import { AppleIcon, WindowIco } from "lucide-react";
+import { AlertCircle, GitFork, Star } from 'lucide-react';
+import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { APP_DATA } from '../constants/app';
+import { useGithubReleaseContext } from '../hooks/GithubReleaseContext';
+import { BadgePill } from './BadgePill';
+import { PlatformCard } from './PlatformCard';
+import { ScrollReveal } from './ScrollReveal';
+import { SectionHeading } from './SectionHeading';
 
-type OS = "windows" | "macos" | "linux" | "unknown";
+type OS = 'windows' | 'macos' | 'linux' | 'unknown';
 
 function detectOS(): OS {
   const ua = navigator.userAgent;
-  if (/windows/i.test(ua)) return "windows";
-  if (/macintosh|mac os x/i.test(ua)) return "macos";
-  if (/linux/i.test(ua)) return "linux";
-  return "unknown";
+  if (/windows/i.test(ua)) return 'windows';
+  if (/macintosh|mac os x/i.test(ua)) return 'macos';
+  if (/linux/i.test(ua)) return 'linux';
+  return 'unknown';
 }
 
 export function Download() {
@@ -24,7 +23,7 @@ export function Download() {
   const detectedOS = useMemo(() => detectOS(), []);
   const release = useGithubReleaseContext();
 
-  const platformTexts = t("download.platforms", {
+  const platformTexts = t('download.platforms', {
     returnObjects: true,
   }) as Array<{
     name: string;
@@ -37,7 +36,7 @@ export function Download() {
   const platforms = useMemo(
     () => [
       {
-        name: platformTexts[0]?.name ?? "Windows x64",
+        name: platformTexts[0]?.name ?? 'Windows x64',
         icon: (
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -50,22 +49,20 @@ export function Download() {
             <path d="M6.555 1.375 0 2.237v5.45h6.555zM0 13.795l6.555.933V8.313H0zm7.278-5.4.026 6.378L16 16V8.395zM16 0 7.33 1.244v6.414H16z"></path>
           </svg>
         ),
-        description:
-          platformTexts[0]?.description ?? "Windows 10 / 11 (64-bit)",
+        description: platformTexts[0]?.description ?? 'Windows 10 / 11 (64-bit)',
         primaryButton: {
-          label: platformTexts[0]?.primaryLabel ?? "Download .exe",
+          label: platformTexts[0]?.primaryLabel ?? 'Download .exe',
           url: release.assets.windowsExe,
         },
         secondaryButton: {
-          label: platformTexts[0]?.secondaryLabel ?? "Download .msi",
+          label: platformTexts[0]?.secondaryLabel ?? 'Download .msi',
           url: release.assets.windowsMsi,
         },
-        note:
-          platformTexts[0]?.note ?? "NSIS installer · WiX MSI also available",
-        highlight: detectedOS === "windows",
+        note: platformTexts[0]?.note ?? 'NSIS installer · WiX MSI also available',
+        highlight: detectedOS === 'windows',
       },
       {
-        name: platformTexts[1]?.name ?? "Windows ARM64",
+        name: platformTexts[1]?.name ?? 'Windows ARM64',
         icon: (
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -78,22 +75,20 @@ export function Download() {
             <path d="M6.555 1.375 0 2.237v5.45h6.555zM0 13.795l6.555.933V8.313H0zm7.278-5.4.026 6.378L16 16V8.395zM16 0 7.33 1.244v6.414H16z"></path>
           </svg>
         ),
-        description: platformTexts[1]?.description ?? "Windows 10 / 11 (ARM64)",
+        description: platformTexts[1]?.description ?? 'Windows 10 / 11 (ARM64)',
         primaryButton: {
-          label: platformTexts[1]?.primaryLabel ?? "Download .exe",
+          label: platformTexts[1]?.primaryLabel ?? 'Download .exe',
           url: release.assets.windowsArm64Exe,
         },
         secondaryButton: {
-          label: platformTexts[1]?.secondaryLabel ?? "Download .msi",
+          label: platformTexts[1]?.secondaryLabel ?? 'Download .msi',
           url: release.assets.windowsArm64Msi,
         },
-        note:
-          platformTexts[1]?.note ??
-          "For Snapdragon X · Surface Pro ARM devices",
-        highlight: detectedOS === "windows",
+        note: platformTexts[1]?.note ?? 'For Snapdragon X · Surface Pro ARM devices',
+        highlight: detectedOS === 'windows',
       },
       {
-        name: platformTexts[2]?.name ?? "macOS",
+        name: platformTexts[2]?.name ?? 'macOS',
         icon: (
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -107,22 +102,20 @@ export function Download() {
             <path d="M11.182.008C11.148-.03 9.923.023 8.857 1.18c-1.066 1.156-.902 2.482-.878 2.516s1.52.087 2.475-1.258.762-2.391.728-2.43m3.314 11.733c-.048-.096-2.325-1.234-2.113-3.422s1.675-2.789 1.698-2.854-.597-.79-1.254-1.157a3.7 3.7 0 0 0-1.563-.434c-.108-.003-.483-.095-1.254.116-.508.139-1.653.589-1.968.607-.316.018-1.256-.522-2.267-.665-.647-.125-1.333.131-1.824.328-.49.196-1.422.754-2.074 2.237-.652 1.482-.311 3.83-.067 4.56s.625 1.924 1.273 2.796c.576.984 1.34 1.667 1.659 1.899s1.219.386 1.843.067c.502-.308 1.408-.485 1.766-.472.357.013 1.061.154 1.782.539.571.197 1.111.115 1.652-.105.541-.221 1.324-1.059 2.238-2.758q.52-1.185.473-1.282"></path>
           </svg>
         ),
-        description:
-          platformTexts[2]?.description ?? "macOS 11 Big Sur and later",
+        description: platformTexts[2]?.description ?? 'macOS 11 Big Sur and later',
         primaryButton: {
-          label: platformTexts[2]?.primaryLabel ?? "Download .dmg",
+          label: platformTexts[2]?.primaryLabel ?? 'Download .dmg',
           url: release.assets.macDmg,
         },
         secondaryButton: {
-          label: platformTexts[2]?.secondaryLabel ?? "Download .app.tar.gz",
+          label: platformTexts[2]?.secondaryLabel ?? 'Download .app.tar.gz',
           url: release.assets.macTarGz,
         },
-        note:
-          platformTexts[2]?.note ?? "Universal binary (Intel + Apple Silicon)",
-        highlight: detectedOS === "macos",
+        note: platformTexts[2]?.note ?? 'Universal binary (Intel + Apple Silicon)',
+        highlight: detectedOS === 'macos',
       },
       {
-        name: platformTexts[3]?.name ?? "Linux",
+        name: platformTexts[3]?.name ?? 'Linux',
         icon: (
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -139,18 +132,17 @@ export function Download() {
             />
           </svg>
         ),
-        description:
-          platformTexts[3]?.description ?? "Ubuntu, Fedora, Arch,...",
+        description: platformTexts[3]?.description ?? 'Ubuntu, Fedora, Arch,...',
         primaryButton: {
-          label: platformTexts[3]?.primaryLabel ?? "Download .AppImage",
+          label: platformTexts[3]?.primaryLabel ?? 'Download .AppImage',
           url: release.assets.linuxAppImage,
         },
         secondaryButton: {
-          label: platformTexts[3]?.secondaryLabel ?? ".deb / .rpm",
+          label: platformTexts[3]?.secondaryLabel ?? '.deb / .rpm',
           url: release.releasePageUrl,
         },
-        note: platformTexts[3]?.note ?? "AppImage · Debian · RPM packages",
-        highlight: detectedOS === "linux",
+        note: platformTexts[3]?.note ?? 'AppImage · Debian · RPM packages',
+        highlight: detectedOS === 'linux',
       },
     ],
     [detectedOS, release, platformTexts],
@@ -160,10 +152,7 @@ export function Download() {
     <section id="download" className="py-20 md:py-32 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <ScrollReveal>
-          <SectionHeading
-            title={t("download.title")}
-            subtitle={t("download.subtitle")}
-          />
+          <SectionHeading title={t('download.title')} subtitle={t('download.subtitle')} />
         </ScrollReveal>
 
         {/* Version badge */}
@@ -176,7 +165,7 @@ export function Download() {
               className="inline-block"
             >
               <BadgePill variant="gradient">
-                {t("download.latest", { version: release.version })}
+                {t('download.latest', { version: release.version })}
               </BadgePill>
             </a>
           </div>
@@ -237,7 +226,7 @@ export function Download() {
               className="text-white/50 text-center text-sm mb-8 max-w-3xl mx-auto"
               style={{ fontFamily: "'Inter', sans-serif" }}
             >
-              All releases are signed and available on{" "}
+              All releases are signed and available on{' '}
               <a
                 href={APP_DATA.githubReleases}
                 target="_blank"
@@ -261,13 +250,10 @@ export function Download() {
                   className="text-white font-semibold mb-2"
                   style={{ fontFamily: "'Space Grotesk', sans-serif" }}
                 >
-                  {t("download.alreadyInstalledTitle")}
+                  {t('download.alreadyInstalledTitle')}
                 </h4>
-                <p
-                  className="text-white/60 text-sm"
-                  style={{ fontFamily: "'Inter', sans-serif" }}
-                >
-                  {t("download.alreadyInstalledDesc")}
+                <p className="text-white/60 text-sm" style={{ fontFamily: "'Inter', sans-serif" }}>
+                  {t('download.alreadyInstalledDesc')}
                 </p>
               </div>
             </div>

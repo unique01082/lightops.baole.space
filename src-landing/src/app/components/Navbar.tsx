@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
-import { useTranslation } from "react-i18next";
-import { ApertureLogo } from "./ApertureLogo";
-import { GradientButton } from "./GradientButton";
-import { Menu, X } from "lucide-react";
-import { APP_DATA } from "../constants/app";
+import { Menu, X } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { APP_DATA } from '../constants/app';
+import { ApertureLogo } from './ApertureLogo';
+import { GradientButton } from './GradientButton';
 
 export function Navbar() {
   const { t, i18n } = useTranslation();
@@ -11,11 +11,13 @@ export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const toggleLanguage = () => {
-    const next = i18n.language === "vi" ? "en" : "vi";
+    const next = i18n.language === 'vi' ? 'en' : 'vi';
     i18n.changeLanguage(next);
     try {
-      localStorage.setItem("lightops-landing-language", next);
-    } catch {}
+      localStorage.setItem('lightops-landing-language', next);
+    } catch {
+      // Storage can be unavailable in private browsing or embedded webviews.
+    }
   };
 
   useEffect(() => {
@@ -23,14 +25,14 @@ export function Navbar() {
       setIsScrolled(window.scrollY > 50);
     };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
+      element.scrollIntoView({ behavior: 'smooth' });
       setIsMobileMenuOpen(false);
     }
   };
@@ -39,8 +41,8 @@ export function Navbar() {
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? "bg-white/5 backdrop-blur-xl border-b border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.4)]"
-          : "bg-transparent"
+          ? 'bg-white/5 backdrop-blur-xl border-b border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.4)]'
+          : 'bg-transparent'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -59,32 +61,32 @@ export function Navbar() {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-6">
             <button
-              onClick={() => scrollToSection("features")}
+              onClick={() => scrollToSection('features')}
               className="text-white/70 hover:text-white transition-colors"
               style={{ fontFamily: "'Inter', sans-serif" }}
             >
-              {t("nav.features")}
+              {t('nav.features')}
             </button>
             <button
-              onClick={() => scrollToSection("download")}
+              onClick={() => scrollToSection('download')}
               className="text-white/70 hover:text-white transition-colors"
               style={{ fontFamily: "'Inter', sans-serif" }}
             >
-              {t("nav.download")}
+              {t('nav.download')}
             </button>
             <button
-              onClick={() => scrollToSection("how-it-works")}
+              onClick={() => scrollToSection('how-it-works')}
               className="text-white/70 hover:text-white transition-colors"
               style={{ fontFamily: "'Inter', sans-serif" }}
             >
-              {t("nav.howItWorks")}
+              {t('nav.howItWorks')}
             </button>
             <button
-              onClick={() => scrollToSection("changelog")}
+              onClick={() => scrollToSection('changelog')}
               className="text-white/70 hover:text-white transition-colors"
               style={{ fontFamily: "'Inter', sans-serif" }}
             >
-              {t("nav.changelog")}
+              {t('nav.changelog')}
             </button>
           </div>
 
@@ -96,14 +98,10 @@ export function Navbar() {
               style={{ fontFamily: "'Inter', sans-serif" }}
               title="Switch language"
             >
-              {i18n.language === "vi" ? "EN" : "VI"}
+              {i18n.language === 'vi' ? 'EN' : 'VI'}
             </button>
-            <GradientButton
-              size="sm"
-              href={APP_DATA.githubLatestRelease}
-              target="_self"
-            >
-              {t("nav.downloadBtn")}
+            <GradientButton size="sm" href={APP_DATA.githubLatestRelease} target="_self">
+              {t('nav.downloadBtn')}
             </GradientButton>
 
             {/* Mobile menu button */}
@@ -122,39 +120,39 @@ export function Navbar() {
         <div className="md:hidden bg-black/95 backdrop-blur-lg border-t border-white/10">
           <div className="px-4 py-4 space-y-3">
             <button
-              onClick={() => scrollToSection("features")}
+              onClick={() => scrollToSection('features')}
               className="block w-full text-left text-white/70 hover:text-white py-2"
               style={{ fontFamily: "'Inter', sans-serif" }}
             >
-              {t("nav.features")}
+              {t('nav.features')}
             </button>
             <button
-              onClick={() => scrollToSection("download")}
+              onClick={() => scrollToSection('download')}
               className="block w-full text-left text-white/70 hover:text-white py-2"
               style={{ fontFamily: "'Inter', sans-serif" }}
             >
-              {t("nav.download")}
+              {t('nav.download')}
             </button>
             <button
-              onClick={() => scrollToSection("how-it-works")}
+              onClick={() => scrollToSection('how-it-works')}
               className="block w-full text-left text-white/70 hover:text-white py-2"
               style={{ fontFamily: "'Inter', sans-serif" }}
             >
-              {t("nav.howItWorks")}
+              {t('nav.howItWorks')}
             </button>
             <button
-              onClick={() => scrollToSection("changelog")}
+              onClick={() => scrollToSection('changelog')}
               className="block w-full text-left text-white/70 hover:text-white py-2"
               style={{ fontFamily: "'Inter', sans-serif" }}
             >
-              {t("nav.changelog")}
+              {t('nav.changelog')}
             </button>
             <button
               onClick={toggleLanguage}
               className="block w-full text-left text-white/50 hover:text-white py-2 text-sm"
               style={{ fontFamily: "'Inter', sans-serif" }}
             >
-              {i18n.language === "vi" ? "🇬🇧 English" : "🇻🇳 Tiếng Việt"}
+              {i18n.language === 'vi' ? '🇬🇧 English' : '🇻🇳 Tiếng Việt'}
             </button>
           </div>
         </div>

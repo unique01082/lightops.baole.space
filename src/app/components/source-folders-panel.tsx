@@ -1,5 +1,5 @@
-import { FolderOpen, X, Plus } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
+import { FolderOpen, Plus, X } from 'lucide-react';
+import { AnimatePresence, motion } from 'motion/react';
 import { useTranslation } from 'react-i18next';
 
 interface SourceFoldersPanelProps {
@@ -8,15 +8,19 @@ interface SourceFoldersPanelProps {
   onRemoveFolder: (index: number) => void;
 }
 
-export function SourceFoldersPanel({ folders, onAddFolder, onRemoveFolder }: SourceFoldersPanelProps) {
+export function SourceFoldersPanel({
+  folders,
+  onAddFolder,
+  onRemoveFolder,
+}: SourceFoldersPanelProps) {
   const { t } = useTranslation();
   return (
-    <div 
+    <div
       className="rounded-2xl p-4 backdrop-blur-lg border"
       style={{
         background: 'var(--glass-bg)',
         borderColor: 'var(--glass-border)',
-        boxShadow: '0 8px 32px 0 rgba(139, 92, 246, 0.1)'
+        boxShadow: '0 8px 32px 0 rgba(139, 92, 246, 0.1)',
       }}
     >
       <div className="mb-3">
@@ -27,7 +31,7 @@ export function SourceFoldersPanel({ folders, onAddFolder, onRemoveFolder }: Sou
           {t('sourceFolders.subtitle')}
         </p>
       </div>
-      
+
       <div className="space-y-2 mb-3">
         <AnimatePresence>
           {folders.length === 0 ? (
@@ -54,9 +58,12 @@ export function SourceFoldersPanel({ folders, onAddFolder, onRemoveFolder }: Sou
                 transition={{ duration: 0.15 }}
                 className="flex items-center gap-2 p-2 rounded-lg group hover:bg-white/5"
               >
-                <FolderOpen className="w-4 h-4 flex-shrink-0" style={{ color: 'var(--text-secondary)' }} />
-                <span 
-                  className="flex-1 text-sm truncate" 
+                <FolderOpen
+                  className="w-4 h-4 flex-shrink-0"
+                  style={{ color: 'var(--text-secondary)' }}
+                />
+                <span
+                  className="flex-1 text-sm truncate"
                   style={{ color: 'var(--text-primary)' }}
                   title={folder}
                 >
@@ -74,14 +81,14 @@ export function SourceFoldersPanel({ folders, onAddFolder, onRemoveFolder }: Sou
           )}
         </AnimatePresence>
       </div>
-      
+
       {folders.length > 0 && (
         <button
           onClick={onAddFolder}
           className="w-full py-2 rounded-lg border flex items-center justify-center gap-2 hover:bg-white/5 transition-colors"
           style={{
             borderColor: 'var(--glass-border)',
-            color: 'var(--text-secondary)'
+            color: 'var(--text-secondary)',
           }}
         >
           <Plus className="w-4 h-4" />

@@ -1,15 +1,9 @@
-import { useTranslation } from "react-i18next";
-import { ApertureLogo } from "./ApertureLogo";
-import { APP_DATA } from "../constants/app";
+import { useTranslation } from 'react-i18next';
+import { APP_DATA } from '../constants/app';
+import { ApertureLogo } from './ApertureLogo';
 
 export function Footer() {
   const { t } = useTranslation();
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
-  };
 
   return (
     <footer className="bg-black/40 backdrop-blur-sm">
@@ -32,13 +26,12 @@ export function Footer() {
             className="text-white/50 hover:text-white/70 transition-colors text-sm"
             style={{ fontFamily: "'Inter', sans-serif" }}
           >
-            Part of the{" "}
-            <span className="text-violet-400">{APP_DATA.partOfEcosystem}</span>{" "}
+            Part of the <span className="text-violet-400">{APP_DATA.partOfEcosystem}</span>{' '}
             ecosystem
           </a>
           <span className="hidden md:inline">·</span>
           <span style={{ fontFamily: "'Inter', sans-serif" }}>
-            {t("footer.copyrightPrefix")}{" "}
+            {t('footer.copyrightPrefix')}{' '}
             <a
               href={APP_DATA.authorUrl}
               target="_blank"
@@ -49,9 +42,7 @@ export function Footer() {
             </a>
           </span>
           <span className="hidden md:inline">·</span>
-          <span style={{ fontFamily: "'Inter', sans-serif" }}>
-            {t("footer.madeWith")}
-          </span>
+          <span style={{ fontFamily: "'Inter', sans-serif" }}>{t('footer.madeWith')}</span>
         </div>
       </div>
     </footer>

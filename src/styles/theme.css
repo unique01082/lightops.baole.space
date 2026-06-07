@@ -18,11 +18,11 @@
   --accent-lightops: linear-gradient(135deg, #8b5cf6, #d946ef);
 
   --glass-bg: rgba(255, 255, 255, 0.05);
-  --glass-border: rgba(255, 255, 255, 0.10);
+  --glass-border: rgba(255, 255, 255, 0.1);
   --glass-divider: rgba(255, 255, 255, 0.08);
 
   --text-primary: #ffffff;
-  --text-secondary: rgba(255, 255, 255, 0.70);
+  --text-secondary: rgba(255, 255, 255, 0.7);
   --text-muted: rgba(255, 255, 255, 0.45);
 
   --log-ok: #38ef7d;
@@ -43,7 +43,7 @@
   --popover-foreground: #ffffff;
   --primary: #8b5cf6;
   --primary-foreground: #ffffff;
-  --secondary: rgba(255, 255, 255, 0.10);
+  --secondary: rgba(255, 255, 255, 0.1);
   --secondary-foreground: #ffffff;
   --muted: rgba(255, 255, 255, 0.05);
   --muted-foreground: rgba(255, 255, 255, 0.45);
@@ -51,10 +51,10 @@
   --accent-foreground: #ffffff;
   --destructive: #f5576c;
   --destructive-foreground: #ffffff;
-  --border: rgba(255, 255, 255, 0.10);
+  --border: rgba(255, 255, 255, 0.1);
   --input: transparent;
   --input-background: rgba(255, 255, 255, 0.05);
-  --switch-background: rgba(255, 255, 255, 0.20);
+  --switch-background: rgba(255, 255, 255, 0.2);
   --font-weight-medium: 500;
   --font-weight-normal: 400;
   --ring: rgba(139, 92, 246, 0.5);

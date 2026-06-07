@@ -1,5 +1,5 @@
-import { motion, AnimatePresence } from 'motion/react';
-import { X, Globe, Settings as SettingsIcon } from 'lucide-react';
+import { Globe, Settings as SettingsIcon, X } from 'lucide-react';
+import { AnimatePresence, motion } from 'motion/react';
 import { useTranslation } from 'react-i18next';
 
 interface SettingsModalProps {
@@ -34,10 +34,18 @@ const CAMERA_OPTIONS = [
 ];
 
 export function SettingsModal({
-  isOpen, onClose,
-  defaultCamera, defaultFileOperation, defaultRecursiveScan, defaultOrganizeByDate, language,
-  onDefaultCameraChange, onDefaultFileOperationChange, onDefaultRecursiveScanChange,
-  onDefaultOrganizeByDateChange, onLanguageChange
+  isOpen,
+  onClose,
+  defaultCamera,
+  defaultFileOperation,
+  defaultRecursiveScan,
+  defaultOrganizeByDate,
+  language,
+  onDefaultCameraChange,
+  onDefaultFileOperationChange,
+  onDefaultRecursiveScanChange,
+  onDefaultOrganizeByDateChange,
+  onLanguageChange,
 }: SettingsModalProps) {
   const { t } = useTranslation();
   return (
@@ -45,7 +53,9 @@ export function SettingsModal({
       {isOpen && (
         <>
           <motion.div
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             onClick={onClose}
             className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
           />
@@ -56,18 +66,35 @@ export function SettingsModal({
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ type: 'spring', duration: 0.4 }}
               className="w-full max-w-lg rounded-3xl border backdrop-blur-xl shadow-2xl"
-              style={{ background: 'rgba(15, 12, 41, 0.95)', borderColor: 'var(--glass-border)', boxShadow: '0 24px 64px 0 rgba(139, 92, 246, 0.2)' }}
+              style={{
+                background: 'rgba(15, 12, 41, 0.95)',
+                borderColor: 'var(--glass-border)',
+                boxShadow: '0 24px 64px 0 rgba(139, 92, 246, 0.2)',
+              }}
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="flex items-center justify-between p-6 border-b" style={{ borderColor: 'var(--glass-divider)' }}>
+              <div
+                className="flex items-center justify-between p-6 border-b"
+                style={{ borderColor: 'var(--glass-divider)' }}
+              >
                 <div className="flex items-center gap-3">
                   <SettingsIcon className="w-5 h-5" style={{ color: '#8b5cf6' }} />
                   <div>
-                    <h2 className="text-xl text-white" style={{ fontFamily: 'var(--font-heading)' }}>{t('settings.title')}</h2>
-                    <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>{t('settings.subtitle')}</p>
+                    <h2
+                      className="text-xl text-white"
+                      style={{ fontFamily: 'var(--font-heading)' }}
+                    >
+                      {t('settings.title')}
+                    </h2>
+                    <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
+                      {t('settings.subtitle')}
+                    </p>
                   </div>
                 </div>
-                <button onClick={onClose} className="p-2 rounded-lg hover:bg-white/10 transition-colors">
+                <button
+                  onClick={onClose}
+                  className="p-2 rounded-lg hover:bg-white/10 transition-colors"
+                >
                   <X className="w-5 h-5" style={{ color: 'var(--text-secondary)' }} />
                 </button>
               </div>
@@ -76,18 +103,25 @@ export function SettingsModal({
                 <div>
                   <div className="flex items-center gap-2 mb-3">
                     <Globe className="w-4 h-4" style={{ color: 'var(--text-secondary)' }} />
-                    <h3 className="text-sm font-semibold text-white" style={{ fontFamily: 'var(--font-heading)' }}>{t('settings.language')}</h3>
+                    <h3
+                      className="text-sm font-semibold text-white"
+                      style={{ fontFamily: 'var(--font-heading)' }}
+                    >
+                      {t('settings.language')}
+                    </h3>
                   </div>
                   <div className="flex gap-2">
-                    {LANGUAGES.map(lang => (
+                    {LANGUAGES.map((lang) => (
                       <button
                         key={lang.code}
                         onClick={() => onLanguageChange(lang.code)}
                         className="flex-1 px-4 py-2.5 rounded-lg border transition-all text-sm"
                         style={{
-                          background: language === lang.code ? 'var(--accent-lightops)' : 'transparent',
-                          borderColor: language === lang.code ? 'transparent' : 'var(--glass-border)',
-                          color: language === lang.code ? 'white' : 'var(--text-secondary)'
+                          background:
+                            language === lang.code ? 'var(--accent-lightops)' : 'transparent',
+                          borderColor:
+                            language === lang.code ? 'transparent' : 'var(--glass-border)',
+                          color: language === lang.code ? 'white' : 'var(--text-secondary)',
                         }}
                       >
                         {lang.name}
@@ -99,45 +133,79 @@ export function SettingsModal({
                 <div className="h-px" style={{ background: 'var(--glass-divider)' }} />
 
                 <div>
-                  <h3 className="text-sm font-semibold text-white mb-4" style={{ fontFamily: 'var(--font-heading)' }}>{t('settings.defaults')}</h3>
+                  <h3
+                    className="text-sm font-semibold text-white mb-4"
+                    style={{ fontFamily: 'var(--font-heading)' }}
+                  >
+                    {t('settings.defaults')}
+                  </h3>
                   <div className="space-y-3">
                     <div>
-                      <label className="block text-xs mb-1.5" style={{ color: 'var(--text-secondary)' }}>{t('settings.defaultCamera')}</label>
+                      <label
+                        className="block text-xs mb-1.5"
+                        style={{ color: 'var(--text-secondary)' }}
+                      >
+                        {t('settings.defaultCamera')}
+                      </label>
                       <select
                         value={defaultCamera}
                         onChange={(e) => onDefaultCameraChange(e.target.value)}
                         className="w-full px-3 py-2 rounded-lg border text-sm"
-                        style={{ background: 'var(--input-background)', borderColor: 'var(--glass-border)', color: 'var(--text-primary)' }}
+                        style={{
+                          background: 'var(--input-background)',
+                          borderColor: 'var(--glass-border)',
+                          color: 'var(--text-primary)',
+                        }}
                       >
-                        {CAMERA_OPTIONS.map(o => (
-                          <option key={o.value} value={o.value} className="bg-[#1a1535]">{o.label}</option>
+                        {CAMERA_OPTIONS.map((o) => (
+                          <option key={o.value} value={o.value} className="bg-[#1a1535]">
+                            {o.label}
+                          </option>
                         ))}
                       </select>
                     </div>
                     <div>
-                      <label className="block text-xs mb-1.5" style={{ color: 'var(--text-secondary)' }}>{t('settings.defaultFileOp')}</label>
+                      <label
+                        className="block text-xs mb-1.5"
+                        style={{ color: 'var(--text-secondary)' }}
+                      >
+                        {t('settings.defaultFileOp')}
+                      </label>
                       <div className="flex gap-2">
-                        {(['copy', 'move'] as const).map(op => (
+                        {(['copy', 'move'] as const).map((op) => (
                           <button
                             key={op}
                             onClick={() => onDefaultFileOperationChange(op)}
                             className="flex-1 px-3 py-2 rounded-lg text-sm capitalize transition-all"
                             style={{
-                              background: defaultFileOperation === op ? 'var(--accent-lightops)' : 'transparent',
+                              background:
+                                defaultFileOperation === op
+                                  ? 'var(--accent-lightops)'
+                                  : 'transparent',
                               border: '1px solid',
-                              borderColor: defaultFileOperation === op ? 'transparent' : 'var(--glass-border)',
-                              color: defaultFileOperation === op ? 'white' : 'var(--text-secondary)'
+                              borderColor:
+                                defaultFileOperation === op ? 'transparent' : 'var(--glass-border)',
+                              color:
+                                defaultFileOperation === op ? 'white' : 'var(--text-secondary)',
                             }}
-                          >{t(`settings.operation${op.charAt(0).toUpperCase() + op.slice(1)}`)}</button>
+                          >
+                            {t(`settings.operation${op.charAt(0).toUpperCase() + op.slice(1)}`)}
+                          </button>
                         ))}
                       </div>
                     </div>
                     <div className="flex items-center justify-between py-2">
-                      <label className="text-sm" style={{ color: 'var(--text-primary)' }}>{t('settings.defaultRecursive')}</label>
+                      <label className="text-sm" style={{ color: 'var(--text-primary)' }}>
+                        {t('settings.defaultRecursive')}
+                      </label>
                       <button
                         onClick={() => onDefaultRecursiveScanChange(!defaultRecursiveScan)}
                         className="relative w-11 h-6 rounded-full flex-shrink-0"
-                        style={{ background: defaultRecursiveScan ? 'var(--accent)' : 'var(--switch-background)' }}
+                        style={{
+                          background: defaultRecursiveScan
+                            ? 'var(--accent)'
+                            : 'var(--switch-background)',
+                        }}
                       >
                         <motion.div
                           animate={{ x: defaultRecursiveScan ? 20 : 2 }}
@@ -147,11 +215,17 @@ export function SettingsModal({
                       </button>
                     </div>
                     <div className="flex items-center justify-between py-2">
-                      <label className="text-sm" style={{ color: 'var(--text-primary)' }}>{t('settings.defaultOrganize')}</label>
+                      <label className="text-sm" style={{ color: 'var(--text-primary)' }}>
+                        {t('settings.defaultOrganize')}
+                      </label>
                       <button
                         onClick={() => onDefaultOrganizeByDateChange(!defaultOrganizeByDate)}
                         className="relative w-11 h-6 rounded-full flex-shrink-0"
-                        style={{ background: defaultOrganizeByDate ? 'var(--accent)' : 'var(--switch-background)' }}
+                        style={{
+                          background: defaultOrganizeByDate
+                            ? 'var(--accent)'
+                            : 'var(--switch-background)',
+                        }}
                       >
                         <motion.div
                           animate={{ x: defaultOrganizeByDate ? 20 : 2 }}
@@ -164,7 +238,10 @@ export function SettingsModal({
                 </div>
               </div>
 
-              <div className="p-6 border-t flex justify-end" style={{ borderColor: 'var(--glass-divider)' }}>
+              <div
+                className="p-6 border-t flex justify-end"
+                style={{ borderColor: 'var(--glass-divider)' }}
+              >
                 <button
                   onClick={onClose}
                   className="px-6 py-2.5 rounded-lg text-white transition-all"

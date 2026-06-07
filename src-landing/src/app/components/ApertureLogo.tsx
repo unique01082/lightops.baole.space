@@ -3,7 +3,7 @@ interface ApertureLogoProps {
   className?: string;
 }
 
-export function ApertureLogo({ size = 24, className = "" }: ApertureLogoProps) {
+export function ApertureLogo({ size = 24, className = '' }: ApertureLogoProps) {
   return (
     <svg
       width={size}
@@ -33,12 +33,60 @@ export function ApertureLogo({ size = 24, className = "" }: ApertureLogoProps) {
       />
       <circle cx="50" cy="50" r="12" fill="none" stroke="url(#apertureGradient)" strokeWidth="3" />
       {/* Aperture blade lines */}
-      <line x1="50" y1="10" x2="50" y2="25" stroke="url(#apertureGradient)" strokeWidth="2" opacity="0.6" />
-      <line x1="75" y1="25" x2="68" y2="35" stroke="url(#apertureGradient)" strokeWidth="2" opacity="0.6" />
-      <line x1="75" y1="50" x2="65" y2="50" stroke="url(#apertureGradient)" strokeWidth="2" opacity="0.6" />
-      <line x1="50" y1="65" x2="50" y2="55" stroke="url(#apertureGradient)" strokeWidth="2" opacity="0.6" />
-      <line x1="25" y1="50" x2="35" y2="50" stroke="url(#apertureGradient)" strokeWidth="2" opacity="0.6" />
-      <line x1="25" y1="25" x2="32" y2="35" stroke="url(#apertureGradient)" strokeWidth="2" opacity="0.6" />
+      <line
+        x1="50"
+        y1="10"
+        x2="50"
+        y2="25"
+        stroke="url(#apertureGradient)"
+        strokeWidth="2"
+        opacity="0.6"
+      />
+      <line
+        x1="75"
+        y1="25"
+        x2="68"
+        y2="35"
+        stroke="url(#apertureGradient)"
+        strokeWidth="2"
+        opacity="0.6"
+      />
+      <line
+        x1="75"
+        y1="50"
+        x2="65"
+        y2="50"
+        stroke="url(#apertureGradient)"
+        strokeWidth="2"
+        opacity="0.6"
+      />
+      <line
+        x1="50"
+        y1="65"
+        x2="50"
+        y2="55"
+        stroke="url(#apertureGradient)"
+        strokeWidth="2"
+        opacity="0.6"
+      />
+      <line
+        x1="25"
+        y1="50"
+        x2="35"
+        y2="50"
+        stroke="url(#apertureGradient)"
+        strokeWidth="2"
+        opacity="0.6"
+      />
+      <line
+        x1="25"
+        y1="25"
+        x2="32"
+        y2="35"
+        stroke="url(#apertureGradient)"
+        strokeWidth="2"
+        opacity="0.6"
+      />
     </svg>
   );
 }

@@ -235,6 +235,36 @@ pub fn cancel_execution() {
     cancel_flag().store(true, Ordering::SeqCst);
 }
 
+fn is_cross_device_error(error: &std::io::Error) -> bool {
+    #[cfg(unix)]
+    {
+        // EXDEV: invalid cross-device link.
+        if error.raw_os_error() == Some(18) {
+            return true;
+        }
+    }
+
+    #[cfg(windows)]
+    {
+        // ERROR_NOT_SAME_DEVICE.
+        if error.raw_os_error() == Some(17) {
+            return true;
+        }
+    }
+
+    false
+}
+
+fn move_file_native(old_path: &Path, new_path: &Path) -> Result<&'static str, std::io::Error> {
+    match std::fs::rename(old_path, new_path) {
+        Ok(()) => Ok("MOVE"),
+        Err(error) if is_cross_device_error(&error) => std::fs::copy(old_path, new_path)
+            .and_then(|_| std::fs::remove_file(old_path))
+            .map(|_| "MOVE"),
+        Err(error) => Err(error),
+    }
+}
+
 /// Execute the rename plan, emitting "progress" events to the frontend.
 #[tauri::command]
 pub async fn execute_plan(
@@ -374,9 +404,7 @@ pub async fn execute_plan(
         // Perform the actual file operation
         let result: Result<&str, std::io::Error> = if opts.output_dir.is_some() {
             if opts.file_op == "move" {
-                std::fs::copy(old_path, &new_path)
-                    .and_then(|_| std::fs::remove_file(old_path))
-                    .map(|_| "MOVE")
+                move_file_native(old_path, &new_path)
             } else {
                 std::fs::copy(old_path, &new_path).map(|_| "COPY")
             }

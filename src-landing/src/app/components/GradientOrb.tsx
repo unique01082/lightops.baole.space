@@ -1,18 +1,24 @@
-import { motion } from "motion/react";
+import { motion } from 'motion/react';
 
 interface GradientOrbProps {
-  color: "violet" | "fuchsia" | "blue";
+  color: 'violet' | 'fuchsia' | 'blue';
   size?: number;
   top?: string;
   left?: string;
   delay?: number;
 }
 
-export function GradientOrb({ color, size = 400, top = "20%", left = "20%", delay = 0 }: GradientOrbProps) {
+export function GradientOrb({
+  color,
+  size = 400,
+  top = '20%',
+  left = '20%',
+  delay = 0,
+}: GradientOrbProps) {
   const colors = {
-    violet: "from-violet-500/30 to-purple-500/20",
-    fuchsia: "from-fuchsia-500/30 to-pink-500/20",
-    blue: "from-blue-500/30 to-cyan-500/20",
+    violet: 'from-violet-500/30 to-purple-500/20',
+    fuchsia: 'from-fuchsia-500/30 to-pink-500/20',
+    blue: 'from-blue-500/30 to-cyan-500/20',
   };
 
   return (
@@ -32,7 +38,7 @@ export function GradientOrb({ color, size = 400, top = "20%", left = "20%", dela
       transition={{
         duration: 20,
         repeat: Infinity,
-        ease: "easeInOut",
+        ease: 'easeInOut',
         delay,
       }}
     />

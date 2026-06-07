@@ -1,51 +1,78 @@
-import { ApertureLogo } from "./ApertureLogo";
+import { ApertureLogo } from './ApertureLogo';
 
 interface AppMockupProps {
   width?: number;
-  state?: "idle" | "dry-run" | "complete";
+  state?: 'idle' | 'dry-run' | 'complete';
 }
 
-export function AppMockup({ width = 750, state = "idle" }: AppMockupProps) {
+export function AppMockup({ width = 750, state = 'idle' }: AppMockupProps) {
   const logEntries = {
     idle: [
-      { type: "info", text: "Ready to process files..." },
-      { type: "info", text: "Add source folders to begin" },
+      { type: 'info', text: 'Ready to process files...' },
+      { type: 'info', text: 'Add source folders to begin' },
     ],
-    "dry-run": [
-      { type: "dry", text: "[DRY] D:\\DCIM\\100NIKON\\DSC_0001.NEF → D:\\Sorted\\20240315_143022_0001.nef" },
-      { type: "dry", text: "[DRY] D:\\DCIM\\100NIKON\\DSC_0001.JPG → D:\\Sorted\\20240315_143022_0001.jpg" },
-      { type: "dry", text: "[DRY] D:\\DCIM\\100NIKON\\DSC_0002.NEF → D:\\Sorted\\20240315_143025_0002.nef" },
-      { type: "skip", text: "[SKIP] E:\\DCIM\\101NIKON\\DSC_0045.NEF (no paired JPG)" },
-      { type: "dry", text: "[DRY] D:\\DCIM\\100NIKON\\DSC_0003.NEF → D:\\Sorted\\20240315_143030_0003.nef" },
+    'dry-run': [
+      {
+        type: 'dry',
+        text: '[DRY] D:\\DCIM\\100NIKON\\DSC_0001.NEF → D:\\Sorted\\20240315_143022_0001.nef',
+      },
+      {
+        type: 'dry',
+        text: '[DRY] D:\\DCIM\\100NIKON\\DSC_0001.JPG → D:\\Sorted\\20240315_143022_0001.jpg',
+      },
+      {
+        type: 'dry',
+        text: '[DRY] D:\\DCIM\\100NIKON\\DSC_0002.NEF → D:\\Sorted\\20240315_143025_0002.nef',
+      },
+      { type: 'skip', text: '[SKIP] E:\\DCIM\\101NIKON\\DSC_0045.NEF (no paired JPG)' },
+      {
+        type: 'dry',
+        text: '[DRY] D:\\DCIM\\100NIKON\\DSC_0003.NEF → D:\\Sorted\\20240315_143030_0003.nef',
+      },
     ],
     complete: [
-      { type: "ok", text: "[OK] D:\\DCIM\\100NIKON\\DSC_0001.NEF → D:\\Sorted\\20240315_143022_0001.nef" },
-      { type: "ok", text: "[OK] D:\\DCIM\\100NIKON\\DSC_0001.JPG → D:\\Sorted\\20240315_143022_0001.jpg" },
-      { type: "ok", text: "[OK] D:\\DCIM\\100NIKON\\DSC_0002.NEF → D:\\Sorted\\20240315_143025_0002.nef" },
-      { type: "ok", text: "[OK] D:\\DCIM\\100NIKON\\DSC_0002.JPG → D:\\Sorted\\20240315_143025_0002.jpg" },
-      { type: "skip", text: "[SKIP] E:\\DCIM\\101NIKON\\DSC_0045.NEF (no paired JPG)" },
-      { type: "ok", text: "[OK] D:\\DCIM\\100NIKON\\DSC_0003.NEF → D:\\Sorted\\20240315_143030_0003.nef" },
+      {
+        type: 'ok',
+        text: '[OK] D:\\DCIM\\100NIKON\\DSC_0001.NEF → D:\\Sorted\\20240315_143022_0001.nef',
+      },
+      {
+        type: 'ok',
+        text: '[OK] D:\\DCIM\\100NIKON\\DSC_0001.JPG → D:\\Sorted\\20240315_143022_0001.jpg',
+      },
+      {
+        type: 'ok',
+        text: '[OK] D:\\DCIM\\100NIKON\\DSC_0002.NEF → D:\\Sorted\\20240315_143025_0002.nef',
+      },
+      {
+        type: 'ok',
+        text: '[OK] D:\\DCIM\\100NIKON\\DSC_0002.JPG → D:\\Sorted\\20240315_143025_0002.jpg',
+      },
+      { type: 'skip', text: '[SKIP] E:\\DCIM\\101NIKON\\DSC_0045.NEF (no paired JPG)' },
+      {
+        type: 'ok',
+        text: '[OK] D:\\DCIM\\100NIKON\\DSC_0003.NEF → D:\\Sorted\\20240315_143030_0003.nef',
+      },
     ],
   };
 
   const stats = {
     idle: { ok: 0, skip: 0, err: 0 },
-    "dry-run": { ok: 0, skip: 1, err: 0 },
+    'dry-run': { ok: 0, skip: 1, err: 0 },
     complete: { ok: 42, skip: 1, err: 0 },
   };
 
   const progress = {
     idle: 0,
-    "dry-run": 0,
+    'dry-run': 0,
     complete: 35,
   };
 
   const logTypeColors = {
-    ok: "text-emerald-400",
-    dry: "text-gray-400",
-    skip: "text-amber-400",
-    err: "text-red-400",
-    info: "text-white/50",
+    ok: 'text-emerald-400',
+    dry: 'text-gray-400',
+    skip: 'text-amber-400',
+    err: 'text-red-400',
+    info: 'text-white/50',
   };
 
   return (
@@ -58,7 +85,10 @@ export function AppMockup({ width = 750, state = "idle" }: AppMockupProps) {
         <div className="flex items-center gap-3">
           <ApertureLogo size={20} />
           <div>
-            <div className="text-white font-semibold text-sm" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+            <div
+              className="text-white font-semibold text-sm"
+              style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+            >
               LightOps
             </div>
             <div className="text-white/50 text-xs">Photo File Manager</div>
@@ -78,14 +108,20 @@ export function AppMockup({ width = 750, state = "idle" }: AppMockupProps) {
           <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-4 mb-3">
             <div className="text-white/70 text-xs mb-2 font-semibold">Source Folders</div>
             <div className="space-y-1">
-              <div className="text-xs text-white/60 bg-white/5 px-2 py-1 rounded font-mono">D:\DCIM\100NIKON</div>
-              <div className="text-xs text-white/60 bg-white/5 px-2 py-1 rounded font-mono">E:\DCIM\101NIKON</div>
+              <div className="text-xs text-white/60 bg-white/5 px-2 py-1 rounded font-mono">
+                D:\DCIM\100NIKON
+              </div>
+              <div className="text-xs text-white/60 bg-white/5 px-2 py-1 rounded font-mono">
+                E:\DCIM\101NIKON
+              </div>
             </div>
           </div>
 
           <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-4 mb-3">
             <div className="text-white/70 text-xs mb-2 font-semibold">Output Folder</div>
-            <div className="text-xs text-white/60 bg-white/5 px-2 py-1 rounded font-mono">D:\Sorted</div>
+            <div className="text-xs text-white/60 bg-white/5 px-2 py-1 rounded font-mono">
+              D:\Sorted
+            </div>
           </div>
 
           <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-4 mb-3">
@@ -113,14 +149,23 @@ export function AppMockup({ width = 750, state = "idle" }: AppMockupProps) {
             <div className="flex items-center justify-between mb-3">
               <div className="text-white/70 text-xs font-semibold">Log Output</div>
               <div className="flex gap-2">
-                <span className="text-xs px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400">✅ {stats[state].ok}</span>
-                <span className="text-xs px-2 py-0.5 rounded bg-amber-500/20 text-amber-400">⚠ {stats[state].skip}</span>
-                <span className="text-xs px-2 py-0.5 rounded bg-red-500/20 text-red-400">❌ {stats[state].err}</span>
+                <span className="text-xs px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400">
+                  ✅ {stats[state].ok}
+                </span>
+                <span className="text-xs px-2 py-0.5 rounded bg-amber-500/20 text-amber-400">
+                  ⚠ {stats[state].skip}
+                </span>
+                <span className="text-xs px-2 py-0.5 rounded bg-red-500/20 text-red-400">
+                  ❌ {stats[state].err}
+                </span>
               </div>
             </div>
             <div className="space-y-1 font-mono text-xs">
               {logEntries[state].map((entry, i) => (
-                <div key={i} className={`${logTypeColors[entry.type as keyof typeof logTypeColors]} truncate`}>
+                <div
+                  key={i}
+                  className={`${logTypeColors[entry.type as keyof typeof logTypeColors]} truncate`}
+                >
                   {entry.text}
                 </div>
               ))}
@@ -130,7 +175,7 @@ export function AppMockup({ width = 750, state = "idle" }: AppMockupProps) {
       </div>
 
       {/* Progress bar */}
-      {state === "complete" && (
+      {state === 'complete' && (
         <div className="bg-black/60 backdrop-blur-sm border-t border-white/10 px-4 py-3">
           <div className="flex items-center justify-between mb-2">
             <span className="text-white/70 text-xs">Processing files...</span>

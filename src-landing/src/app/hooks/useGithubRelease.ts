@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { APP_DATA } from "../constants/app";
+import { useEffect, useState } from 'react';
+import { APP_DATA } from '../constants/app';
 
 export interface ReleaseAssets {
   windowsExe: string;
@@ -37,7 +37,7 @@ const INITIAL_ASSETS: ReleaseAssets = {
 
 function findAsset(
   assets: Array<{ name: string; browser_download_url: string }>,
-  match: (name: string) => boolean
+  match: (name: string) => boolean,
 ): string {
   return assets.find((a) => match(a.name))?.browser_download_url ?? FALLBACK_URL;
 }
@@ -52,7 +52,7 @@ export function useGithubRelease(): GithubRelease {
   });
 
   useEffect(() => {
-    const repoPath = APP_DATA.githubRepo.replace("https://github.com/", "");
+    const repoPath = APP_DATA.githubRepo.replace('https://github.com/', '');
     const apiUrl = `https://api.github.com/repos/${repoPath}/releases/latest`;
 
     fetch(apiUrl)
@@ -61,23 +61,43 @@ export function useGithubRelease(): GithubRelease {
         return r.json();
       })
       .then((data) => {
-        const rawAssets: Array<{ name: string; browser_download_url: string }> =
-          data.assets ?? [];
+        const rawAssets: Array<{ name: string; browser_download_url: string }> = data.assets ?? [];
 
         setState({
-          version:
-            (data.tag_name as string)?.replace(/^v/, "") ?? APP_DATA.version,
+          version: (data.tag_name as string)?.replace(/^v/, '') ?? APP_DATA.version,
           releasePageUrl: (data.html_url as string) ?? FALLBACK_URL,
           assets: {
-            windowsExe: findAsset(rawAssets, (n) => n.endsWith("-setup.exe") && !n.toLowerCase().includes("arm64") && !n.toLowerCase().includes("aarch64")),
-            windowsMsi: findAsset(rawAssets, (n) => n.endsWith(".msi") && !n.toLowerCase().includes("arm64") && !n.toLowerCase().includes("aarch64")),
-            windowsArm64Exe: findAsset(rawAssets, (n) => n.endsWith("-setup.exe") && (n.toLowerCase().includes("arm64") || n.toLowerCase().includes("aarch64"))),
-            windowsArm64Msi: findAsset(rawAssets, (n) => n.endsWith(".msi") && (n.toLowerCase().includes("arm64") || n.toLowerCase().includes("aarch64"))),
-            macDmg: findAsset(rawAssets, (n) => n.endsWith(".dmg")),
-            macTarGz: findAsset(rawAssets, (n) => n.endsWith(".app.tar.gz")),
-            linuxAppImage: findAsset(rawAssets, (n) => n.endsWith(".AppImage")),
-            linuxDeb: findAsset(rawAssets, (n) => n.endsWith(".deb")),
-            linuxRpm: findAsset(rawAssets, (n) => n.endsWith(".rpm")),
+            windowsExe: findAsset(
+              rawAssets,
+              (n) =>
+                n.endsWith('-setup.exe') &&
+                !n.toLowerCase().includes('arm64') &&
+                !n.toLowerCase().includes('aarch64'),
+            ),
+            windowsMsi: findAsset(
+              rawAssets,
+              (n) =>
+                n.endsWith('.msi') &&
+                !n.toLowerCase().includes('arm64') &&
+                !n.toLowerCase().includes('aarch64'),
+            ),
+            windowsArm64Exe: findAsset(
+              rawAssets,
+              (n) =>
+                n.endsWith('-setup.exe') &&
+                (n.toLowerCase().includes('arm64') || n.toLowerCase().includes('aarch64')),
+            ),
+            windowsArm64Msi: findAsset(
+              rawAssets,
+              (n) =>
+                n.endsWith('.msi') &&
+                (n.toLowerCase().includes('arm64') || n.toLowerCase().includes('aarch64')),
+            ),
+            macDmg: findAsset(rawAssets, (n) => n.endsWith('.dmg')),
+            macTarGz: findAsset(rawAssets, (n) => n.endsWith('.app.tar.gz')),
+            linuxAppImage: findAsset(rawAssets, (n) => n.endsWith('.AppImage')),
+            linuxDeb: findAsset(rawAssets, (n) => n.endsWith('.deb')),
+            linuxRpm: findAsset(rawAssets, (n) => n.endsWith('.rpm')),
           },
           loading: false,
           error: false,

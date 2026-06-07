@@ -28,16 +28,16 @@ export function CameraFormatPanel({
   fileType,
   onCameraChange,
   onRawExtensionsChange,
-  onFileTypeChange
+  onFileTypeChange,
 }: CameraFormatPanelProps) {
   const { t } = useTranslation();
   return (
-    <div 
+    <div
       className="rounded-2xl p-4 backdrop-blur-lg border"
       style={{
         background: 'var(--glass-bg)',
         borderColor: 'var(--glass-border)',
-        boxShadow: '0 8px 32px 0 rgba(139, 92, 246, 0.1)'
+        boxShadow: '0 8px 32px 0 rgba(139, 92, 246, 0.1)',
       }}
     >
       <div className="mb-3">
@@ -45,7 +45,7 @@ export function CameraFormatPanel({
           {t('cameraFormat.title')}
         </h2>
       </div>
-      
+
       <div className="space-y-2.5">
         <div>
           <label className="block text-xs mb-1" style={{ color: 'var(--text-secondary)' }}>
@@ -56,7 +56,7 @@ export function CameraFormatPanel({
               value={cameraPreset}
               onChange={(e) => {
                 onCameraChange(e.target.value);
-                const preset = CAMERA_PRESETS.find(p => p.value === e.target.value);
+                const preset = CAMERA_PRESETS.find((p) => p.value === e.target.value);
                 if (preset && preset.extensions) {
                   onRawExtensionsChange(preset.extensions);
                 }
@@ -65,19 +65,22 @@ export function CameraFormatPanel({
               style={{
                 background: 'var(--input-background)',
                 borderColor: 'var(--glass-border)',
-                color: 'var(--text-primary)'
+                color: 'var(--text-primary)',
               }}
             >
-              {CAMERA_PRESETS.map(preset => (
+              {CAMERA_PRESETS.map((preset) => (
                 <option key={preset.value} value={preset.value} className="bg-[#1a1535]">
                   {preset.label}
                 </option>
               ))}
             </select>
-            <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" style={{ color: 'var(--text-muted)' }} />
+            <ChevronDown
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
+              style={{ color: 'var(--text-muted)' }}
+            />
           </div>
         </div>
-        
+
         <div>
           <label className="block text-xs mb-1" style={{ color: 'var(--text-secondary)' }}>
             {t('cameraFormat.rawExtensions')}
@@ -91,30 +94,35 @@ export function CameraFormatPanel({
             style={{
               background: 'var(--input-background)',
               borderColor: 'var(--glass-border)',
-              color: 'var(--text-primary)'
+              color: 'var(--text-primary)',
             }}
           />
         </div>
-        
+
         <div>
           <label className="block text-xs mb-1" style={{ color: 'var(--text-secondary)' }}>
             {t('cameraFormat.fileType')}
           </label>
           <div className="flex gap-2">
-            {([
-              { value: 'both', key: 'cameraFormat.fileTypes.both' },
-              { value: 'jpg', key: 'cameraFormat.fileTypes.jpg' },
-              { value: 'raw', key: 'cameraFormat.fileTypes.raw' }
-            ] as const).map(option => (
+            {(
+              [
+                { value: 'both', key: 'cameraFormat.fileTypes.both' },
+                { value: 'jpg', key: 'cameraFormat.fileTypes.jpg' },
+                { value: 'raw', key: 'cameraFormat.fileTypes.raw' },
+              ] as const
+            ).map((option) => (
               <button
                 key={option.value}
                 onClick={() => onFileTypeChange(option.value)}
                 className="flex-1 px-3 py-2 rounded-full text-xs transition-all"
                 style={{
-                  background: fileType === option.value ? 'var(--accent-lightops)' : 'var(--input-background)',
+                  background:
+                    fileType === option.value
+                      ? 'var(--accent-lightops)'
+                      : 'var(--input-background)',
                   borderColor: fileType === option.value ? 'transparent' : 'var(--glass-border)',
                   color: fileType === option.value ? 'white' : 'var(--text-secondary)',
-                  border: fileType === option.value ? 'none' : '1px solid'
+                  border: fileType === option.value ? 'none' : '1px solid',
                 }}
               >
                 {t(option.key)}

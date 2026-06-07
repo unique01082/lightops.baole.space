@@ -1,5 +1,5 @@
-import { GradientButton } from "./GradientButton";
-import { GhostButton } from "./GhostButton";
+import { GhostButton } from './GhostButton';
+import { GradientButton } from './GradientButton';
 
 interface PlatformCardProps {
   name: string;
@@ -30,14 +30,14 @@ export function PlatformCard({
     <div
       className={`relative h-full bg-white/5 backdrop-blur-sm border rounded-2xl p-8 transition-all duration-300 hover:-translate-y-1 ${
         highlight
-          ? "border-violet-500/50 shadow-lg shadow-violet-500/20"
-          : "border-white/10 hover:border-white/20"
+          ? 'border-violet-500/50 shadow-lg shadow-violet-500/20'
+          : 'border-white/10 hover:border-white/20'
       }`}
     >
       {/* Gradient border effect */}
       <div
         className={`absolute inset-0 rounded-2xl bg-gradient-to-br from-violet-500/10 to-fuchsia-500/10 ${
-          highlight ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+          highlight ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
         } transition-opacity duration-300`}
       />
 
@@ -62,10 +62,7 @@ export function PlatformCard({
         </h3>
 
         {/* Description */}
-        <p
-          className="text-white/60 mb-6"
-          style={{ fontFamily: "'Inter', sans-serif" }}
-        >
+        <p className="text-white/60 mb-6" style={{ fontFamily: "'Inter', sans-serif" }}>
           {description}
         </p>
 

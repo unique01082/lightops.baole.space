@@ -1,95 +1,119 @@
 export const FEATURES = [
   {
-    id: "source-folders",
-    icon: "📂",
-    title: "Multi-Source Folder Support",
-    description: "Add multiple source folders at once — perfect for pulling photos from several SD cards or camera bodies in a single run.",
-    detail: "Drag & drop or browse to add folders. Each folder path is shown in full. Remove any folder with one click.",
+    id: 'source-folders',
+    icon: '📂',
+    title: 'Multi-Source Folder Support',
+    description:
+      'Add multiple source folders at once — perfect for pulling photos from several SD cards or camera bodies in a single run.',
+    detail:
+      'Drag & drop or browse to add folders. Each folder path is shown in full. Remove any folder with one click.',
   },
   {
-    id: "exif-based-rename",
-    icon: "🗓️",
-    title: "EXIF-Based Rename",
-    description: "Reads the actual shooting date and time from your photo's EXIF metadata — not the file creation date, which can change during copy.",
-    detail: "Uses kamadak-exif under the hood for accurate EXIF parsing. Works on both RAW and JPG files.",
+    id: 'exif-based-rename',
+    icon: '🗓️',
+    title: 'EXIF-Based Rename',
+    description:
+      "Reads the actual shooting date and time from your photo's EXIF metadata — not the file creation date, which can change during copy.",
+    detail:
+      'Uses kamadak-exif under the hood for accurate EXIF parsing. Works on both RAW and JPG files.',
   },
   {
-    id: "camera-formats",
-    icon: "📷",
-    title: "Multi-Camera RAW Support",
-    description: "Built-in presets for Nikon (.nef, .nrw), Canon (.cr2, .cr3), Sony (.arw), Fujifilm (.raf), Panasonic (.rw2), Olympus (.orf), Pentax (.pef, .dng), Leica (.dng), and more.",
-    detail: "Custom RAW extension input lets you add any format not in the presets. Process JPG only, RAW only, or both together.",
+    id: 'camera-formats',
+    icon: '📷',
+    title: 'Multi-Camera RAW Support',
+    description:
+      'Built-in presets for Nikon (.nef, .nrw), Canon (.cr2, .cr3), Sony (.arw), Fujifilm (.raf), Panasonic (.rw2), Olympus (.orf), Pentax (.pef, .dng), Leica (.dng), and more.',
+    detail:
+      'Custom RAW extension input lets you add any format not in the presets. Process JPG only, RAW only, or both together.',
   },
   {
-    id: "rename-formats",
-    icon: "✏️",
-    title: "Flexible Filename Formats",
-    description: "Choose from 4 date-time formats, add a custom prefix, and set the starting sequence number. Preview the output filename in real time before running.",
-    detail: "Available formats:\n· YYYYMMDD_HHMMSS_NNNN  (e.g. 20240315_143022_0001.nef)\n· YYYY-MM-DD_HH-MM-SS_NNNN  (e.g. 2024-03-15_14-30-22_0001.nef)\n· YYYYMMDD_NNNN  (date only, e.g. 20240315_0001.nef)\n· NNNN  (sequence only, e.g. 0001.nef)",
+    id: 'rename-formats',
+    icon: '✏️',
+    title: 'Flexible Filename Formats',
+    description:
+      'Choose from 4 date-time formats, add a custom prefix, and set the starting sequence number. Preview the output filename in real time before running.',
+    detail:
+      'Available formats:\n· YYYYMMDD_HHMMSS_NNNN  (e.g. 20240315_143022_0001.nef)\n· YYYY-MM-DD_HH-MM-SS_NNNN  (e.g. 2024-03-15_14-30-22_0001.nef)\n· YYYYMMDD_NNNN  (date only, e.g. 20240315_0001.nef)\n· NNNN  (sequence only, e.g. 0001.nef)',
   },
   {
-    id: "dry-run",
-    icon: "🔍",
-    title: "Dry Run Mode",
-    description: "Preview exactly what will happen before touching a single file. The log shows all source → destination paths without performing any file operations.",
-    detail: "Run a dry run first, review the log, then execute with confidence. Zero risk.",
+    id: 'dry-run',
+    icon: '🔍',
+    title: 'Dry Run Mode',
+    description:
+      'Preview exactly what will happen before touching a single file. The log shows all source → destination paths without performing any file operations.',
+    detail: 'Run a dry run first, review the log, then execute with confidence. Zero risk.',
     highlight: true,
   },
   {
-    id: "copy-or-move",
-    icon: "📋",
-    title: "Copy or Move Operations",
-    description: "Choose to copy files (originals stay untouched) or move them (originals deleted after successful transfer). Warning is displayed before move operations.",
-    detail: "Copy mode is the safe default. Move mode is explicitly marked with a warning in the UI.",
+    id: 'copy-or-move',
+    icon: '📋',
+    title: 'Copy or Move Operations',
+    description:
+      'Choose to copy files (originals stay untouched) or move them (originals deleted after successful transfer). Warning is displayed before move operations.',
+    detail:
+      'Copy mode is the safe default. Move mode is explicitly marked with a warning in the UI.',
   },
   {
-    id: "date-folders",
-    icon: "🗂️",
-    title: "Organize into Date Subfolders",
-    description: "Automatically create YYYY-MM-DD subfolders inside the output folder, grouping your renamed files by shooting day.",
+    id: 'date-folders',
+    icon: '🗂️',
+    title: 'Organize into Date Subfolders',
+    description:
+      'Automatically create YYYY-MM-DD subfolders inside the output folder, grouping your renamed files by shooting day.',
     detail: "Enable 'Organize by date' in Advanced Options. Great for keeping large shoots tidy.",
   },
   {
-    id: "paired-files",
-    icon: "🔗",
-    title: "Paired JPG + RAW Handling",
-    description: "Keep JPG and RAW files paired together. Enable 'Only paired files' to skip any file that doesn't have a matching counterpart.",
-    detail: "Useful for shooters who capture RAW + JPEG simultaneously and want to keep matching pairs.",
+    id: 'paired-files',
+    icon: '🔗',
+    title: 'Paired JPG + RAW Handling',
+    description:
+      "Keep JPG and RAW files paired together. Enable 'Only paired files' to skip any file that doesn't have a matching counterpart.",
+    detail:
+      'Useful for shooters who capture RAW + JPEG simultaneously and want to keep matching pairs.',
   },
   {
-    id: "live-log",
-    icon: "📋",
-    title: "Real-Time Color-Coded Log",
-    description: "Watch every file operation happen in real time. Each log entry shows the full source path and destination path with color-coded status tags.",
-    detail: "Log entry types:\n· [OK] — green: file renamed/copied/moved successfully\n· [DRY] — gray: dry run preview entry\n· [SKIP] — amber: file skipped (unpaired, duplicate, etc.)\n· [ERR] — red: error with message\n· [WARN] — orange: warning",
+    id: 'live-log',
+    icon: '📋',
+    title: 'Real-Time Color-Coded Log',
+    description:
+      'Watch every file operation happen in real time. Each log entry shows the full source path and destination path with color-coded status tags.',
+    detail:
+      'Log entry types:\n· [OK] — green: file renamed/copied/moved successfully\n· [DRY] — gray: dry run preview entry\n· [SKIP] — amber: file skipped (unpaired, duplicate, etc.)\n· [ERR] — red: error with message\n· [WARN] — orange: warning',
   },
   {
-    id: "auto-update",
-    icon: "🔄",
-    title: "Automatic Updates",
-    description: "LightOps checks GitHub Releases for new versions on startup and notifies you in-app. Update with one click — no manual downloads needed.",
-    detail: "Uses Tauri's built-in updater plugin. Update channel: github.com/unique01082/lightops/releases.",
+    id: 'auto-update',
+    icon: '🔄',
+    title: 'Automatic Updates',
+    description:
+      'LightOps checks GitHub Releases for new versions on startup and notifies you in-app. Update with one click — no manual downloads needed.',
+    detail:
+      "Uses Tauri's built-in updater plugin. Update channel: github.com/unique01082/lightops/releases.",
   },
   {
-    id: "video-support",
-    icon: "🎬",
-    title: "Video File Support",
-    description: "Scan and rename companion video files (.mp4, .mov, .mts, .m4v, .avi, .mkv, .3gp) alongside your photos in a single pass.",
-    detail: "Reads EXIF datetime from video containers when available (Sony, Canon embed EXIF in MP4/MOV). Falls back to file modification time. Toggle via Advanced Options.",
+    id: 'video-support',
+    icon: '🎬',
+    title: 'Video File Support',
+    description:
+      'Scan and rename companion video files (.mp4, .mov, .mts, .m4v, .avi, .mkv, .3gp) alongside your photos in a single pass.',
+    detail:
+      'Reads EXIF datetime from video containers when available (Sony, Canon embed EXIF in MP4/MOV). Falls back to file modification time. Toggle via Advanced Options.',
   },
   {
-    id: "preset-manager",
-    icon: "🔖",
-    title: "Preset Manager",
-    description: "Save your entire configuration as a named preset and restore it with one click. Perfect for recurring workflows like different camera bodies or event types.",
-    detail: "Presets are stored as JSON files in your app data folder. Save, load, and delete them directly from the UI. Includes all settings: camera, format, prefix, output, file op, and more.",
+    id: 'preset-manager',
+    icon: '🔖',
+    title: 'Preset Manager',
+    description:
+      'Save your entire configuration as a named preset and restore it with one click. Perfect for recurring workflows like different camera bodies or event types.',
+    detail:
+      'Presets are stored as JSON files in your app data folder. Save, load, and delete them directly from the UI. Includes all settings: camera, format, prefix, output, file op, and more.',
     highlight: true,
   },
   {
-    id: "log-table-mode",
-    icon: "📊",
-    title: "Log Table View",
-    description: "Switch the log panel between text and table mode. Table mode shows a clean STATUS / SOURCE / DESTINATION layout with clickable paths that open the folder in your OS file manager.",
-    detail: "Clickable path cells open the containing folder directly in Finder, Explorer, or your file manager. Fallback copies the path to clipboard.",
+    id: 'log-table-mode',
+    icon: '📊',
+    title: 'Log Table View',
+    description:
+      'Switch the log panel between text and table mode. Table mode shows a clean STATUS / SOURCE / DESTINATION layout with clickable paths that open the folder in your OS file manager.',
+    detail:
+      'Clickable path cells open the containing folder directly in Finder, Explorer, or your file manager. Fallback copies the path to clipboard.',
   },
 ] as const;

@@ -1,13 +1,13 @@
-import { Navbar } from "./components/Navbar";
-import { Hero } from "./components/Hero";
-import { Features } from "./components/Features";
-import { Download } from "./components/Download";
-import { HowItWorks } from "./components/HowItWorks";
-import { Screenshots } from "./components/Screenshots";
-import { Changelog } from "./components/Changelog";
-import { OpenSource } from "./components/OpenSource";
-import { Footer } from "./components/Footer";
-import { GithubReleaseProvider } from "./hooks/GithubReleaseContext";
+import { Changelog } from './components/Changelog';
+import { Download } from './components/Download';
+import { Features } from './components/Features';
+import { Footer } from './components/Footer';
+import { Hero } from './components/Hero';
+import { HowItWorks } from './components/HowItWorks';
+import { Navbar } from './components/Navbar';
+import { OpenSource } from './components/OpenSource';
+import { Screenshots } from './components/Screenshots';
+import { GithubReleaseProvider } from './hooks/GithubReleaseContext';
 
 export default function App() {
   return (

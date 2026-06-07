@@ -1,6 +1,6 @@
 # LightOps
 
-> *Every frame, perfectly named.*
+> _Every frame, perfectly named._
 
 A desktop photo file management tool for photographers. Batch rename, copy, or move RAW + JPG photo files based on EXIF shooting date.
 
@@ -23,10 +23,10 @@ A desktop photo file management tool for photographers. Batch rename, copy, or m
 
 ## Platforms
 
-| Platform | Architectures |
-|---|---|
-| Windows | x86_64, ARM64 |
-| macOS | Intel (x86_64) + Apple Silicon (arm64) — Universal Binary |
+| Platform | Architectures                                             |
+| -------- | --------------------------------------------------------- |
+| Windows  | x86_64, ARM64                                             |
+| macOS    | Intel (x86_64) + Apple Silicon (arm64) — Universal Binary |
 
 ## Download
 

@@ -1,11 +1,15 @@
 {
   "name": "@figma/my-make-file",
-  "private": true,
   "version": "0.0.1",
+  "private": true,
   "type": "module",
   "scripts": {
     "build": "vite build",
-    "dev": "vite"
+    "dev": "vite",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "pretty": "prettier --write .",
+    "pretty:check": "prettier --check ."
   },
   "dependencies": {
     "@emotion/react": "11.14.0",
@@ -67,9 +71,19 @@
     "vaul": "1.1.2"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@tailwindcss/vite": "4.1.12",
     "@vitejs/plugin-react": "4.7.0",
+    "eslint": "^10.4.1",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "globals": "^17.6.0",
+    "prettier": "^3.8.3",
+    "prettier-plugin-organize-imports": "^4.3.0",
+    "prettier-plugin-packagejson": "^3.0.2",
     "tailwindcss": "4.1.12",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.60.1",
     "vite": "6.3.5"
   },
   "peerDependencies": {

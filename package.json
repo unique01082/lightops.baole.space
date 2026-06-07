@@ -4,10 +4,14 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "tauri dev",
-    "dev:frontend": "vite",
     "build": "tauri build",
     "build:frontend": "vite build",
+    "dev": "tauri dev",
+    "dev:frontend": "vite",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "pretty": "prettier --write .",
+    "pretty:check": "prettier --check .",
     "preview": "vite preview",
     "tauri": "tauri"
   },
@@ -63,14 +67,23 @@
     "vaul": "1.1.2"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@tailwindcss/vite": "4.1.12",
     "@tauri-apps/cli": "^2",
     "@types/node": "^20",
     "@types/react": "18.3.1",
     "@types/react-dom": "18.3.1",
     "@vitejs/plugin-react": "4.7.0",
+    "eslint": "^10.4.1",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "globals": "^17.6.0",
+    "prettier": "^3.8.3",
+    "prettier-plugin-organize-imports": "^4.3.0",
+    "prettier-plugin-packagejson": "^3.0.2",
     "tailwindcss": "4.1.12",
     "typescript": "^5",
+    "typescript-eslint": "^8.60.1",
     "vite": "6.3.5"
   },
   "peerDependencies": {

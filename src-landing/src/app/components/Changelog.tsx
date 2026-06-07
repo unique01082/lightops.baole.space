@@ -1,14 +1,14 @@
-import { useTranslation } from "react-i18next";
-import { ScrollReveal } from "./ScrollReveal";
-import { SectionHeading } from "./SectionHeading";
-import { GhostButton } from "./GhostButton";
-import { Check } from "lucide-react";
-import { CHANGELOG } from "../constants/changelog";
-import { APP_DATA } from "../constants/app";
+import { Check } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { APP_DATA } from '../constants/app';
+import { CHANGELOG } from '../constants/changelog';
+import { GhostButton } from './GhostButton';
+import { ScrollReveal } from './ScrollReveal';
+import { SectionHeading } from './SectionHeading';
 
 export function Changelog() {
   const { t } = useTranslation();
-  const releases = t("changelog.releases", { returnObjects: true }) as Array<{
+  const releases = t('changelog.releases', { returnObjects: true }) as Array<{
     type: string;
     highlights: string[];
   }>;
@@ -17,10 +17,7 @@ export function Changelog() {
     <section id="changelog" className="py-20 md:py-32 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <ScrollReveal>
-          <SectionHeading
-            title={t("changelog.title")}
-            subtitle={t("changelog.subtitle")}
-          />
+          <SectionHeading title={t('changelog.title')} subtitle={t('changelog.subtitle')} />
         </ScrollReveal>
 
         <div className="max-w-4xl mx-auto">

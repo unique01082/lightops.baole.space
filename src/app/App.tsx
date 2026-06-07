@@ -1,22 +1,14 @@
-import { useState, useCallback, useEffect, useRef } from "react";
-import { invoke } from "@tauri-apps/api/core";
-import { listen } from "@tauri-apps/api/event";
-import { useTranslation } from "react-i18next";
-import { TitleBar } from "./components/title-bar";
-import { SourceFoldersPanel } from "./components/source-folders-panel";
-import { OutputFolderPanel } from "./components/output-folder-panel";
-import { CameraFormatPanel } from "./components/camera-format-panel";
-import { RenameSettingsPanel } from "./components/rename-settings-panel";
-import { AdvancedOptionsPanel } from "./components/advanced-options-panel";
-import { ActionButtons } from "./components/action-buttons";
-import { ProgressBar } from "./components/progress-bar";
-import { LogPanel, LogEntry } from "./components/log-panel";
-import { SettingsModal } from "./components/settings-modal";
-import { PresetPanel, Preset } from "./components/preset-panel";
-import { motion } from "motion/react";
-import { CheckCircle, AlertCircle, AlertTriangle } from "lucide-react";
-
-// ── Types matching Rust structs ────────────────────────────────────────────
+import { invoke } from '@tauri-apps/api/core';
+import { listen } from '@tauri-apps/api/event';
+import { AlertCircle, AlertTriangle, CheckCircle } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { InfoModal, InfoPage } from './components/info-modal';
+import { LogEntry } from './components/log-panel';
+import { Preset } from './components/preset-panel';
+import { SettingsModal } from './components/settings-modal';
+import { WorkflowShell, WorkflowStep, WorkflowStepKey } from './components/workflow-shell';
+import { ResultsStep, ReviewRunStep, RulesStep, SourceStep } from './components/workflow-steps';
 
 interface FilePair {
   jpg?: string;
@@ -70,144 +62,214 @@ interface UpdateInfo {
   body?: string;
 }
 
-// Format values → strftime patterns for Rust
 const FORMAT_TO_STRFTIME: Record<string, string | null> = {
-  YYYYMMDD_HHMMSS_NNNN: "%Y%m%d_%H%M%S",
-  "YYYY-MM-DD_HH-MM-SS_NNNN": "%Y-%m-%d_%H-%M-%S",
-  YYYYMMDD_NNNN: "%Y%m%d",
+  YYYYMMDD_HHMMSS_NNNN: '%Y%m%d_%H%M%S',
+  'YYYY-MM-DD_HH-MM-SS_NNNN': '%Y-%m-%d_%H-%M-%S',
+  YYYYMMDD_NNNN: '%Y%m%d',
   NNNN: null,
 };
 
-type AppStatus = "idle" | "processing" | "complete" | "stopped" | "error";
-
-// ── App ───────────────────────────────────────────────────────────────────────
+type AppStatus = 'idle' | 'processing' | 'complete' | 'stopped' | 'error';
 
 const STORAGE = {
-  camera: "lightops-default-camera",
-  fileOp: "lightops-default-file-op",
-  recursive: "lightops-default-recursive",
-  organize: "lightops-default-organize",
+  camera: 'lightops-default-camera',
+  fileOp: 'lightops-default-file-op',
+  recursive: 'lightops-default-recursive',
+  organize: 'lightops-default-organize',
 };
+
+const MENU_EVENT = 'lightops://menu';
 
 function loadDefaults() {
   try {
     return {
-      camera: localStorage.getItem(STORAGE.camera) ?? "nikon",
-      fileOp: (localStorage.getItem(STORAGE.fileOp) ?? "copy") as
-        | "copy"
-        | "move",
-      recursive: localStorage.getItem(STORAGE.recursive) === "true",
-      organize: localStorage.getItem(STORAGE.organize) === "true",
+      camera: localStorage.getItem(STORAGE.camera) ?? 'nikon',
+      fileOp: (localStorage.getItem(STORAGE.fileOp) ?? 'copy') as 'copy' | 'move',
+      recursive: localStorage.getItem(STORAGE.recursive) === 'true',
+      organize: localStorage.getItem(STORAGE.organize) === 'true',
     };
   } catch {
     return {
-      camera: "nikon",
-      fileOp: "copy" as const,
+      camera: 'nikon',
+      fileOp: 'copy' as const,
       recursive: false,
       organize: false,
     };
   }
 }
 
+function getStatusLabel(status: AppStatus) {
+  switch (status) {
+    case 'processing':
+      return 'Processing';
+    case 'complete':
+      return 'Complete';
+    case 'stopped':
+      return 'Stopped';
+    case 'error':
+      return 'Error';
+    default:
+      return 'Ready';
+  }
+}
+
+function getStepForInputs(folders: string[]): WorkflowStepKey {
+  return folders.length > 0 ? 'rules' : 'source';
+}
+
+function isEditableTarget(target: EventTarget | null) {
+  if (!(target instanceof HTMLElement)) return false;
+  const tagName = target.tagName.toLowerCase();
+  return (
+    tagName === 'input' ||
+    tagName === 'textarea' ||
+    tagName === 'select' ||
+    target.isContentEditable
+  );
+}
+
 function App() {
   const { t, i18n } = useTranslation();
 
-  // Settings
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [defaults] = useState(loadDefaults);
   const [defaultCamera, setDefaultCamera] = useState(defaults.camera);
-  const [defaultFileOperation, setDefaultFileOperation] = useState<
-    "copy" | "move"
-  >(defaults.fileOp);
-  const [defaultRecursiveScan, setDefaultRecursiveScan] = useState(
-    defaults.recursive,
-  );
-  const [defaultOrganizeByDate, setDefaultOrganizeByDate] = useState(
-    defaults.organize,
-  );
-
-  // Source folders
-  const [folders, setFolders] = useState<string[]>([]);
-
-  // Output folder
-  const [outputFolder, setOutputFolder] = useState("");
-
-  // Camera & format
-  const [cameraPreset, setCameraPreset] = useState(defaults.camera);
-  const [rawExtensions, setRawExtensions] = useState(() => {
-    const PRESETS: Record<string, string> = {
-      nikon: ".nef .nrw",
-      canon: ".cr2 .cr3",
-      sony: ".arw",
-      fujifilm: ".raf",
-      panasonic: ".rw2",
-      olympus: ".orf",
-      pentax: ".dng .pef",
-      leica: ".dng",
-    };
-    return PRESETS[defaults.camera] ?? ".nef .nrw";
-  });
-  const [fileType, setFileType] = useState<"both" | "jpg" | "raw">("both");
-
-  // Rename settings
-  const [prefix, setPrefix] = useState("");
-  const [format, setFormat] = useState("NNNN");
-  const [startNumber, setStartNumber] = useState(1);
-
-  // Advanced options — initialized from defaults
-  const [recursiveScan, setRecursiveScan] = useState(defaults.recursive);
-  const [fileOperation, setFileOperation] = useState<"copy" | "move">(
+  const [defaultFileOperation, setDefaultFileOperation] = useState<'copy' | 'move'>(
     defaults.fileOp,
   );
+  const [defaultRecursiveScan, setDefaultRecursiveScan] = useState(defaults.recursive);
+  const [defaultOrganizeByDate, setDefaultOrganizeByDate] = useState(defaults.organize);
+
+  const [folders, setFolders] = useState<string[]>([]);
+  const [outputFolder, setOutputFolder] = useState('');
+
+  const [cameraPreset, setCameraPreset] = useState(defaults.camera);
+  const [rawExtensions, setRawExtensions] = useState(() => {
+    const presets: Record<string, string> = {
+      nikon: '.nef .nrw',
+      canon: '.cr2 .cr3',
+      sony: '.arw',
+      fujifilm: '.raf',
+      panasonic: '.rw2',
+      olympus: '.orf',
+      pentax: '.dng .pef',
+      leica: '.dng',
+    };
+    return presets[defaults.camera] ?? '.nef .nrw';
+  });
+  const [fileType, setFileType] = useState<'both' | 'jpg' | 'raw'>('both');
+
+  const [prefix, setPrefix] = useState('');
+  const [format, setFormat] = useState('NNNN');
+  const [startNumber, setStartNumber] = useState(1);
+
+  const [recursiveScan, setRecursiveScan] = useState(defaults.recursive);
+  const [fileOperation, setFileOperation] = useState<'copy' | 'move'>(defaults.fileOp);
   const [organizeByDate, setOrganizeByDate] = useState(defaults.organize);
   const [onlyPaired, setOnlyPaired] = useState(false);
   const [includeVideo, setIncludeVideo] = useState(false);
 
-  // Processing state
-  const [status, setStatus] = useState<AppStatus>("idle");
+  const [status, setStatus] = useState<AppStatus>('idle');
+  const [activeStep, setActiveStep] = useState<WorkflowStepKey>('source');
   const [isDryRun, setIsDryRun] = useState(false);
   const [progress, setProgress] = useState({ current: 0, total: 0 });
   const [logEntries, setLogEntries] = useState<LogEntry[]>([]);
   const [stats, setStats] = useState({ ok: 0, skip: 0, error: 0 });
   const [banner, setBanner] = useState<{
-    type: "success" | "warning" | "error";
+    type: 'success' | 'warning' | 'error';
     message: string;
   } | null>(null);
-
-  // Update notification
   const [updateInfo, setUpdateInfo] = useState<UpdateInfo | null>(null);
+  const [savePresetSignal, setSavePresetSignal] = useState(0);
+  const [infoPage, setInfoPage] = useState<InfoPage | null>(null);
 
-  // Ref to append log entries without triggering re-renders mid-run
   const logRef = useRef<LogEntry[]>([]);
+  const pendingLogRef = useRef<LogEntry[]>([]);
+  const pendingProgressRef = useRef<{
+    progress: { current: number; total: number };
+    stats: { ok: number; skip: number; error: number };
+  } | null>(null);
+  const flushTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Check for updates on mount
+  const flushProgressBuffer = useCallback(() => {
+    if (flushTimerRef.current) {
+      clearTimeout(flushTimerRef.current);
+      flushTimerRef.current = null;
+    }
+
+    if (pendingLogRef.current.length > 0) {
+      logRef.current = [...logRef.current, ...pendingLogRef.current];
+      pendingLogRef.current = [];
+      setLogEntries(logRef.current);
+    }
+
+    if (pendingProgressRef.current) {
+      setProgress(pendingProgressRef.current.progress);
+      setStats(pendingProgressRef.current.stats);
+      pendingProgressRef.current = null;
+    }
+  }, []);
+
+  const scheduleProgressFlush = useCallback(() => {
+    if (flushTimerRef.current) return;
+    flushTimerRef.current = setTimeout(flushProgressBuffer, 120);
+  }, [flushProgressBuffer]);
+
+  const addLog = useCallback(
+    (entry: LogEntry, buffered = false) => {
+      if (buffered) {
+        pendingLogRef.current.push(entry);
+        scheduleProgressFlush();
+        return;
+      }
+
+      flushProgressBuffer();
+      logRef.current = [...logRef.current, entry];
+      setLogEntries(logRef.current);
+    },
+    [flushProgressBuffer, scheduleProgressFlush],
+  );
+
+  const checkForUpdates = useCallback(
+    async (showNoUpdateBanner = false) => {
+      try {
+        const info = await invoke<UpdateInfo>('check_update');
+        setUpdateInfo(info);
+        if (info.available) {
+          setBanner({ type: 'warning', message: `${t('update.available')} v${info.version}` });
+        } else if (showNoUpdateBanner) {
+          setBanner({ type: 'success', message: 'LightOps is up to date.' });
+          setTimeout(() => setBanner(null), 3000);
+        }
+      } catch (e) {
+        if (showNoUpdateBanner) {
+          setBanner({ type: 'error', message: `Update check failed: ${e}` });
+        }
+      }
+    },
+    [t],
+  );
+
   useEffect(() => {
-    invoke<UpdateInfo>("check_update")
-      .then((info) => {
-        if (info.available) setUpdateInfo(info);
-      })
-      .catch(() => {
-        /* silently ignore */
-      });
-  }, []);
+    checkForUpdates(false);
+  }, [checkForUpdates]);
 
-  const addLog = useCallback((entry: LogEntry) => {
-    logRef.current = [...logRef.current, entry];
-    setLogEntries([...logRef.current]);
+  useEffect(() => {
+    return () => {
+      if (flushTimerRef.current) clearTimeout(flushTimerRef.current);
+    };
   }, []);
-
-  // ── Folder actions
 
   const handleAddFolder = useCallback(async () => {
     try {
-      const folder = await invoke<string | null>("pick_folder");
-      if (folder && !folders.includes(folder)) {
-        setFolders((prev) => [...prev, folder]);
+      const folder = await invoke<string | null>('pick_folder');
+      if (folder) {
+        setFolders((prev) => (prev.includes(folder) ? prev : [...prev, folder]));
       }
     } catch (e) {
-      console.error("pick_folder failed:", e);
+      console.error('pick_folder failed:', e);
     }
-  }, [folders]);
+  }, []);
 
   const handleRemoveFolder = useCallback((index: number) => {
     setFolders((prev) => prev.filter((_, i) => i !== index));
@@ -215,79 +277,78 @@ function App() {
 
   const handleBrowseOutput = useCallback(async () => {
     try {
-      const folder = await invoke<string | null>("pick_folder");
+      const folder = await invoke<string | null>('pick_folder');
       if (folder) setOutputFolder(folder);
     } catch (e) {
-      console.error("pick_folder failed:", e);
+      console.error('pick_folder failed:', e);
     }
   }, []);
-
-  // ── Core run logic
 
   const handleRun = useCallback(
     async (dryRun: boolean) => {
       if (folders.length === 0) {
-        setBanner({ type: "error", message: t("errors.noFolders") });
+        setActiveStep('source');
+        setBanner({ type: 'error', message: t('errors.noFolders') });
         return;
       }
 
-      const rawExts = rawExtensions
-        .split(/\s+/)
-        .filter((e) => e.startsWith("."));
+      const rawExts = rawExtensions.split(/\s+/).filter((e) => e.startsWith('.'));
 
-      if (fileType !== "jpg" && rawExts.length === 0) {
-        setBanner({ type: "error", message: t("errors.noRawExt") });
+      if (fileType !== 'jpg' && rawExts.length === 0) {
+        setActiveStep('rules');
+        setBanner({ type: 'error', message: t('errors.noRawExt') });
         return;
       }
 
-      setStatus("processing");
+      setActiveStep('review');
+      setStatus('processing');
       setIsDryRun(dryRun);
       setBanner(null);
       setStats({ ok: 0, skip: 0, error: 0 });
+      setProgress({ current: 0, total: 0 });
+      pendingLogRef.current = [];
+      pendingProgressRef.current = null;
       logRef.current = [];
       setLogEntries([]);
 
       addLog({
-        type: "section",
-        message: `=== ${dryRun ? "DRY RUN" : "PROCESSING"} STARTED ===`,
+        type: 'section',
+        message: `=== ${dryRun ? 'DRY RUN' : 'PROCESSING'} STARTED ===`,
       });
 
       try {
-        // 1. Scan folders
         addLog({
-          type: "section",
+          type: 'section',
           message: `Scanning ${folders.length} folder(s)...`,
         });
-        const scanResult = await invoke<ScanResult>("scan_folders", {
+        const scanResult = await invoke<ScanResult>('scan_folders', {
           folders,
           rawExts,
           recursive: recursiveScan,
           includeVideo,
         });
 
-        const { stats: s } = scanResult;
+        const { stats: scanStats } = scanResult;
         addLog({
-          type: "section",
+          type: 'section',
           message: [
-            `Found ${s.total_pairs} groups`,
-            `${s.both} paired`,
-            `${s.jpg_only} JPG-only`,
-            `${s.raw_only} RAW-only`,
-            ...(s.video_count > 0 ? [`${s.video_count} video`] : []),
-          ].join(" · "),
+            `Found ${scanStats.total_pairs} groups`,
+            `${scanStats.both} paired`,
+            `${scanStats.jpg_only} JPG-only`,
+            `${scanStats.raw_only} RAW-only`,
+            ...(scanStats.video_count > 0 ? [`${scanStats.video_count} video`] : []),
+          ].join(' · '),
         });
 
         if (scanResult.pairs.length === 0) {
-          addLog({
-            type: "warn",
-            message: "No files found in the selected folders.",
-          });
-          setStatus("idle");
+          addLog({ type: 'warn', message: 'No files found in the selected folders.' });
+          setStatus('complete');
+          setActiveStep('results');
+          setBanner({ type: 'warning', message: 'No files found in the selected folders.' });
           return;
         }
 
-        // 2. Build rename plan
-        const planResult = await invoke<BuildPlanResult>("build_rename_plan", {
+        const planResult = await invoke<BuildPlanResult>('build_rename_plan', {
           pairs: scanResult.pairs,
           opts: {
             prefix,
@@ -301,38 +362,43 @@ function App() {
 
         if (planResult.skipped_count > 0) {
           addLog({
-            type: "warn",
+            type: 'warn',
             message: `${planResult.skipped_count} group(s) skipped — no readable EXIF data.`,
           });
         }
 
         if (planResult.plan.length === 0) {
-          addLog({ type: "warn", message: "Nothing to rename." });
-          setStatus("idle");
+          addLog({ type: 'warn', message: 'Nothing to rename.' });
+          setStatus('complete');
+          setActiveStep('results');
+          setBanner({ type: 'warning', message: 'Nothing to rename.' });
           return;
         }
 
         setProgress({ current: 0, total: planResult.plan.length });
         addLog({
-          type: "section",
+          type: 'section',
           message: `Renaming ${planResult.plan.length} files...`,
         });
 
-        // 3. Listen for progress events before invoking execute_plan
-        const unlisten = await listen<ProgressEvent>("progress", (event) => {
-          const { entry, current, total, stats: es } = event.payload;
-          setProgress({ current, total });
-          setStats({ ok: es.ok, skip: es.skip, error: es.error });
-          addLog({
-            type: entry.entry_type as LogEntry["type"],
-            source: entry.source,
-            destination: entry.destination,
-            message: entry.message,
-          });
+        const unlisten = await listen<ProgressEvent>('progress', (event) => {
+          const { entry, current, total, stats: eventStats } = event.payload;
+          pendingProgressRef.current = {
+            progress: { current, total },
+            stats: { ok: eventStats.ok, skip: eventStats.skip, error: eventStats.error },
+          };
+          addLog(
+            {
+              type: entry.entry_type as LogEntry['type'],
+              source: entry.source,
+              destination: entry.destination,
+              message: entry.message,
+            },
+            true,
+          );
         });
 
-        // 4. Execute
-        const result = await invoke<ExecuteResult>("execute_plan", {
+        const result = await invoke<ExecuteResult>('execute_plan', {
           plan: planResult.plan,
           opts: {
             output_dir: outputFolder.trim() || null,
@@ -343,54 +409,57 @@ function App() {
         });
 
         unlisten();
+        flushProgressBuffer();
+        setActiveStep('results');
 
         if (result.cancelled) {
-          setStatus("stopped");
+          setStatus('stopped');
           setBanner({
-            type: "warning",
-            message: `⏹ Stopped at ${result.ok} / ${planResult.plan.length} files`,
+            type: 'warning',
+            message: `Stopped at ${result.ok} / ${planResult.plan.length} files`,
           });
         } else {
-          setStatus("complete");
-          addLog({ type: "section", message: "=== COMPLETED ===" });
-          const msg = `✅ Completed: ${result.ok} file(s) ${dryRun ? "would be renamed" : "renamed successfully"}${
-            result.errors ? `, ${result.errors} error(s)` : ""
-          }`;
+          setStatus('complete');
+          addLog({ type: 'section', message: '=== COMPLETED ===' });
           setBanner({
-            type: result.errors > 0 ? "warning" : "success",
-            message: msg,
+            type: result.errors > 0 ? 'warning' : 'success',
+            message: `Completed: ${result.ok} file(s) ${
+              dryRun ? 'would be renamed' : 'renamed successfully'
+            }${result.errors ? `, ${result.errors} error(s)` : ''}`,
           });
-          setTimeout(() => setBanner(null), 6000);
         }
       } catch (e) {
-        setStatus("error");
-        addLog({ type: "error", message: String(e) });
-        setBanner({ type: "error", message: `Error: ${e}` });
+        flushProgressBuffer();
+        setStatus('error');
+        setActiveStep('results');
+        addLog({ type: 'error', message: String(e) });
+        setBanner({ type: 'error', message: `Error: ${e}` });
       }
     },
     [
+      addLog,
+      fileOperation,
+      fileType,
+      flushProgressBuffer,
       folders,
+      format,
+      includeVideo,
+      onlyPaired,
+      organizeByDate,
+      outputFolder,
+      prefix,
       rawExtensions,
       recursiveScan,
-      format,
-      prefix,
-      fileType,
-      onlyPaired,
-      includeVideo,
       startNumber,
-      outputFolder,
-      organizeByDate,
-      fileOperation,
-      addLog,
       t,
     ],
   );
 
   const handleStop = useCallback(async () => {
     try {
-      await invoke("cancel_execution");
+      await invoke('cancel_execution');
     } catch (e) {
-      console.error("cancel_execution failed:", e);
+      console.error('cancel_execution failed:', e);
     }
   }, []);
 
@@ -398,12 +467,9 @@ function App() {
     setCameraPreset(preset.camera_preset);
     setRawExtensions(preset.raw_extensions);
     setFileType(preset.file_type);
-    setPrefix(preset.prefix);
-    // Find the format key from the strftime pattern
     const fmtKey =
-      Object.entries(FORMAT_TO_STRFTIME).find(
-        ([, v]) => v === preset.fmt_pattern,
-      )?.[0] ?? "NNNN";
+      Object.entries(FORMAT_TO_STRFTIME).find(([, value]) => value === preset.fmt_pattern)?.[0] ??
+      'NNNN';
     setFormat(fmtKey);
     setStartNumber(preset.start_num);
     setFileOperation(preset.file_op);
@@ -414,22 +480,23 @@ function App() {
   }, []);
 
   const handleClearLog = useCallback(() => {
+    pendingLogRef.current = [];
+    pendingProgressRef.current = null;
+    flushProgressBuffer();
     logRef.current = [];
     setLogEntries([]);
     setStats({ ok: 0, skip: 0, error: 0 });
     setProgress({ current: 0, total: 0 });
     setBanner(null);
-    if (status === "complete" || status === "stopped" || status === "error") {
-      setStatus("idle");
-    }
-  }, [status]);
+    setStatus('idle');
+    setActiveStep(getStepForInputs(folders));
+  }, [flushProgressBuffer, folders]);
 
-  // ── Language toggle
   const handleLanguageChange = useCallback(
     (lang: string) => {
       i18n.changeLanguage(lang);
       try {
-        localStorage.setItem("lightops-language", lang);
+        localStorage.setItem('lightops-language', lang);
       } catch {
         /* ignore */
       }
@@ -437,280 +504,424 @@ function App() {
     [i18n],
   );
 
-  // ── Settings defaults (save to localStorage)
-  const handleDefaultCameraChange = useCallback((v: string) => {
-    setDefaultCamera(v);
+  const handleDefaultCameraChange = useCallback((value: string) => {
+    setDefaultCamera(value);
     try {
-      localStorage.setItem(STORAGE.camera, v);
+      localStorage.setItem(STORAGE.camera, value);
     } catch {
       /* ignore */
     }
   }, []);
 
-  const handleDefaultFileOperationChange = useCallback((v: "copy" | "move") => {
-    setDefaultFileOperation(v);
+  const handleDefaultFileOperationChange = useCallback((value: 'copy' | 'move') => {
+    setDefaultFileOperation(value);
     try {
-      localStorage.setItem(STORAGE.fileOp, v);
+      localStorage.setItem(STORAGE.fileOp, value);
     } catch {
       /* ignore */
     }
   }, []);
 
-  const handleDefaultRecursiveScanChange = useCallback((v: boolean) => {
-    setDefaultRecursiveScan(v);
+  const handleDefaultRecursiveScanChange = useCallback((value: boolean) => {
+    setDefaultRecursiveScan(value);
     try {
-      localStorage.setItem(STORAGE.recursive, String(v));
+      localStorage.setItem(STORAGE.recursive, String(value));
     } catch {
       /* ignore */
     }
   }, []);
 
-  const handleDefaultOrganizeByDateChange = useCallback((v: boolean) => {
-    setDefaultOrganizeByDate(v);
+  const handleDefaultOrganizeByDateChange = useCallback((value: boolean) => {
+    setDefaultOrganizeByDate(value);
     try {
-      localStorage.setItem(STORAGE.organize, String(v));
+      localStorage.setItem(STORAGE.organize, String(value));
     } catch {
       /* ignore */
     }
   }, []);
 
-  // ── Decorative gradient orbs
-  const gradientOrbs = [
-    {
-      gradient:
-        "radial-gradient(circle, rgba(102, 126, 234, 0.15), transparent 70%)",
-      size: "600px",
-      top: "10%",
-      left: "15%",
-    },
-    {
-      gradient:
-        "radial-gradient(circle, rgba(217, 70, 239, 0.12), transparent 70%)",
-      size: "500px",
-      top: "50%",
-      right: "10%",
-    },
-    {
-      gradient:
-        "radial-gradient(circle, rgba(79, 172, 254, 0.1), transparent 70%)",
-      size: "450px",
-      bottom: "15%",
-      left: "20%",
-    },
-  ];
+  useEffect(() => {
+    let disposed = false;
+    const setupMenuListener = async () => {
+      const unlisten = await listen<string>(MENU_EVENT, (event) => {
+        switch (event.payload) {
+          case 'menu:add-source':
+            handleAddFolder();
+            break;
+          case 'menu:choose-output':
+            handleBrowseOutput();
+            break;
+          case 'menu:save-preset':
+            setActiveStep('rules');
+            setSavePresetSignal((value) => value + 1);
+            break;
+          case 'menu:settings':
+            setIsSettingsOpen(true);
+            break;
+          case 'menu:dry-run':
+            handleRun(true);
+            break;
+          case 'menu:run':
+            handleRun(false);
+            break;
+          case 'menu:stop':
+            handleStop();
+            break;
+          case 'menu:show-results':
+            if (logRef.current.length > 0 || status !== 'idle') setActiveStep('results');
+            break;
+          case 'menu:language-en':
+            handleLanguageChange('en');
+            break;
+          case 'menu:language-vi':
+            handleLanguageChange('vi');
+            break;
+          case 'menu:check-updates':
+            checkForUpdates(true);
+            break;
+          case 'menu:help':
+            setInfoPage('help');
+            break;
+          case 'menu:shortcuts':
+            setInfoPage('shortcuts');
+            break;
+          case 'menu:about':
+            setInfoPage('about');
+            break;
+        }
+      });
 
-  const isProcessing = status === "processing";
+      if (disposed) {
+        unlisten();
+      }
+      return unlisten;
+    };
 
-  return (
-    <div className="h-screen flex flex-col overflow-hidden relative">
-      {/* Background gradient orbs */}
-      {gradientOrbs.map((orb, index) => (
-        <motion.div
-          key={index}
-          className="absolute rounded-full pointer-events-none"
-          style={{
-            background: orb.gradient,
-            width: orb.size,
-            height: orb.size,
-            top: orb.top,
-            left: orb.left,
-            right: (orb as unknown as Record<string, string>).right,
-            bottom: (orb as unknown as Record<string, string>).bottom,
-            filter: "blur(80px)",
-          }}
-          animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.5, 0.3] }}
-          transition={{
-            duration: 8 + index * 2,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-      ))}
+    const unlistenPromise = setupMenuListener();
+    return () => {
+      disposed = true;
+      unlistenPromise.then((unlisten) => unlisten());
+    };
+  }, [
+    checkForUpdates,
+    handleAddFolder,
+    handleBrowseOutput,
+    handleLanguageChange,
+    handleRun,
+    handleStop,
+    status,
+  ]);
 
-      {/* Window chrome */}
-      <TitleBar
-        onSettingsClick={() => setIsSettingsOpen(true)}
-        updateInfo={updateInfo}
-        language={i18n.language}
-        onLanguageChange={handleLanguageChange}
-      />
+  const isProcessing = status === 'processing';
+  const hasResults = logEntries.length > 0 || status !== 'idle';
+  const currentSettings: Omit<Preset, 'name'> = {
+    camera_preset: cameraPreset,
+    raw_extensions: rawExtensions,
+    file_type: fileType,
+    prefix,
+    fmt_pattern: FORMAT_TO_STRFTIME[format] ?? null,
+    start_num: startNumber,
+    file_op: fileOperation,
+    recursive: recursiveScan,
+    organize_by_date: organizeByDate,
+    only_paired: onlyPaired,
+    include_video: includeVideo,
+  };
 
-      {/* Update notification banner */}
-      {updateInfo?.available && (
-        <div
-          className="px-4 py-2 text-sm flex items-center justify-between"
-          style={{
-            background: "rgba(102,126,234,0.15)",
-            borderBottom: "1px solid rgba(102,126,234,0.3)",
-          }}
-        >
-          <span style={{ color: "var(--text-secondary)" }}>
-            {t("update.available")} v{updateInfo.version}
-          </span>
-        </div>
-      )}
+  const steps: WorkflowStep[] = useMemo(
+    () => [
+      {
+        key: 'source',
+        label: 'Source',
+        description: 'Folders and destination',
+        complete: folders.length > 0,
+        disabled: isProcessing,
+      },
+      {
+        key: 'rules',
+        label: 'Rules',
+        description: 'Camera and rename settings',
+        complete: folders.length > 0,
+        disabled: folders.length === 0 || isProcessing,
+      },
+      {
+        key: 'review',
+        label: 'Review',
+        description: 'Dry run or execute',
+        complete: hasResults,
+        disabled: folders.length === 0 && !isProcessing,
+      },
+      {
+        key: 'results',
+        label: 'Results',
+        description: 'Logs and output',
+        disabled: !hasResults,
+      },
+    ],
+    [folders.length, hasResults, isProcessing],
+  );
 
-      {/* Main layout */}
-      <div className="flex flex-1 overflow-hidden">
-        {/* Left panel — Configuration */}
-        <div
-          className="w-[900px] flex flex-col gap-3 overflow-y-auto p-4"
-          style={{ borderRight: "1px solid var(--glass-divider)" }}
-        >
-          <ActionButtons
-            isProcessing={isProcessing}
-            onRun={() => handleRun(false)}
-            onDryRun={() => handleRun(true)}
-            onStop={handleStop}
+  const goToStep = (step: WorkflowStepKey) => {
+    const target = steps.find((item) => item.key === step);
+    if (!target?.disabled) setActiveStep(step);
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const modifier = event.metaKey || event.ctrlKey;
+      const editable = isEditableTarget(event.target);
+
+      if (event.key === 'Escape') {
+        if (infoPage) {
+          event.preventDefault();
+          setInfoPage(null);
+          return;
+        }
+        if (isSettingsOpen) {
+          event.preventDefault();
+          setIsSettingsOpen(false);
+          return;
+        }
+        if (isProcessing) {
+          event.preventDefault();
+          handleStop();
+        }
+        return;
+      }
+
+      if (!modifier && event.key === '?' && !editable) {
+        event.preventDefault();
+        setInfoPage('shortcuts');
+        return;
+      }
+
+      if (!modifier && event.key === 'F1' && !editable) {
+        event.preventDefault();
+        setInfoPage('help');
+        return;
+      }
+
+      if (!modifier) return;
+
+      if (event.key === '/' && !editable) {
+        event.preventDefault();
+        setInfoPage('shortcuts');
+        return;
+      }
+
+      if (['1', '2', '3', '4'].includes(event.key)) {
+        event.preventDefault();
+        const nextStep = (['source', 'rules', 'review', 'results'] as const)[Number(event.key) - 1];
+        const target = steps.find((step) => step.key === nextStep);
+        if (!target?.disabled) setActiveStep(nextStep);
+        return;
+      }
+
+      if (event.key.toLowerCase() === 'o' && !editable) {
+        event.preventDefault();
+        if (event.shiftKey) {
+          handleBrowseOutput();
+        } else {
+          handleAddFolder();
+        }
+        return;
+      }
+
+      if (event.key === ',' && !editable) {
+        event.preventDefault();
+        setIsSettingsOpen(true);
+        return;
+      }
+
+      if (event.key.toLowerCase() === 'l' && !editable) {
+        event.preventDefault();
+        if (hasResults) setActiveStep('results');
+        return;
+      }
+
+      if (event.key === 'Enter' && !editable) {
+        event.preventDefault();
+        handleRun(event.shiftKey);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [
+    handleAddFolder,
+    handleBrowseOutput,
+    handleRun,
+    handleStop,
+    hasResults,
+    infoPage,
+    isProcessing,
+    isSettingsOpen,
+    steps,
+  ]);
+
+  const renderBanner = () => {
+    if (!banner || activeStep === 'results') return null;
+    const Icon =
+      banner.type === 'success'
+        ? CheckCircle
+        : banner.type === 'warning'
+          ? AlertTriangle
+          : AlertCircle;
+    return (
+      <div
+        className="relative z-20 mx-4 mt-4 flex items-center gap-2 rounded-xl border px-4 py-3 text-sm"
+        style={{
+          borderColor:
+            banner.type === 'success'
+              ? 'rgba(56, 239, 125, 0.3)'
+              : banner.type === 'warning'
+                ? 'rgba(247, 151, 30, 0.3)'
+                : 'rgba(245, 87, 108, 0.3)',
+          color:
+            banner.type === 'success'
+              ? 'var(--log-ok)'
+              : banner.type === 'warning'
+                ? 'var(--log-warn)'
+                : 'var(--log-error)',
+          background: 'rgba(0,0,0,0.25)',
+        }}
+      >
+        <Icon className="h-4 w-4" />
+        <span>{banner.message}</span>
+      </div>
+    );
+  };
+
+  const renderActiveStep = () => {
+    switch (activeStep) {
+      case 'source':
+        return (
+          <SourceStep
+            folders={folders}
+            outputFolder={outputFolder}
+            onAddFolder={handleAddFolder}
+            onRemoveFolder={handleRemoveFolder}
+            onBrowseOutput={handleBrowseOutput}
+            onOutputChange={setOutputFolder}
+            onNext={() => setActiveStep('rules')}
           />
-          {/* 2-column grid: Col1 = Source+Output, Col2 = Camera+Rename */}
-          <div className="grid grid-cols-2 gap-3">
-            {/* Column 1 */}
-            <div className="flex flex-col gap-3">
-              <SourceFoldersPanel
-                folders={folders}
-                onAddFolder={handleAddFolder}
-                onRemoveFolder={handleRemoveFolder}
-              />
-              <OutputFolderPanel
-                outputFolder={outputFolder}
-                onBrowse={handleBrowseOutput}
-                onChange={setOutputFolder}
-              />
-            </div>
-            {/* Column 2 */}
-            <div className="flex flex-col gap-3">
-              <CameraFormatPanel
-                cameraPreset={cameraPreset}
-                rawExtensions={rawExtensions}
-                fileType={fileType}
-                onCameraChange={setCameraPreset}
-                onRawExtensionsChange={setRawExtensions}
-                onFileTypeChange={setFileType}
-              />
-              <RenameSettingsPanel
-                prefix={prefix}
-                format={format}
-                startNumber={startNumber}
-                onPrefixChange={setPrefix}
-                onFormatChange={setFormat}
-                onStartNumberChange={setStartNumber}
-              />
-            </div>
-          </div>
-
-          {/* Advanced options — always visible */}
-          <AdvancedOptionsPanel
+        );
+      case 'rules':
+        return (
+          <RulesStep
+            cameraPreset={cameraPreset}
+            rawExtensions={rawExtensions}
+            fileType={fileType}
+            prefix={prefix}
+            format={format}
+            startNumber={startNumber}
             recursiveScan={recursiveScan}
             fileOperation={fileOperation}
             organizeByDate={organizeByDate}
             onlyPaired={onlyPaired}
             includeVideo={includeVideo}
+            currentSettings={currentSettings}
+            savePresetSignal={savePresetSignal}
+            onCameraChange={setCameraPreset}
+            onRawExtensionsChange={setRawExtensions}
+            onFileTypeChange={setFileType}
+            onPrefixChange={setPrefix}
+            onFormatChange={setFormat}
+            onStartNumberChange={setStartNumber}
             onRecursiveScanChange={setRecursiveScan}
             onFileOperationChange={setFileOperation}
             onOrganizeByDateChange={setOrganizeByDate}
             onOnlyPairedChange={setOnlyPaired}
             onIncludeVideoChange={setIncludeVideo}
+            onApplyPreset={handleApplyPreset}
+            onBack={() => setActiveStep('source')}
+            onNext={() => setActiveStep('review')}
           />
-
-          {/* Preset manager */}
-          <PresetPanel
-            currentSettings={{
-              camera_preset: cameraPreset,
-              raw_extensions: rawExtensions,
-              file_type: fileType,
-              prefix,
-              fmt_pattern: FORMAT_TO_STRFTIME[format] ?? null,
-              start_num: startNumber,
-              file_op: fileOperation,
-              recursive: recursiveScan,
-              organize_by_date: organizeByDate,
-              only_paired: onlyPaired,
-              include_video: includeVideo,
-            }}
-            onApply={handleApplyPreset}
-          />
-
-          {/* Status banner */}
-          {banner && (
-            <motion.div
-              initial={{ opacity: 0, y: -8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              className="rounded-xl p-3 flex items-center gap-2 text-sm border"
-              style={{
-                background:
-                  banner.type === "success"
-                    ? "rgba(17, 153, 142, 0.15)"
-                    : banner.type === "warning"
-                      ? "rgba(247, 151, 30, 0.15)"
-                      : "rgba(245, 87, 108, 0.15)",
-                borderColor:
-                  banner.type === "success"
-                    ? "rgba(17, 153, 142, 0.3)"
-                    : banner.type === "warning"
-                      ? "rgba(247, 151, 30, 0.3)"
-                      : "rgba(245, 87, 108, 0.3)",
-              }}
-            >
-              {banner.type === "success" && (
-                <CheckCircle
-                  className="w-4 h-4 shrink-0"
-                  style={{ color: "var(--log-ok)" }}
-                />
-              )}
-              {banner.type === "warning" && (
-                <AlertTriangle
-                  className="w-4 h-4 shrink-0"
-                  style={{ color: "var(--log-warn)" }}
-                />
-              )}
-              {banner.type === "error" && (
-                <AlertCircle
-                  className="w-4 h-4 shrink-0"
-                  style={{ color: "var(--log-error)" }}
-                />
-              )}
-              <span style={{ color: "var(--text-secondary)" }}>
-                {banner.message}
-              </span>
-            </motion.div>
-          )}
-        </div>
-
-        {/* Right panel — Log output */}
-        <div className="flex-1 flex flex-col p-4 overflow-hidden">
-          <LogPanel
+        );
+      case 'results':
+        return (
+          <ResultsStep
+            banner={banner}
             entries={logEntries}
             isDryRun={isDryRun}
             stats={stats}
             onClear={handleClearLog}
+            onBackToRules={() => setActiveStep('rules')}
           />
-        </div>
+        );
+      case 'review':
+      default:
+        return (
+          <ReviewRunStep
+            folders={folders}
+            outputFolder={outputFolder}
+            cameraPreset={cameraPreset}
+            rawExtensions={rawExtensions}
+            fileType={fileType}
+            prefix={prefix}
+            format={format}
+            startNumber={startNumber}
+            recursiveScan={recursiveScan}
+            fileOperation={fileOperation}
+            organizeByDate={organizeByDate}
+            onlyPaired={onlyPaired}
+            includeVideo={includeVideo}
+            status={status}
+            progress={progress}
+            stats={stats}
+            isProcessing={isProcessing}
+            onRun={() => handleRun(false)}
+            onDryRun={() => handleRun(true)}
+            onStop={handleStop}
+            onBack={() => setActiveStep('rules')}
+          />
+        );
+    }
+  };
+
+  return (
+    <div className="relative flex h-screen flex-col overflow-hidden">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(139,92,246,0.18),transparent_32%),radial-gradient(circle_at_80%_10%,rgba(79,172,254,0.12),transparent_28%),linear-gradient(135deg,#0f0c29,#24243e)]" />
+      {renderBanner()}
+      <div className="min-h-0 flex-1">
+        <WorkflowShell
+          steps={steps}
+          activeStep={activeStep}
+          statusLabel={getStatusLabel(status)}
+          isProcessing={isProcessing}
+          onStepChange={goToStep}
+          onOpenHelp={() => setInfoPage('help')}
+        >
+          {renderActiveStep()}
+        </WorkflowShell>
       </div>
-
-      {/* Bottom progress bar */}
-      <ProgressBar
-        current={progress.current}
-        total={progress.total}
-        status={status}
-      />
-
-      {/* Settings modal */}
+      {updateInfo?.available && activeStep !== 'results' && (
+        <div
+          className="absolute bottom-4 right-4 z-20 rounded-xl border px-4 py-3 text-sm"
+          style={{
+            background: 'rgba(102,126,234,0.15)',
+            borderColor: 'rgba(102,126,234,0.3)',
+            color: 'var(--text-secondary)',
+          }}
+        >
+          {t('update.available')} v{updateInfo.version}
+        </div>
+      )}
       <SettingsModal
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
-        defaultCamera={defaultCamera}
-        defaultFileOperation={defaultFileOperation}
-        defaultRecursiveScan={defaultRecursiveScan}
-        defaultOrganizeByDate={defaultOrganizeByDate}
         language={i18n.language}
-        onDefaultCameraChange={handleDefaultCameraChange}
-        onDefaultFileOperationChange={handleDefaultFileOperationChange}
-        onDefaultRecursiveScanChange={handleDefaultRecursiveScanChange}
-        onDefaultOrganizeByDateChange={handleDefaultOrganizeByDateChange}
         onLanguageChange={handleLanguageChange}
+        defaultCamera={defaultCamera}
+        onDefaultCameraChange={handleDefaultCameraChange}
+        defaultFileOperation={defaultFileOperation}
+        onDefaultFileOperationChange={handleDefaultFileOperationChange}
+        defaultRecursiveScan={defaultRecursiveScan}
+        onDefaultRecursiveScanChange={handleDefaultRecursiveScanChange}
+        defaultOrganizeByDate={defaultOrganizeByDate}
+        onDefaultOrganizeByDateChange={handleDefaultOrganizeByDateChange}
       />
+      <InfoModal page={infoPage} onPageChange={setInfoPage} onClose={() => setInfoPage(null)} />
     </div>
   );
 }

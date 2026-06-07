@@ -1,11 +1,11 @@
-import { useTranslation } from "react-i18next";
-import { ScrollReveal } from "./ScrollReveal";
-import { SectionHeading } from "./SectionHeading";
-import { STEPS } from "../constants/steps";
+import { useTranslation } from 'react-i18next';
+import { STEPS } from '../constants/steps';
+import { ScrollReveal } from './ScrollReveal';
+import { SectionHeading } from './SectionHeading';
 
 export function HowItWorks() {
   const { t } = useTranslation();
-  const steps = t("howItWorks.steps", { returnObjects: true }) as Array<{
+  const steps = t('howItWorks.steps', { returnObjects: true }) as Array<{
     title: string;
     description: string;
   }>;
@@ -13,10 +13,7 @@ export function HowItWorks() {
     <section id="how-it-works" className="py-20 md:py-32 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <ScrollReveal>
-          <SectionHeading
-            title={t("howItWorks.title")}
-            subtitle={t("howItWorks.subtitle")}
-          />
+          <SectionHeading title={t('howItWorks.title')} subtitle={t('howItWorks.subtitle')} />
         </ScrollReveal>
 
         {/* Desktop: Horizontal stepper */}
@@ -27,11 +24,7 @@ export function HowItWorks() {
 
             <div className="grid grid-cols-4 gap-8 items-stretch">
               {STEPS.map((step, index) => (
-                <ScrollReveal
-                  key={step.number}
-                  delay={index * 0.15}
-                  className="h-full"
-                >
+                <ScrollReveal key={step.number} delay={index * 0.15} className="h-full">
                   <div className="relative flex flex-col h-full">
                     {/* Step number with gradient */}
                     <div className="relative mb-6">
@@ -42,9 +35,7 @@ export function HowItWorks() {
 
                     {/* Card */}
                     <div className="flex-1 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:border-white/20 transition-all duration-300 hover:-translate-y-1">
-                      <div className="text-3xl mb-3 text-center">
-                        {step.icon}
-                      </div>
+                      <div className="text-3xl mb-3 text-center">{step.icon}</div>
                       <h3
                         className="text-lg font-semibold text-white mb-3 text-center"
                         style={{ fontFamily: "'Space Grotesk', sans-serif" }}
