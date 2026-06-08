@@ -27,16 +27,9 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   private removeWindowErrorListener?: () => void;
   private removeRejectionListener?: () => void;
 
-  static getDerivedStateFromError(error: Error): Partial<ErrorBoundaryState> {
+  static getDerivedStateFromError(_error: Error): Partial<ErrorBoundaryState> {
     return {
       hasError: true,
-      errors: [
-        {
-          message: error.message,
-          stack: error.stack,
-          timestamp: new Date().toISOString(),
-        },
-      ],
     };
   }
 
@@ -74,7 +67,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     };
     this.setState((state) => ({
       hasError: true,
-      errors: [captured, ...state.errors].slice(0, 10),
+      errors: mergeCapturedError(state.errors, captured),
     }));
   }
 
@@ -111,7 +104,9 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
               color: 'var(--text-secondary)',
             }}
           >
-            <p className="font-semibold text-white">{latest?.message ?? i18n.t('shared.unknownError')}</p>
+            <p className="font-semibold text-white">
+              {latest?.message ?? i18n.t('shared.unknownError')}
+            </p>
             {this.state.errors.map((error) => (
               <details key={`${error.timestamp}-${error.message}`} className="mt-3">
                 <summary className="cursor-pointer text-white">{error.timestamp}</summary>
@@ -123,7 +118,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
             ))}
           </div>
           <div className="mt-5 flex justify-end">
-              <button
+            <button
               type="button"
               onClick={this.handleReset}
               className="rounded-xl px-4 py-2 text-sm font-semibold text-white"
@@ -136,4 +131,22 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
       </div>
     );
   }
+}
+
+function mergeCapturedError(errors: CapturedError[], captured: CapturedError) {
+  const existingIndex = errors.findIndex(
+    (error) => error.message === captured.message && error.stack === captured.stack,
+  );
+
+  if (existingIndex === -1) {
+    return [captured, ...errors].slice(0, 10);
+  }
+
+  const merged = [...errors];
+  const existing = merged[existingIndex];
+  merged[existingIndex] = {
+    ...existing,
+    componentStack: existing.componentStack ?? captured.componentStack,
+  };
+  return merged;
 }

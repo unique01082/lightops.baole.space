@@ -89,6 +89,24 @@ const STORAGE = {
 
 const MENU_EVENT = 'lightops://menu';
 
+type MenuActions = {
+  addFolder: () => void;
+  browseOutput: () => void;
+  changeLanguage: (lang: string) => void;
+  checkUpdates: (showNoUpdateBanner?: boolean) => void;
+  run: (dryRun: boolean) => void;
+  showResults: () => void;
+  stop: () => void;
+};
+
+function safelyUnlisten(unlisten: () => void) {
+  try {
+    unlisten();
+  } catch (error) {
+    console.warn('Failed to unregister Tauri listener:', error);
+  }
+}
+
 function loadDefaults() {
   try {
     return {
@@ -212,6 +230,7 @@ function App() {
     stats: { ok: number; skip: number; error: number };
   } | null>(null);
   const flushTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const menuActionsRef = useRef<MenuActions | null>(null);
 
   const flushProgressBuffer = useCallback(() => {
     if (flushTimerRef.current) {
@@ -363,7 +382,8 @@ function App() {
             offset_ms: existing?.offset_ms ?? 0,
             label:
               existing?.label ??
-              ([item.camera_make, item.camera_model].filter(Boolean).join(' ') || t('shared.unknownCamera')),
+              ([item.camera_make, item.camera_model].filter(Boolean).join(' ') ||
+                t('shared.unknownCamera')),
           };
         }),
       );
@@ -427,6 +447,14 @@ function App() {
         type: 'section',
         message: dryRun ? t('workflow.run.dryRunStarted') : t('workflow.run.processingStarted'),
       });
+
+      let unlistenProgress: (() => void) | undefined;
+      const cleanupProgressListener = () => {
+        if (!unlistenProgress) return;
+        const unlisten = unlistenProgress;
+        unlistenProgress = undefined;
+        safelyUnlisten(unlisten);
+      };
 
       try {
         addLog({
@@ -500,7 +528,7 @@ function App() {
           message: t('workflow.run.renamingFiles', { count: planResult.plan.length }),
         });
 
-        const unlisten = await listen<ProgressEvent>('progress', (event) => {
+        unlistenProgress = await listen<ProgressEvent>('progress', (event) => {
           const { entry, current, total, stats: eventStats } = event.payload;
           pendingProgressRef.current = {
             progress: { current, total },
@@ -517,17 +545,21 @@ function App() {
           );
         });
 
-        const result = await invoke<ExecuteResult>('execute_plan', {
-          plan: planResult.plan,
-          opts: {
-            output_dir: outputFolder.trim() || null,
-            dry_run: dryRun,
-            use_date_subdir: organizeByDate,
-            file_op: fileOperation,
-          },
-        });
+        let result: ExecuteResult;
+        try {
+          result = await invoke<ExecuteResult>('execute_plan', {
+            plan: planResult.plan,
+            opts: {
+              output_dir: outputFolder.trim() || null,
+              dry_run: dryRun,
+              use_date_subdir: organizeByDate,
+              file_op: fileOperation,
+            },
+          });
+        } finally {
+          cleanupProgressListener();
+        }
 
-        unlisten();
         flushProgressBuffer();
         setActiveStep('results');
 
@@ -544,12 +576,15 @@ function App() {
             type: result.errors > 0 ? 'warning' : 'success',
             message: t('workflow.run.completed', {
               ok: result.ok,
-              mode: dryRun ? t('workflow.run.wouldBeRenamed') : t('workflow.run.renamedSuccessfully'),
+              mode: dryRun
+                ? t('workflow.run.wouldBeRenamed')
+                : t('workflow.run.renamedSuccessfully'),
               errors: result.errors ? t('workflow.run.errorsCount', { count: result.errors }) : '',
             }),
           });
         }
       } catch (e) {
+        cleanupProgressListener();
         flushProgressBuffer();
         setStatus('error');
         setActiveStep('results');
@@ -708,16 +743,43 @@ function App() {
     }
   }, []);
 
+  menuActionsRef.current = {
+    addFolder: () => {
+      void handleAddFolder();
+    },
+    browseOutput: () => {
+      void handleBrowseOutput();
+    },
+    changeLanguage: handleLanguageChange,
+    checkUpdates: (showNoUpdateBanner = false) => {
+      void checkForUpdates(showNoUpdateBanner);
+    },
+    run: (dryRun: boolean) => {
+      void handleRun(dryRun);
+    },
+    showResults: () => {
+      if (logRef.current.length > 0 || status !== 'idle') setActiveStep('results');
+    },
+    stop: () => {
+      void handleStop();
+    },
+  };
+
   useEffect(() => {
     let disposed = false;
+    let unlistenMenu: (() => void) | undefined;
+
     const setupMenuListener = async () => {
       const unlisten = await listen<string>(MENU_EVENT, (event) => {
+        const actions = menuActionsRef.current;
+        if (!actions) return;
+
         switch (event.payload) {
           case 'menu:add-source':
-            handleAddFolder();
+            actions.addFolder();
             break;
           case 'menu:choose-output':
-            handleBrowseOutput();
+            actions.browseOutput();
             break;
           case 'menu:save-preset':
             setActiveStep('rules');
@@ -727,25 +789,25 @@ function App() {
             setIsSettingsOpen(true);
             break;
           case 'menu:dry-run':
-            handleRun(true);
+            actions.run(true);
             break;
           case 'menu:run':
-            handleRun(false);
+            actions.run(false);
             break;
           case 'menu:stop':
-            handleStop();
+            actions.stop();
             break;
           case 'menu:show-results':
-            if (logRef.current.length > 0 || status !== 'idle') setActiveStep('results');
+            actions.showResults();
             break;
           case 'menu:language-en':
-            handleLanguageChange('en');
+            actions.changeLanguage('en');
             break;
           case 'menu:language-vi':
-            handleLanguageChange('vi');
+            actions.changeLanguage('vi');
             break;
           case 'menu:check-updates':
-            checkForUpdates(true);
+            actions.checkUpdates(true);
             break;
           case 'menu:help':
             setInfoPage('help');
@@ -760,25 +822,24 @@ function App() {
       });
 
       if (disposed) {
-        unlisten();
+        safelyUnlisten(unlisten);
+        return;
       }
-      return unlisten;
+      unlistenMenu = unlisten;
     };
 
-    const unlistenPromise = setupMenuListener();
+    setupMenuListener().catch((error) => {
+      console.error('Failed to set up menu listener:', error);
+    });
+
     return () => {
       disposed = true;
-      unlistenPromise.then((unlisten) => unlisten());
+      if (unlistenMenu) {
+        safelyUnlisten(unlistenMenu);
+        unlistenMenu = undefined;
+      }
     };
-  }, [
-    checkForUpdates,
-    handleAddFolder,
-    handleBrowseOutput,
-    handleLanguageChange,
-    handleRun,
-    handleStop,
-    status,
-  ]);
+  }, []);
 
   const isProcessing = status === 'processing';
   const hasResults = logEntries.length > 0 || status !== 'idle';
@@ -1208,13 +1269,22 @@ function App() {
             borderColor: 'var(--glass-border)',
           }}
         >
-          <div className="flex flex-col justify-between border-b p-7 lg:border-b-0 lg:border-r" style={{ borderColor: 'var(--glass-divider)' }}>
+          <div
+            className="flex flex-col justify-between border-b p-7 lg:border-b-0 lg:border-r"
+            style={{ borderColor: 'var(--glass-divider)' }}
+          >
             <div>
               <img src="/icons/lightops.svg" alt="" className="h-16 w-16 rounded-2xl" />
-              <h1 className="mt-6 text-4xl text-white" style={{ fontFamily: 'var(--font-heading)' }}>
+              <h1
+                className="mt-6 text-4xl text-white"
+                style={{ fontFamily: 'var(--font-heading)' }}
+              >
                 {t('workflow.welcome.title')}
               </h1>
-              <p className="mt-4 text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+              <p
+                className="mt-4 text-sm leading-relaxed"
+                style={{ color: 'var(--text-secondary)' }}
+              >
                 {t('workflow.welcome.body')}
               </p>
             </div>
@@ -1241,21 +1311,47 @@ function App() {
             </div>
           </div>
           <div className="p-7">
-            <p className="text-xs uppercase tracking-[0.28em]" style={{ color: 'var(--text-muted)' }}>
+            <p
+              className="text-xs uppercase tracking-[0.28em]"
+              style={{ color: 'var(--text-muted)' }}
+            >
               {t('workflow.welcome.eyebrow')}
             </p>
             <div className="mt-4 grid gap-3">
               {[
-                ['source', t('workflow.welcome.steps.source.title'), t('workflow.welcome.steps.source.body')],
-                ['scan', t('workflow.welcome.steps.scan.title'), t('workflow.welcome.steps.scan.body')],
-                ['rules', t('workflow.welcome.steps.rules.title'), t('workflow.welcome.steps.rules.body')],
-                ['review', t('workflow.welcome.steps.review.title'), t('workflow.welcome.steps.review.body')],
-                ['results', t('workflow.welcome.steps.results.title'), t('workflow.welcome.steps.results.body')],
+                [
+                  'source',
+                  t('workflow.welcome.steps.source.title'),
+                  t('workflow.welcome.steps.source.body'),
+                ],
+                [
+                  'scan',
+                  t('workflow.welcome.steps.scan.title'),
+                  t('workflow.welcome.steps.scan.body'),
+                ],
+                [
+                  'rules',
+                  t('workflow.welcome.steps.rules.title'),
+                  t('workflow.welcome.steps.rules.body'),
+                ],
+                [
+                  'review',
+                  t('workflow.welcome.steps.review.title'),
+                  t('workflow.welcome.steps.review.body'),
+                ],
+                [
+                  'results',
+                  t('workflow.welcome.steps.results.title'),
+                  t('workflow.welcome.steps.results.body'),
+                ],
               ].map(([key, title, body]) => (
                 <div
                   key={key}
                   className="rounded-2xl border p-4"
-                  style={{ borderColor: 'var(--glass-border)', background: 'rgba(255,255,255,0.04)' }}
+                  style={{
+                    borderColor: 'var(--glass-border)',
+                    background: 'rgba(255,255,255,0.04)',
+                  }}
                 >
                   <h2 className="text-sm font-semibold text-white">{title}</h2>
                   <p className="mt-1 text-xs" style={{ color: 'var(--text-secondary)' }}>
