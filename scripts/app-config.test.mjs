@@ -1,7 +1,10 @@
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { relative, resolve } from 'node:path';
 import { test } from 'node:test';
+
+import { hashDirectory } from './configure-release.mjs';
 
 const root = resolve(import.meta.dirname, '..');
 
@@ -38,4 +41,13 @@ test('release builds pinned sidecars without private download URL secrets', () =
   assert.match(workflow, /prepare-sidecars-windows\.ps1/);
   assert.doesNotMatch(workflow, /LIGHTOPS_SIDECAR_URL_/);
   assert.match(workflow, /LIGHTOPS_SIDECAR_SHA256/);
+});
+
+test('sidecar checksum is independent of relative or absolute directory paths', () => {
+  const fixture = mkdtempSync(resolve(tmpdir(), 'lightops-sidecar-hash-'));
+  mkdirSync(resolve(fixture, 'nested'));
+  writeFileSync(resolve(fixture, 'nested', 'sidecar'), 'pinned binary');
+
+  const relativeFixture = `.${process.platform === 'win32' ? '\\' : '/'}${relative(process.cwd(), fixture)}`;
+  assert.equal(hashDirectory(relativeFixture), hashDirectory(fixture));
 });

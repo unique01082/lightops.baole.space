@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url';
 const root = resolve(import.meta.dirname, '..');
 
 export function hashDirectory(directory) {
+  directory = resolve(directory);
   const hash = createHash('sha256');
   const visit = (path) => {
     for (const name of readdirSync(path).sort()) {
