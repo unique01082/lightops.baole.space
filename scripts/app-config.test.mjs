@@ -31,3 +31,11 @@ test('release matrix builds every supported v2 platform target', () => {
   assert.match(workflow, /TAURI_SIGNING_PRIVATE_KEY/);
   assert.match(workflow, /TAURI_UPDATER_PUBLIC_KEY/);
 });
+
+test('release builds pinned sidecars without private download URL secrets', () => {
+  const workflow = readFileSync(resolve(root, '.github/workflows/release.yml'), 'utf8');
+  assert.match(workflow, /prepare-sidecars-macos\.sh/);
+  assert.match(workflow, /prepare-sidecars-windows\.ps1/);
+  assert.doesNotMatch(workflow, /LIGHTOPS_SIDECAR_URL_/);
+  assert.match(workflow, /LIGHTOPS_SIDECAR_SHA256/);
+});

@@ -42,8 +42,10 @@ jobs:
             args: '--target universal-apple-darwin'
           - platform: windows-latest
             args: '--target x86_64-pc-windows-msvc'
-          - platform: windows-latest
+            sidecar_arch: x64
+          - platform: windows-11-arm
             args: '--target aarch64-pc-windows-msvc'
+            sidecar_arch: arm64
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v4
@@ -60,7 +62,7 @@ jobs:
         with:
           targets: 'aarch64-apple-darwin,x86_64-apple-darwin'
       - name: Install Rust (Windows)
-        if: matrix.platform == 'windows-latest'
+        if: startsWith(matrix.platform, 'windows-')
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: 'x86_64-pc-windows-msvc,aarch64-pc-windows-msvc'
@@ -76,40 +78,19 @@ jobs:
             libappindicator3-dev \
             librsvg2-dev patchelf
       - run: pnpm install --frozen-lockfile
-      - name: Download sidecar archive (macOS)
+      - name: Build sidecars (macOS Universal)
         if: matrix.platform == 'macos-latest'
-        env:
-          LIGHTOPS_SIDECAR_URL: ${{ secrets.LIGHTOPS_SIDECAR_URL_MACOS_UNIVERSAL }}
-        run: |
-          test -n "$LIGHTOPS_SIDECAR_URL"
-          rm -rf src-tauri/resources/bin
-          mkdir -p src-tauri/resources/bin
-          curl --fail --location --proto '=https' "$LIGHTOPS_SIDECAR_URL" -o sidecars.zip
-          ditto -x -k sidecars.zip src-tauri/resources/bin
-          chmod +x src-tauri/resources/bin/ffmpeg src-tauri/resources/bin/exiftool src-tauri/resources/bin/jpegtran
-      - name: Download sidecar archive (Windows x64)
-        if: matrix.platform == 'windows-latest' && matrix.args == '--target x86_64-pc-windows-msvc'
+        run: bash scripts/prepare-sidecars-macos.sh
+      - name: Prepare sidecars (Windows)
+        if: startsWith(matrix.platform, 'windows-')
         shell: pwsh
-        env:
-          LIGHTOPS_SIDECAR_URL: ${{ secrets.LIGHTOPS_SIDECAR_URL_WINDOWS_X64 }}
+        run: ./scripts/prepare-sidecars-windows.ps1 -Architecture '${{ matrix.sidecar_arch }}'
+      - name: Hash sidecars
+        shell: bash
         run: |
-          if (-not $env:LIGHTOPS_SIDECAR_URL) { throw 'Missing sidecar URL' }
-          Remove-Item src-tauri/resources/bin -Recurse -Force
-          Invoke-WebRequest $env:LIGHTOPS_SIDECAR_URL -OutFile sidecars.zip
-          Expand-Archive sidecars.zip src-tauri/resources/bin
-      - name: Download sidecar archive (Windows ARM64)
-        if: matrix.platform == 'windows-latest' && matrix.args == '--target aarch64-pc-windows-msvc'
-        shell: pwsh
-        env:
-          LIGHTOPS_SIDECAR_URL: ${{ secrets.LIGHTOPS_SIDECAR_URL_WINDOWS_ARM64 }}
-        run: |
-          if (-not $env:LIGHTOPS_SIDECAR_URL) { throw 'Missing sidecar URL' }
-          Remove-Item src-tauri/resources/bin -Recurse -Force
-          Invoke-WebRequest $env:LIGHTOPS_SIDECAR_URL -OutFile sidecars.zip
-          Expand-Archive sidecars.zip src-tauri/resources/bin
+          echo "LIGHTOPS_SIDECAR_SHA256=$(node --input-type=module -e 'import { hashDirectory } from "./scripts/configure-release.mjs"; console.log(hashDirectory("./src-tauri/resources/bin"));')" >> "$GITHUB_ENV"
       - name: Verify sidecars and configure updater
         env:
-          LIGHTOPS_SIDECAR_SHA256: ${{ matrix.platform == 'macos-latest' && secrets.LIGHTOPS_SIDECAR_SHA256_MACOS_UNIVERSAL || (matrix.args == '--target x86_64-pc-windows-msvc' && secrets.LIGHTOPS_SIDECAR_SHA256_WINDOWS_X64 || secrets.LIGHTOPS_SIDECAR_SHA256_WINDOWS_ARM64) }}
           TAURI_UPDATER_PUBLIC_KEY: ${{ secrets.TAURI_UPDATER_PUBLIC_KEY }}
         run: node scripts/configure-release.mjs
       - name: Build Tauri app
