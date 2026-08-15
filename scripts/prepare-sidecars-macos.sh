@@ -39,15 +39,16 @@ curl --fail --location --proto '=https' \
   "https://github.com/libjpeg-turbo/libjpeg-turbo/releases/download/${JPEG_TURBO_VERSION}/libjpeg-turbo-${JPEG_TURBO_VERSION}.tar.gz" \
   --output "$BUILD_DIR/libjpeg-turbo.tar.gz"
 tar -xf "$BUILD_DIR/libjpeg-turbo.tar.gz" -C "$BUILD_DIR"
-cmake \
-  -S "$BUILD_DIR/libjpeg-turbo-${JPEG_TURBO_VERSION}" \
-  -B "$BUILD_DIR/libjpeg-build" \
-  -DCMAKE_BUILD_TYPE=Release \
-  -DCMAKE_OSX_ARCHITECTURES='x86_64;arm64' \
-  -DENABLE_SHARED=FALSE \
-  -DWITH_SIMD=FALSE \
-  -DWITH_TOOLS=TRUE
-cmake --build "$BUILD_DIR/libjpeg-build" --config Release --target jpegtran --parallel
+for architecture in x86_64 arm64; do
+  cmake \
+    -S "$BUILD_DIR/libjpeg-turbo-${JPEG_TURBO_VERSION}" \
+    -B "$BUILD_DIR/libjpeg-$architecture" \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_OSX_ARCHITECTURES="$architecture" \
+    -DENABLE_SHARED=FALSE \
+    -DWITH_TOOLS=TRUE
+  cmake --build "$BUILD_DIR/libjpeg-$architecture" --config Release --target jpegtran --parallel
+done
 
 curl --fail --location --proto '=https' \
   "https://sourceforge.net/projects/exiftool/files/Image-ExifTool-${EXIFTOOL_VERSION}.tar.gz/download" \
@@ -60,7 +61,10 @@ lipo -create \
   "$BUILD_DIR/ffmpeg-x86_64/ffmpeg" \
   "$BUILD_DIR/ffmpeg-arm64/ffmpeg" \
   -output "$OUTPUT_DIR/ffmpeg"
-cp "$BUILD_DIR/libjpeg-build/jpegtran" "$OUTPUT_DIR/jpegtran"
+lipo -create \
+  "$BUILD_DIR/libjpeg-x86_64/jpegtran" \
+  "$BUILD_DIR/libjpeg-arm64/jpegtran" \
+  -output "$OUTPUT_DIR/jpegtran"
 cp "$BUILD_DIR/Image-ExifTool-${EXIFTOOL_VERSION}/exiftool" "$OUTPUT_DIR/exiftool"
 cp -R "$BUILD_DIR/Image-ExifTool-${EXIFTOOL_VERSION}/lib" "$OUTPUT_DIR/lib"
 chmod +x "$OUTPUT_DIR/ffmpeg" "$OUTPUT_DIR/jpegtran" "$OUTPUT_DIR/exiftool"

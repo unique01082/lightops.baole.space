@@ -33,14 +33,15 @@ $Ffmpeg = Get-ChildItem (Join-Path $BuildDir 'ffmpeg') -Filter ffmpeg.exe -Recur
 if (-not $Ffmpeg) { throw 'ffmpeg.exe was not found in the vendor archive' }
 Copy-Item $Ffmpeg.FullName (Join-Path $OutputDir 'ffmpeg.exe')
 
-$JpegArchitecture = if ($Architecture -eq 'x64') { 'x64' } else { 'arm64' }
-$JpegInstaller = Join-Path $BuildDir "libjpeg-turbo-$JpegTurboVersion-vc-$JpegArchitecture.exe"
-Invoke-WebRequest "https://github.com/libjpeg-turbo/libjpeg-turbo/releases/download/$JpegTurboVersion/libjpeg-turbo-$JpegTurboVersion-vc-$JpegArchitecture.exe" -OutFile $JpegInstaller
-$JpegInstallDir = Join-Path $BuildDir 'jpeg'
-$JpegInstall = Start-Process -FilePath $JpegInstaller -ArgumentList @('/S', "/D=$JpegInstallDir") -Wait -PassThru
-if ($JpegInstall.ExitCode -ne 0) { throw "libjpeg-turbo installer failed with exit code $($JpegInstall.ExitCode)" }
-$JpegTran = Get-ChildItem $JpegInstallDir -Filter jpegtran.exe -Recurse | Select-Object -First 1
-if (-not $JpegTran) { throw 'jpegtran.exe was not found in the vendor installer' }
+$JpegArchive = Join-Path $BuildDir "libjpeg-turbo-$JpegTurboVersion.tar.gz"
+Invoke-WebRequest "https://github.com/libjpeg-turbo/libjpeg-turbo/releases/download/$JpegTurboVersion/libjpeg-turbo-$JpegTurboVersion.tar.gz" -OutFile $JpegArchive
+tar -xf $JpegArchive -C $BuildDir
+$JpegSourceDir = Join-Path $BuildDir "libjpeg-turbo-$JpegTurboVersion"
+$JpegBuildDir = Join-Path $BuildDir 'jpeg-build'
+cmake -S $JpegSourceDir -B $JpegBuildDir -DCMAKE_BUILD_TYPE=Release -DENABLE_SHARED=FALSE -DWITH_TOOLS=TRUE
+cmake --build $JpegBuildDir --config Release --target jpegtran --parallel
+$JpegTran = Get-ChildItem $JpegBuildDir -Filter jpegtran.exe -Recurse | Select-Object -First 1
+if (-not $JpegTran) { throw 'jpegtran.exe was not produced by the native build' }
 Copy-Item $JpegTran.FullName (Join-Path $OutputDir 'jpegtran.exe')
 
 $ExifArchive = Join-Path $BuildDir "exiftool-$ExifToolVersion.zip"
