@@ -22,6 +22,12 @@ test('desktop window supports both acceptance viewports without page resizing be
   );
 });
 
+test('desktop release creates signed updater artifacts', () => {
+  const config = JSON.parse(readFileSync(resolve(root, 'src-tauri/tauri.conf.json'), 'utf8'));
+  assert.equal(config.bundle.createUpdaterArtifacts, true);
+  assert.match(config.plugins.updater.endpoints[0], /releases\/latest\/download\/latest\.json$/);
+});
+
 test('release matrix builds every supported v2 platform target', () => {
   const workflow = readFileSync(resolve(root, '.github/workflows/release.yml'), 'utf8');
   for (const target of [
