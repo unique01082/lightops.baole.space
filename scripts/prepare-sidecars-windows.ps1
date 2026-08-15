@@ -36,8 +36,10 @@ Copy-Item $Ffmpeg.FullName (Join-Path $OutputDir 'ffmpeg.exe')
 $JpegArchitecture = if ($Architecture -eq 'x64') { 'x64' } else { 'arm64' }
 $JpegInstaller = Join-Path $BuildDir "libjpeg-turbo-$JpegTurboVersion-vc-$JpegArchitecture.exe"
 Invoke-WebRequest "https://github.com/libjpeg-turbo/libjpeg-turbo/releases/download/$JpegTurboVersion/libjpeg-turbo-$JpegTurboVersion-vc-$JpegArchitecture.exe" -OutFile $JpegInstaller
-& 7z x $JpegInstaller "-o$(Join-Path $BuildDir 'jpeg')" -y | Out-Null
-$JpegTran = Get-ChildItem (Join-Path $BuildDir 'jpeg') -Filter jpegtran.exe -Recurse | Select-Object -First 1
+$JpegInstallDir = Join-Path $BuildDir 'jpeg'
+$JpegInstall = Start-Process -FilePath $JpegInstaller -ArgumentList @('/S', "/D=$JpegInstallDir") -Wait -PassThru
+if ($JpegInstall.ExitCode -ne 0) { throw "libjpeg-turbo installer failed with exit code $($JpegInstall.ExitCode)" }
+$JpegTran = Get-ChildItem $JpegInstallDir -Filter jpegtran.exe -Recurse | Select-Object -First 1
 if (-not $JpegTran) { throw 'jpegtran.exe was not found in the vendor installer' }
 Copy-Item $JpegTran.FullName (Join-Path $OutputDir 'jpegtran.exe')
 

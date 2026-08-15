@@ -45,6 +45,7 @@ cmake \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_OSX_ARCHITECTURES='x86_64;arm64' \
   -DENABLE_SHARED=FALSE \
+  -DWITH_SIMD=FALSE \
   -DWITH_TOOLS=TRUE
 cmake --build "$BUILD_DIR/libjpeg-build" --config Release --target jpegtran --parallel
 
