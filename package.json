@@ -1,19 +1,26 @@
 {
   "name": "lightops",
-  "version": "1.0.0-1",
+  "version": "2.0.0",
   "private": true,
   "type": "module",
   "scripts": {
     "build": "tauri build",
+    "build:api": "pnpm --filter @lightops/api build",
     "build:frontend": "vite build",
     "dev": "tauri dev",
     "dev:frontend": "vite",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "openapi:client": "pnpm --filter @lightops/api openapi:snapshot && api2ts",
     "pretty": "prettier --write .",
     "pretty:check": "prettier --check .",
     "preview": "vite preview",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "test": "vitest run",
+    "test:api": "pnpm --filter @lightops/api test",
+    "test:release": "node --test scripts/*.test.mjs",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",
@@ -57,6 +64,7 @@
     "lucide-react": "0.487.0",
     "motion": "12.23.24",
     "next-themes": "0.4.6",
+    "oidc-client-ts": "^3.5.0",
     "react-hook-form": "7.55.0",
     "react-i18next": "^14",
     "react-resizable-panels": "2.1.7",
@@ -67,9 +75,13 @@
     "vaul": "1.1.2"
   },
   "devDependencies": {
+    "@baolq/api2ts": "0.1.1",
     "@eslint/js": "^10.0.1",
     "@tailwindcss/vite": "4.1.12",
     "@tauri-apps/cli": "^2",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.4",
     "@types/node": "^20",
     "@types/react": "18.3.1",
     "@types/react-dom": "18.3.1",
@@ -78,13 +90,15 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.6.0",
+    "jsdom": "^26.1.0",
     "prettier": "^3.8.3",
     "prettier-plugin-organize-imports": "^4.3.0",
     "prettier-plugin-packagejson": "^3.0.2",
     "tailwindcss": "4.1.12",
     "typescript": "^5",
     "typescript-eslint": "^8.60.1",
-    "vite": "6.3.5"
+    "vite": "6.3.5",
+    "vitest": "^3.2.7"
   },
   "peerDependencies": {
     "react": "18.3.1",
@@ -96,6 +110,11 @@
     },
     "react-dom": {
       "optional": true
+    }
+  },
+  "pnpm": {
+    "overrides": {
+      "vite": "6.3.5"
     }
   }
 }

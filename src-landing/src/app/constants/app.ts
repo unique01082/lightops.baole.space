@@ -1,9 +1,9 @@
 export const APP_DATA = {
   name: 'LightOps',
-  tagline: 'Every frame, perfectly named.',
+  tagline: 'A local-first toolbox for every finished frame.',
   subtitle:
-    'Batch rename, copy, or move RAW + JPG photo files based on EXIF shooting date. Built for photographers who care about their file workflow.',
-  version: '1.0.0-beta',
+    'Ingest, resize, minimize, group sequences, clean private metadata, and package before/after work without uploading your media.',
+  version: '2.0.0',
   license: 'MIT',
   author: 'Bao LE',
   authorUrl: 'https://baole.space',
@@ -13,7 +13,7 @@ export const APP_DATA = {
   latestJsonEndpoint:
     'https://github.com/unique01082/lightops.baole.space/releases/latest/download/latest.json',
   techStack: ['Tauri 2', 'Rust', 'React', 'TypeScript', 'Tailwind CSS'],
-  platform: 'Desktop (Windows / macOS / Linux)',
+  platform: 'Desktop (Windows / macOS)',
   identifier: 'space.baole.lightops',
   partOfEcosystem: 'baole.space',
   ecosystemHome: 'https://baole.space',

@@ -3,6 +3,9 @@ dist
 dist-ssr
 build
 coverage
+apps/api/dist
+apps/api/openapi
+src/generated
 src-tauri/target
 src-tauri/gen
 src-tauri/WixTools

@@ -1,9 +1,11 @@
 mod commands;
+mod storage;
 
 use commands::*;
+use storage::*;
 use tauri::{
     menu::{AboutMetadata, Menu, MenuItem, PredefinedMenuItem, Submenu},
-    Emitter,
+    Emitter, Manager,
 };
 
 const MENU_EVENT: &str = "lightops://menu";
@@ -215,6 +217,12 @@ fn build_menu<R: tauri::Runtime>(handle: &tauri::AppHandle<R>) -> tauri::Result<
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .manage(JobState::default())
+        .setup(|app| {
+            let store = LocalStore::open(app.handle()).map_err(std::io::Error::other)?;
+            app.manage(store);
+            Ok(())
+        })
         .menu(build_menu)
         .on_menu_event(|app, event| {
             let id = event.id().as_ref();
@@ -226,6 +234,7 @@ pub fn run() {
             let _ = app.emit(MENU_EVENT, id);
         })
         .plugin(tauri_plugin_shell::init())
+        .plugin(tauri_plugin_clipboard_manager::init())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
@@ -241,6 +250,40 @@ pub fn run() {
             list_presets,
             load_preset,
             delete_preset,
+            inspect_media,
+            expand_media_paths,
+            analyze_tool,
+            start_tool_job,
+            cancel_tool_job,
+            copy_output_image,
+            analyze_sequences,
+            export_sequences,
+            suggest_before_after_pairs,
+            metadata_safe_share_categories,
+            audit_metadata,
+            clean_metadata,
+            export_before_after,
+            media_sidecar_status,
+            record_recent_job,
+            list_recent_jobs,
+            upsert_tool_preset,
+            list_tool_presets,
+            delete_tool_preset,
+            set_user_setting,
+            list_user_settings,
+            get_sync_device_id,
+            get_sync_cursor,
+            list_sync_outbox,
+            record_sync_failure,
+            apply_sync_response,
+            start_oidc_callback_listener,
+            store_oidc_session,
+            load_oidc_session,
+            clear_oidc_session,
+            set_oidc_state,
+            get_oidc_state,
+            remove_oidc_state,
+            list_oidc_state_keys,
         ])
         .run(tauri::generate_context!())
         .expect("error while running LightOps");

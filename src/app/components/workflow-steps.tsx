@@ -350,8 +350,7 @@ export function ScanStep({
             className="rounded-3xl border p-5"
             style={{
               borderColor: 'var(--glass-border)',
-              background:
-                'linear-gradient(135deg, rgba(255,255,255,0.075), rgba(139,92,246,0.08))',
+              background: 'linear-gradient(135deg, rgba(255,255,255,0.075), rgba(139,92,246,0.08))',
             }}
           >
             <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
@@ -378,7 +377,9 @@ export function ScanStep({
               >
                 <span>{formatOffset(sliderLimit, t('shared.referenceTime'))}</span>
                 <span>{t('shared.referenceTime')}</span>
-                <span>-{formatOffset(sliderLimit, t('shared.referenceTime')).replace(/^\+/, '')}</span>
+                <span>
+                  -{formatOffset(sliderLimit, t('shared.referenceTime')).replace(/^\+/, '')}
+                </span>
               </div>
               <div className="min-w-0 overflow-x-auto pb-2">
                 <div
@@ -392,7 +393,8 @@ export function ScanStep({
                   {metadata.map((item) => {
                     const offset = offsets.find((entry) => entry.folder === item.folder);
                     const offsetMs = offset?.offset_ms ?? 0;
-                    const draftValue = offsetDrafts[item.folder] ?? formatOffsetExpression(offsetMs);
+                    const draftValue =
+                      offsetDrafts[item.folder] ?? formatOffsetExpression(offsetMs);
                     return (
                       <div key={item.folder} className="flex flex-col items-center">
                         <span
@@ -414,7 +416,9 @@ export function ScanStep({
                           max={sliderLimit}
                           step={1000}
                           value={Math.max(-sliderLimit, Math.min(sliderLimit, offsetMs))}
-                          onChange={(event) => onOffsetChange(item.folder, Number(event.target.value))}
+                          onChange={(event) =>
+                            onOffsetChange(item.folder, Number(event.target.value))
+                          }
                           className="h-64 w-8 accent-emerald-400"
                           style={{
                             writingMode: 'vertical-lr',
@@ -529,21 +533,39 @@ export function ScanStep({
                         }}
                       />
                     </div>
-                    <p className="mt-2 truncate text-xs" title={item.folder} style={{ color: 'var(--text-muted)' }}>
+                    <p
+                      className="mt-2 truncate text-xs"
+                      title={item.folder}
+                      style={{ color: 'var(--text-muted)' }}
+                    >
                       {item.folder}
                     </p>
-                    <div className="mt-3 grid gap-2 text-xs md:grid-cols-2" style={{ color: 'var(--text-secondary)' }}>
+                    <div
+                      className="mt-3 grid gap-2 text-xs md:grid-cols-2"
+                      style={{ color: 'var(--text-secondary)' }}
+                    >
                       <span>
-                        {t('shared.sample')}: {item.sample_file ? item.sample_file.split(/[\\/]/).pop() : t('workflow.scan.samplesMissing')}
+                        {t('shared.sample')}:{' '}
+                        {item.sample_file
+                          ? item.sample_file.split(/[\\/]/).pop()
+                          : t('workflow.scan.samplesMissing')}
                       </span>
                       <span>
-                        {t('shared.capture')}: {item.capture_time ?? t('workflow.scan.captureMissing')}
+                        {t('shared.capture')}:{' '}
+                        {item.capture_time ?? t('workflow.scan.captureMissing')}
                       </span>
-                      <span>{t('cameraFormat.stats.jpg')}: {item.jpg_count}</span>
-                      <span>{t('cameraFormat.stats.raw')}: {item.raw_count}</span>
-                      <span>{t('cameraFormat.stats.video')}: {item.video_count}</span>
                       <span>
-                        {t('shared.extensions')}: {item.detected_extensions.join(' ') || t('workflow.scan.extensionsMissing')}
+                        {t('cameraFormat.stats.jpg')}: {item.jpg_count}
+                      </span>
+                      <span>
+                        {t('cameraFormat.stats.raw')}: {item.raw_count}
+                      </span>
+                      <span>
+                        {t('cameraFormat.stats.video')}: {item.video_count}
+                      </span>
+                      <span>
+                        {t('shared.extensions')}:{' '}
+                        {item.detected_extensions.join(' ') || t('workflow.scan.extensionsMissing')}
                       </span>
                     </div>
                   </div>
@@ -774,9 +796,7 @@ export function ReviewRunStep({
       eyebrow={t('workflow.review.eyebrow')}
       title={isProcessing ? t('workflow.review.processingTitle') : t('workflow.review.title')}
       description={
-        isProcessing
-          ? t('workflow.review.processingDescription')
-          : t('workflow.review.description')
+        isProcessing ? t('workflow.review.processingDescription') : t('workflow.review.description')
       }
       footer={
         isProcessing ? (
@@ -832,8 +852,14 @@ export function ReviewRunStep({
         </div>
       ) : (
         <div className="grid gap-3 xl:grid-cols-2">
-          <div className="rounded-xl border p-3 xl:col-span-2" style={{ borderColor: 'var(--glass-border)', background: 'rgba(255,255,255,0.04)' }}>
-            <p className="text-xs uppercase tracking-[0.2em]" style={{ color: 'var(--text-muted)' }}>
+          <div
+            className="rounded-xl border p-3 xl:col-span-2"
+            style={{ borderColor: 'var(--glass-border)', background: 'rgba(255,255,255,0.04)' }}
+          >
+            <p
+              className="text-xs uppercase tracking-[0.2em]"
+              style={{ color: 'var(--text-muted)' }}
+            >
               {t('workflow.review.sourceLabel')}
             </p>
             <div className="mt-2 grid gap-2">
@@ -845,7 +871,10 @@ export function ReviewRunStep({
             </div>
           </div>
           <SummaryCard label={t('workflow.review.destination')} value={destination} />
-          <SummaryCard label={t('workflow.review.camera')} value={`${cameraPreset} · ${rawExtensions}`} />
+          <SummaryCard
+            label={t('workflow.review.camera')}
+            value={`${cameraPreset} · ${rawExtensions}`}
+          />
           <SummaryCard label={t('workflow.review.fileType')} value={fileType.toUpperCase()} />
           <SummaryCard
             label={t('workflow.review.rename')}
@@ -856,15 +885,25 @@ export function ReviewRunStep({
             value={advanced}
             tone={fileOperation === 'move' ? 'warning' : 'normal'}
           />
-          <div className="rounded-xl border p-3 xl:col-span-2" style={{ borderColor: 'var(--glass-border)', background: 'rgba(255,255,255,0.04)' }}>
-            <p className="text-xs uppercase tracking-[0.2em]" style={{ color: 'var(--text-muted)' }}>
+          <div
+            className="rounded-xl border p-3 xl:col-span-2"
+            style={{ borderColor: 'var(--glass-border)', background: 'rgba(255,255,255,0.04)' }}
+          >
+            <p
+              className="text-xs uppercase tracking-[0.2em]"
+              style={{ color: 'var(--text-muted)' }}
+            >
               {t('workflow.review.clockEqualizer')}
             </p>
             <div className="mt-2 grid gap-2 md:grid-cols-2">
               {metadata.map((item) => {
                 const offset = offsets.find((entry) => entry.folder === item.folder);
                 return (
-                  <div key={item.folder} className="rounded-lg px-3 py-2" style={{ background: 'rgba(255,255,255,0.04)' }}>
+                  <div
+                    key={item.folder}
+                    className="rounded-lg px-3 py-2"
+                    style={{ background: 'rgba(255,255,255,0.04)' }}
+                  >
                     <p className="truncate text-sm text-white">{cameraLabel(item, offset)}</p>
                     <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
                       {formatOffset(offset?.offset_ms ?? 0, t('shared.referenceTime'))}
@@ -922,7 +961,9 @@ export function ResultsStep({
     );
 
   const filteredEntries =
-    filter === 'all' ? entries : entries.filter((entry) => entry.type === filter || entry.type === 'section');
+    filter === 'all'
+      ? entries
+      : entries.filter((entry) => entry.type === filter || entry.type === 'section');
 
   return (
     <StepFrame
@@ -953,8 +994,16 @@ export function ResultsStep({
       <div className="flex h-full min-h-0 flex-col gap-4">
         <div className="grid shrink-0 gap-3 md:grid-cols-3">
           <SummaryCard label={t('results.filters.ok')} value={String(stats.ok)} />
-          <SummaryCard label={t('results.filters.skip')} value={String(stats.skip)} tone={stats.skip > 0 ? 'warning' : 'normal'} />
-          <SummaryCard label={t('results.filters.error')} value={String(stats.error)} tone={stats.error > 0 ? 'warning' : 'normal'} />
+          <SummaryCard
+            label={t('results.filters.skip')}
+            value={String(stats.skip)}
+            tone={stats.skip > 0 ? 'warning' : 'normal'}
+          />
+          <SummaryCard
+            label={t('results.filters.error')}
+            value={String(stats.error)}
+            tone={stats.error > 0 ? 'warning' : 'normal'}
+          />
         </div>
         {banner && (
           <div

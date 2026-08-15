@@ -1,12 +1,12 @@
 [package]
 name = "lightops"
-version = "1.0.0-beta"
-description = "LightOps — Desktop photo file manager"
+version = "2.0.0"
+description = "LightOps — Local-first photographer toolbox"
 authors = ["Bao Le <bao@baole.space>"]
 license = "MIT"
-repository = "https://github.com/unique01082/lightops"
+repository = "https://github.com/unique01082/lightops.baole.space"
 edition = "2021"
-rust-version = "1.77.2"
+rust-version = "1.85"
 
 [lib]
 name = "lightops_lib"
@@ -28,6 +28,15 @@ walkdir = "2"
 chrono = { version = "0.4", features = ["serde"] }
 tokio = { version = "1", features = ["full"] }
 thiserror = "1"
+image = { version = "0.25.8", default-features = false, features = ["jpeg", "png", "tiff", "webp"] }
+uuid = { version = "1", features = ["v4", "serde"] }
+parking_lot = "0.12"
+rusqlite = { version = "0.32", features = ["bundled"] }
+tauri-plugin-clipboard-manager = "2"
+base64 = "0.22"
+keyring = { version = "3", default-features = false, features = ["apple-native", "windows-native"] }
+webp = "0.3.0"
+wait-timeout = "0.2"
 
 [profile.release]
 panic = "abort"
@@ -35,3 +44,6 @@ codegen-units = 1
 lto = true
 opt-level = "s"
 strip = true
+
+[dev-dependencies]
+tempfile = "3"

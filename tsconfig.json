@@ -21,5 +21,10 @@
     }
   },
   "include": ["src"],
+  "exclude": [
+    "src/app/components/ui/calendar.tsx",
+    "src/app/components/ui/carousel.tsx",
+    "src/app/components/ui/input-otp.tsx"
+  ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

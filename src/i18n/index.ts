@@ -1,6 +1,7 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import en from './en.json';
+import { applyDocumentLanguage } from './language';
 import vi from './vi.json';
 
 const savedLang = (() => {
@@ -14,6 +15,8 @@ const savedLang = (() => {
 const browserLang =
   typeof navigator !== 'undefined' && navigator.language.startsWith('vi') ? 'vi' : 'en';
 
+i18n.on('languageChanged', applyDocumentLanguage);
+
 i18n.use(initReactI18next).init({
   resources: {
     en: { translation: en },
@@ -23,5 +26,7 @@ i18n.use(initReactI18next).init({
   fallbackLng: 'en',
   interpolation: { escapeValue: false },
 });
+
+applyDocumentLanguage(i18n.language);
 
 export default i18n;

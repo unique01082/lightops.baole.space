@@ -30,6 +30,9 @@ export function OutputFolderPanel({ outputFolder, onBrowse, onChange }: OutputFo
       <div className="flex gap-2">
         <input
           type="text"
+          name="output-folder"
+          autoComplete="off"
+          aria-label={t('outputFolder.title')}
           value={outputFolder}
           onChange={(e) => onChange(e.target.value)}
           placeholder={t('outputFolder.placeholder')}
@@ -41,6 +44,7 @@ export function OutputFolderPanel({ outputFolder, onBrowse, onChange }: OutputFo
           }}
         />
         <button
+          type="button"
           onClick={onBrowse}
           className="px-4 py-2 rounded-lg border flex items-center gap-2 hover:bg-white/5 transition-colors"
           style={{

@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model ToolPreset {
+  userSub   String
+  id        String
+  toolId    String
+  name      String
+  payload   Json
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  @@id([userSub, id])
+  @@index([userSub, updatedAt])
+}
+
+model UserSetting {
+  userSub   String
+  key       String
+  value     Json
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  @@id([userSub, key])
+  @@index([userSub, updatedAt])
+}
+
+model SyncMutation {
+  userSub         String
+  deviceId        String
+  clientMutationId String
+  acceptedAt      DateTime @default(now())
+
+  @@id([userSub, deviceId, clientMutationId])
+}
+
+model SyncChange {
+  cursor     BigInt   @id @default(autoincrement())
+  userSub    String
+  entityType String
+  entityId   String
+  operation  String
+  payload    Json?
+  changedAt  DateTime @default(now())
+
+  @@index([userSub, cursor])
+}

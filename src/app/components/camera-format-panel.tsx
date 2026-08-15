@@ -51,19 +51,28 @@ export function CameraFormatPanel({
       <div className="space-y-3">
         <div className="grid gap-2 md:grid-cols-3">
           <div className="rounded-xl border p-3" style={{ borderColor: 'var(--glass-border)' }}>
-            <p className="text-xs uppercase tracking-[0.2em]" style={{ color: 'var(--text-muted)' }}>
+            <p
+              className="text-xs uppercase tracking-[0.2em]"
+              style={{ color: 'var(--text-muted)' }}
+            >
               {t('cameraFormat.stats.jpg')}
             </p>
             <p className="mt-1 text-lg text-white">{totalJpg}</p>
           </div>
           <div className="rounded-xl border p-3" style={{ borderColor: 'var(--glass-border)' }}>
-            <p className="text-xs uppercase tracking-[0.2em]" style={{ color: 'var(--text-muted)' }}>
+            <p
+              className="text-xs uppercase tracking-[0.2em]"
+              style={{ color: 'var(--text-muted)' }}
+            >
               {t('cameraFormat.stats.raw')}
             </p>
             <p className="mt-1 text-lg text-white">{totalRaw}</p>
           </div>
           <div className="rounded-xl border p-3" style={{ borderColor: 'var(--glass-border)' }}>
-            <p className="text-xs uppercase tracking-[0.2em]" style={{ color: 'var(--text-muted)' }}>
+            <p
+              className="text-xs uppercase tracking-[0.2em]"
+              style={{ color: 'var(--text-muted)' }}
+            >
               {t('cameraFormat.stats.video')}
             </p>
             <p className="mt-1 text-lg text-white">{totalVideo}</p>
@@ -74,7 +83,8 @@ export function CameraFormatPanel({
           <div className="mb-2 flex items-center gap-2">
             <FileStack className="h-4 w-4" style={{ color: 'var(--accent)' }} />
             <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>
-              {t('cameraFormat.rawExtensionsLabel')} {rawExtensions || t('cameraFormat.noneDetected')}
+              {t('cameraFormat.rawExtensionsLabel')}{' '}
+              {rawExtensions || t('cameraFormat.noneDetected')}
             </span>
           </div>
           <div className="grid gap-2">
@@ -85,14 +95,21 @@ export function CameraFormatPanel({
                 style={{ borderColor: 'var(--glass-border)', background: 'rgba(255,255,255,0.04)' }}
               >
                 <div className="flex items-center justify-between gap-3">
-                  <p className="truncate text-sm text-white" title={cameraName(item, unknownCamera)}>
+                  <p
+                    className="truncate text-sm text-white"
+                    title={cameraName(item, unknownCamera)}
+                  >
                     {cameraName(item, unknownCamera)}
                   </p>
                   <p className="shrink-0 text-xs" style={{ color: 'var(--text-muted)' }}>
                     {item.raw_extensions.join(' ') || t('cameraFormat.jpgOnly')}
                   </p>
                 </div>
-                <p className="mt-1 truncate text-xs" title={item.folder} style={{ color: 'var(--text-muted)' }}>
+                <p
+                  className="mt-1 truncate text-xs"
+                  title={item.folder}
+                  style={{ color: 'var(--text-muted)' }}
+                >
                   {item.folder}
                 </p>
               </div>

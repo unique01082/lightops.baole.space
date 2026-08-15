@@ -76,6 +76,42 @@ jobs:
             libappindicator3-dev \
             librsvg2-dev patchelf
       - run: pnpm install --frozen-lockfile
+      - name: Download sidecar archive (macOS)
+        if: matrix.platform == 'macos-latest'
+        env:
+          LIGHTOPS_SIDECAR_URL: ${{ secrets.LIGHTOPS_SIDECAR_URL_MACOS_UNIVERSAL }}
+        run: |
+          test -n "$LIGHTOPS_SIDECAR_URL"
+          rm -rf src-tauri/resources/bin
+          mkdir -p src-tauri/resources/bin
+          curl --fail --location --proto '=https' "$LIGHTOPS_SIDECAR_URL" -o sidecars.zip
+          ditto -x -k sidecars.zip src-tauri/resources/bin
+          chmod +x src-tauri/resources/bin/ffmpeg src-tauri/resources/bin/exiftool src-tauri/resources/bin/jpegtran
+      - name: Download sidecar archive (Windows x64)
+        if: matrix.platform == 'windows-latest' && matrix.args == '--target x86_64-pc-windows-msvc'
+        shell: pwsh
+        env:
+          LIGHTOPS_SIDECAR_URL: ${{ secrets.LIGHTOPS_SIDECAR_URL_WINDOWS_X64 }}
+        run: |
+          if (-not $env:LIGHTOPS_SIDECAR_URL) { throw 'Missing sidecar URL' }
+          Remove-Item src-tauri/resources/bin -Recurse -Force
+          Invoke-WebRequest $env:LIGHTOPS_SIDECAR_URL -OutFile sidecars.zip
+          Expand-Archive sidecars.zip src-tauri/resources/bin
+      - name: Download sidecar archive (Windows ARM64)
+        if: matrix.platform == 'windows-latest' && matrix.args == '--target aarch64-pc-windows-msvc'
+        shell: pwsh
+        env:
+          LIGHTOPS_SIDECAR_URL: ${{ secrets.LIGHTOPS_SIDECAR_URL_WINDOWS_ARM64 }}
+        run: |
+          if (-not $env:LIGHTOPS_SIDECAR_URL) { throw 'Missing sidecar URL' }
+          Remove-Item src-tauri/resources/bin -Recurse -Force
+          Invoke-WebRequest $env:LIGHTOPS_SIDECAR_URL -OutFile sidecars.zip
+          Expand-Archive sidecars.zip src-tauri/resources/bin
+      - name: Verify sidecars and configure updater
+        env:
+          LIGHTOPS_SIDECAR_SHA256: ${{ matrix.platform == 'macos-latest' && secrets.LIGHTOPS_SIDECAR_SHA256_MACOS_UNIVERSAL || (matrix.args == '--target x86_64-pc-windows-msvc' && secrets.LIGHTOPS_SIDECAR_SHA256_WINDOWS_X64 || secrets.LIGHTOPS_SIDECAR_SHA256_WINDOWS_ARM64) }}
+          TAURI_UPDATER_PUBLIC_KEY: ${{ secrets.TAURI_UPDATER_PUBLIC_KEY }}
+        run: node scripts/configure-release.mjs
       - name: Build Tauri app
         uses: tauri-apps/tauri-action@v0
         env:

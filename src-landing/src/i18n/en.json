@@ -11,35 +11,35 @@
     "badge": "v{{version}} · Free & Open Source · {{license}} License",
     "downloadNow": "Download Now",
     "starOnGithub": "⭐ Star on GitHub →",
-    "alsoAvailable": "Also available for macOS & Linux ↓"
+    "alsoAvailable": "Available for Windows x64/ARM64 and macOS Universal ↓"
   },
   "features": {
     "title": "Everything You Need",
-    "subtitle": "Powerful batch file management built specifically for photographers",
+    "subtitle": "Six local-first workflows built for photographers and retouchers",
     "items": [
       {
-        "title": "Multi-Source Folder Support",
-        "description": "Add multiple source folders at once — perfect for pulling photos from several SD cards or camera bodies in a single run."
+        "title": "Ingest & Rename",
+        "description": "Import from multiple sources, equalize camera clocks, preview names, and safely copy or move photo and video files."
       },
       {
-        "title": "EXIF-Based Rename",
-        "description": "Reads the actual shooting date and time from your photo's EXIF metadata — not the file creation date, which can change during copy."
+        "title": "Resize",
+        "description": "Resize JPEG, PNG, TIFF, and WebP batches by width, height, long edge, or percentage with copy-to-clipboard results."
       },
       {
-        "title": "Multi-Camera RAW Support",
-        "description": "Built-in presets for Nikon (.nef, .nrw), Canon (.cr2, .cr3), Sony (.arw), Fujifilm (.raf), Panasonic (.rw2), Olympus (.orf), Pentax (.pef, .dng), Leica (.dng), and more."
+        "title": "Minimize",
+        "description": "Optimize losslessly or compress to a chosen quality or target size while retaining source files."
       },
       {
-        "title": "Flexible Filename Formats",
-        "description": "Choose from 4 date-time formats, add a custom prefix, and set the starting sequence number. Preview the output filename in real time before running."
+        "title": "Sequence Grouper",
+        "description": "Detect HDR, panorama, focus-stack, and burst sequences completely offline, then review every grouping."
       },
       {
-        "title": "Dry Run Mode",
-        "description": "Preview exactly what will happen before touching a single file. The log shows all source → destination paths without performing any file operations."
+        "title": "Metadata Cleaner",
+        "description": "Audit private tags, apply Safe Share, and verify protected copyright, capture, color, and orientation data after cleaning."
       },
       {
-        "title": "Copy or Move Operations",
-        "description": "Choose to copy files (originals stay untouched) or move them (originals deleted after successful transfer). Warning is displayed before move operations."
+        "title": "Before/After Packager",
+        "description": "Create still comparisons, self-contained HTML sliders, GIFs, and H.264 videos from reviewed pairs."
       },
       {
         "title": "Organize into Date Subfolders",

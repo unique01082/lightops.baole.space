@@ -1,0 +1,224 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/api/v1/health/live": {
+      "get": {
+        "operationId": "HealthController_live",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Health"
+        ]
+      }
+    },
+    "/api/v1/health/ready": {
+      "get": {
+        "operationId": "HealthController_ready",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Health"
+        ]
+      }
+    },
+    "/api/v1/sync/exchange": {
+      "post": {
+        "operationId": "SyncController_exchange",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SyncExchangeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SyncExchangeResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "sync"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "LightOps Sync API",
+    "description": "",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "SyncMutationDto": {
+        "type": "object",
+        "properties": {
+          "clientMutationId": {
+            "type": "string",
+            "example": "01J-lightops-device-1"
+          },
+          "entityType": {
+            "type": "string",
+            "enum": [
+              "preset",
+              "setting"
+            ]
+          },
+          "entityId": {
+            "type": "string",
+            "example": "resize-social-1080"
+          },
+          "op": {
+            "type": "string",
+            "enum": [
+              "upsert",
+              "delete"
+            ]
+          },
+          "payload": {
+            "type": "object",
+            "description": "JSON value; omitted for deletes"
+          },
+          "clientModifiedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "clientMutationId",
+          "entityType",
+          "entityId",
+          "op",
+          "clientModifiedAt"
+        ]
+      },
+      "SyncExchangeDto": {
+        "type": "object",
+        "properties": {
+          "deviceId": {
+            "type": "string",
+            "example": "desktop-7d17e7ab"
+          },
+          "cursor": {
+            "type": "string",
+            "example": "42"
+          },
+          "mutations": {
+            "maxItems": 100,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SyncMutationDto"
+            }
+          }
+        },
+        "required": [
+          "deviceId",
+          "mutations"
+        ]
+      },
+      "SyncChangeDto": {
+        "type": "object",
+        "properties": {
+          "cursor": {
+            "type": "string"
+          },
+          "entityType": {
+            "type": "string",
+            "enum": [
+              "preset",
+              "setting"
+            ]
+          },
+          "entityId": {
+            "type": "string"
+          },
+          "operation": {
+            "type": "string",
+            "enum": [
+              "upsert",
+              "delete"
+            ]
+          },
+          "payload": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "changedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "cursor",
+          "entityType",
+          "entityId",
+          "operation",
+          "changedAt"
+        ]
+      },
+      "SyncExchangeResponseDto": {
+        "type": "object",
+        "properties": {
+          "appliedMutationIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "changes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SyncChangeDto"
+            }
+          },
+          "nextCursor": {
+            "type": "string"
+          },
+          "serverTime": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "appliedMutationIds",
+          "changes",
+          "nextCursor",
+          "serverTime"
+        ]
+      }
+    }
+  }
+}

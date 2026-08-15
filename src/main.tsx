@@ -1,9 +1,9 @@
-import { createRoot } from 'react-dom/client';
-import App from './app/App.tsx';
+import { useState } from 'react';
+import { createRoot, type Root as ReactRoot } from 'react-dom/client';
+import App from './app/LightOpsApp.tsx';
 import { ErrorBoundary } from './app/components/error-boundary.tsx';
 import './i18n';
 import './styles/index.css';
-import { useState } from 'react';
 
 function Root() {
   const [appKey, setAppKey] = useState(0);
@@ -24,4 +24,8 @@ function Root() {
   );
 }
 
-createRoot(document.getElementById('root')!).render(<Root />);
+const rootElement = document.getElementById('root')!;
+const hotGlobal = globalThis as typeof globalThis & { __lightopsReactRoot?: ReactRoot };
+const reactRoot = hotGlobal.__lightopsReactRoot ?? createRoot(rootElement);
+hotGlobal.__lightopsReactRoot = reactRoot;
+reactRoot.render(<Root />);

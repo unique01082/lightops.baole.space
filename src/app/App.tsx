@@ -1,4 +1,4 @@
-import { invoke } from '@tauri-apps/api/core';
+import { invoke, isTauri } from '@tauri-apps/api/core';
 import { listen } from '@tauri-apps/api/event';
 import { AlertCircle, AlertTriangle, CheckCircle, X } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -766,6 +766,7 @@ function App() {
   };
 
   useEffect(() => {
+    if (!isTauri()) return;
     let disposed = false;
     let unlistenMenu: (() => void) | undefined;
 
@@ -1243,7 +1244,7 @@ function App() {
 
   if (showSplash) {
     return (
-      <div className="relative flex h-screen items-center justify-center overflow-hidden">
+      <main className="relative flex h-screen items-center justify-center overflow-hidden">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(139,92,246,0.2),transparent_32%),radial-gradient(circle_at_80%_10%,rgba(79,172,254,0.14),transparent_28%),linear-gradient(135deg,#0f0c29,#24243e)]" />
         <div className="relative z-10 flex flex-col items-center text-center">
           <img src="/icons/lightops.svg" alt="" className="h-20 w-20 rounded-3xl shadow-2xl" />
@@ -1254,13 +1255,13 @@ function App() {
             {t('titleBar.subtitle')}
           </p>
         </div>
-      </div>
+      </main>
     );
   }
 
   if (showWelcome) {
     return (
-      <div className="relative flex h-screen items-center justify-center overflow-hidden p-6">
+      <main className="relative flex h-screen items-center justify-center overflow-hidden p-6">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(139,92,246,0.18),transparent_32%),radial-gradient(circle_at_80%_10%,rgba(79,172,254,0.12),transparent_28%),linear-gradient(135deg,#0f0c29,#24243e)]" />
         <div
           className="relative z-10 grid w-full max-w-5xl overflow-hidden rounded-[2rem] border shadow-2xl lg:grid-cols-[1fr_1.1fr]"
@@ -1362,7 +1363,7 @@ function App() {
             </div>
           </div>
         </div>
-      </div>
+      </main>
     );
   }
 

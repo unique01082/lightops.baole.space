@@ -1,27 +1,18 @@
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
-use std::sync::Arc;
-use std::sync::{
-    atomic::{AtomicBool, Ordering},
-    OnceLock,
-};
+use std::sync::atomic::Ordering;
 
 use chrono::{Duration, NaiveDateTime};
 use serde::{Deserialize, Serialize};
 use tauri::Emitter;
+use tauri::State;
 
 use super::exif::{get_exif_datetime, get_video_datetime};
+use super::media::{
+    JobProgress, JobResult, JobState, JobStatus, OutputAsset, JOB_FINISHED_EVENT,
+    JOB_PROGRESS_EVENT,
+};
 use super::scan::FilePair;
-
-// ── Shared cancel flag ───────────────────────────────────────────────────────
-
-static CANCEL_FLAG: OnceLock<Arc<AtomicBool>> = OnceLock::new();
-
-fn cancel_flag() -> Arc<AtomicBool> {
-    CANCEL_FLAG
-        .get_or_init(|| Arc::new(AtomicBool::new(false)))
-        .clone()
-}
 
 // ── Request / Response types ─────────────────────────────────────────────────
 
@@ -136,10 +127,8 @@ pub fn build_rename_plan(pairs: Vec<FilePair>, opts: RenameOptions) -> BuildPlan
                     continue;
                 }
             }
-            if opts.file_mode == "raw" && !has_raw {
-                if !opts.include_video || !has_video {
-                    continue;
-                }
+            if opts.file_mode == "raw" && !has_raw && (!opts.include_video || !has_video) {
+                continue;
             }
             if opts.only_paired && !(has_jpg && has_raw) {
                 // only_paired applies to still images; video is always standalone
@@ -263,8 +252,8 @@ pub fn build_rename_plan(pairs: Vec<FilePair>, opts: RenameOptions) -> BuildPlan
 
 /// Cancel a running execute_plan.
 #[tauri::command]
-pub fn cancel_execution() {
-    cancel_flag().store(true, Ordering::SeqCst);
+pub fn cancel_execution(state: State<'_, JobState>) {
+    let _ = state.cancel("ingest_rename");
 }
 
 fn is_cross_device_error(error: &std::io::Error) -> bool {
@@ -287,13 +276,59 @@ fn is_cross_device_error(error: &std::io::Error) -> bool {
     false
 }
 
+fn copy_file_atomic(old_path: &Path, new_path: &Path) -> Result<(), std::io::Error> {
+    let filename = new_path
+        .file_name()
+        .and_then(|value| value.to_str())
+        .unwrap_or("output");
+    let temporary = new_path.with_file_name(format!(".{filename}.lightops-part"));
+    let _ = std::fs::remove_file(&temporary);
+    if let Err(error) = std::fs::copy(old_path, &temporary) {
+        let _ = std::fs::remove_file(&temporary);
+        return Err(error);
+    }
+    if let Err(error) = std::fs::rename(&temporary, new_path) {
+        let _ = std::fs::remove_file(&temporary);
+        return Err(error);
+    }
+    Ok(())
+}
+
 fn move_file_native(old_path: &Path, new_path: &Path) -> Result<&'static str, std::io::Error> {
     match std::fs::rename(old_path, new_path) {
         Ok(()) => Ok("MOVE"),
-        Err(error) if is_cross_device_error(&error) => std::fs::copy(old_path, new_path)
-            .and_then(|_| std::fs::remove_file(old_path))
+        Err(error) if is_cross_device_error(&error) => copy_file_atomic(old_path, new_path)
+            .and_then(|()| std::fs::remove_file(old_path))
             .map(|_| "MOVE"),
         Err(error) => Err(error),
+    }
+}
+
+#[cfg(test)]
+mod atomic_copy_tests {
+    use super::*;
+
+    #[test]
+    fn ingest_copy_uses_atomic_temporary_output_and_preserves_source() {
+        let directory = tempfile::tempdir().expect("temp dir");
+        let source = directory.path().join("source.jpg");
+        let destination = directory.path().join("destination.jpg");
+        std::fs::write(&source, b"fixture-image").expect("source");
+
+        copy_file_atomic(&source, &destination).expect("copy");
+
+        assert_eq!(
+            std::fs::read(&source).expect("source bytes"),
+            b"fixture-image"
+        );
+        assert_eq!(
+            std::fs::read(&destination).expect("destination bytes"),
+            b"fixture-image"
+        );
+        assert!(!directory
+            .path()
+            .join(".destination.jpg.lightops-part")
+            .exists());
     }
 }
 
@@ -301,19 +336,32 @@ fn move_file_native(old_path: &Path, new_path: &Path) -> Result<&'static str, st
 #[tauri::command]
 pub async fn execute_plan(
     window: tauri::Window,
+    state: State<'_, JobState>,
     plan: Vec<RenameEntry>,
     opts: ExecuteOptions,
 ) -> Result<ExecuteResult, String> {
-    // Reset cancel flag at start of each run
-    cancel_flag().store(false, Ordering::SeqCst);
+    let guard = state.begin("ingest_rename".into())?;
 
     let total = plan.len();
     let mut ok = 0usize;
     let mut errors = 0usize;
     let mut cancelled = false;
+    let mut outputs = Vec::new();
+    let mut warnings = Vec::new();
 
     for (i, entry) in plan.iter().enumerate() {
-        if cancel_flag().load(Ordering::SeqCst) {
+        let _ = window.emit(
+            JOB_PROGRESS_EVENT,
+            JobProgress {
+                job_id: "ingest_rename".into(),
+                phase: "processing".into(),
+                current: i,
+                total,
+                item_id: Some(entry.old_path.clone()),
+                message_key: "jobs.processing".into(),
+            },
+        );
+        if guard.cancelled.load(Ordering::SeqCst) {
             cancelled = true;
             let _ = window.emit(
                 "progress",
@@ -431,6 +479,11 @@ pub async fn execute_plan(
                 .unwrap_or(false);
             if !same {
                 errors += 1;
+                warnings.push(format!(
+                    "{}: destination already exists ({})",
+                    entry.old_path,
+                    new_path.to_string_lossy()
+                ));
                 let _ = window.emit(
                     "progress",
                     ProgressEvent {
@@ -458,7 +511,7 @@ pub async fn execute_plan(
             if opts.file_op == "move" {
                 move_file_native(old_path, &new_path)
             } else {
-                std::fs::copy(old_path, &new_path).map(|_| "COPY")
+                copy_file_atomic(old_path, &new_path).map(|()| "COPY")
             }
         } else {
             std::fs::rename(old_path, &new_path).map(|_| "RENAME")
@@ -467,6 +520,17 @@ pub async fn execute_plan(
         match result {
             Ok(op_label) => {
                 ok += 1;
+                let output_size = std::fs::metadata(&new_path)
+                    .map(|metadata| metadata.len())
+                    .unwrap_or(0);
+                outputs.push(OutputAsset {
+                    source_path: entry.old_path.clone(),
+                    output_path: new_path.to_string_lossy().into_owned(),
+                    byte_size: output_size,
+                    width: 0,
+                    height: 0,
+                    savings_bytes: 0,
+                });
                 let _ = window.emit(
                     "progress",
                     ProgressEvent {
@@ -488,6 +552,7 @@ pub async fn execute_plan(
             }
             Err(e) => {
                 errors += 1;
+                warnings.push(format!("{}: {e}", entry.old_path));
                 let _ = window.emit(
                     "progress",
                     ProgressEvent {
@@ -509,6 +574,21 @@ pub async fn execute_plan(
             }
         }
     }
+
+    let result = JobResult {
+        job_id: "ingest_rename".into(),
+        status: if cancelled {
+            JobStatus::Cancelled
+        } else if ok == 0 && errors > 0 {
+            JobStatus::Failed
+        } else {
+            JobStatus::Completed
+        },
+        outputs,
+        warnings,
+        manifest_path: None,
+    };
+    let _ = window.emit(JOB_FINISHED_EVENT, result);
 
     Ok(ExecuteResult {
         ok,

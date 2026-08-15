@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 use std::fs;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use tauri::Manager;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -32,7 +32,7 @@ fn presets_dir(app: &tauri::AppHandle) -> Result<PathBuf, String> {
     Ok(dir)
 }
 
-fn preset_path(dir: &PathBuf, name: &str) -> PathBuf {
+fn preset_path(dir: &Path, name: &str) -> PathBuf {
     // Sanitize name: replace any filesystem-unsafe chars with underscore
     let safe: String = name
         .chars()

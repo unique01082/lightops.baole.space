@@ -11,35 +11,35 @@
     "badge": "v{{version}} · Miễn phí & Mã nguồn mở · Giấy phép {{license}}",
     "downloadNow": "Tải xuống ngay",
     "starOnGithub": "⭐ Star trên GitHub →",
-    "alsoAvailable": "Cũng có sẵn cho macOS & Linux ↓"
+    "alsoAvailable": "Hỗ trợ Windows x64/ARM64 và macOS Universal ↓"
   },
   "features": {
     "title": "Mọi thứ bạn cần",
-    "subtitle": "Quản lý tệp hàng loạt mạnh mẽ được xây dựng riêng cho các nhiếp ảnh gia",
+    "subtitle": "Sáu workflow local-first dành cho photographer và retoucher",
     "items": [
       {
-        "title": "Hỗ trợ nhiều thư mục nguồn",
-        "description": "Thêm nhiều thư mục nguồn cùng lúc — hoàn hảo để lấy ảnh từ nhiều thẻ SD hoặc thân máy ảnh trong một lần chạy."
+        "title": "Ingest & Rename",
+        "description": "Nhập từ nhiều nguồn, cân bằng clock máy ảnh, preview tên và copy hoặc move ảnh/video an toàn."
       },
       {
-        "title": "Đổi tên dựa trên EXIF",
-        "description": "Đọc ngày và giờ chụp thực tế từ metadata EXIF của ảnh — không phải ngày tạo tệp, có thể thay đổi khi sao chép."
+        "title": "Resize",
+        "description": "Resize hàng loạt JPEG, PNG, TIFF và WebP theo chiều rộng, chiều cao, cạnh dài hoặc phần trăm."
       },
       {
-        "title": "Hỗ trợ RAW đa máy ảnh",
-        "description": "Cài đặt sẵn cho Nikon (.nef, .nrw), Canon (.cr2, .cr3), Sony (.arw), Fujifilm (.raf), Panasonic (.rw2), Olympus (.orf), Pentax (.pef, .dng), Leica (.dng) và nhiều hơn nữa."
+        "title": "Minimize",
+        "description": "Tối ưu lossless hoặc nén theo quality hay dung lượng mục tiêu mà không sửa file nguồn."
       },
       {
-        "title": "Định dạng tên tệp linh hoạt",
-        "description": "Chọn từ 4 định dạng ngày giờ, thêm tiền tố tùy chỉnh và đặt số thứ tự bắt đầu. Xem trước tên tệp đầu ra trong thời gian thực trước khi chạy."
+        "title": "Sequence Grouper",
+        "description": "Nhận diện HDR, panorama, focus stack và burst hoàn toàn offline rồi review từng nhóm."
       },
       {
-        "title": "Chế độ chạy thử",
-        "description": "Xem trước chính xác những gì sẽ xảy ra trước khi chạm vào bất kỳ tệp nào. Nhật ký hiển thị tất cả các đường dẫn nguồn → đích mà không thực hiện thao tác tệp."
+        "title": "Metadata Cleaner",
+        "description": "Audit tag riêng tư, áp dụng Safe Share và xác minh dữ liệu được bảo vệ sau khi làm sạch."
       },
       {
-        "title": "Sao chép hoặc Di chuyển",
-        "description": "Chọn sao chép tệp (bản gốc không bị thay đổi) hoặc di chuyển chúng (bản gốc bị xóa sau khi chuyển thành công). Cảnh báo được hiển thị trước thao tác di chuyển."
+        "title": "Before/After Packager",
+        "description": "Tạo ảnh so sánh, HTML slider self-contained, GIF và video H.264 từ các cặp đã duyệt."
       },
       {
         "title": "Tổ chức vào thư mục con theo ngày",

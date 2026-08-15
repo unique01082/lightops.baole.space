@@ -11,8 +11,9 @@ export default defineConfig([
     'dist-ssr',
     'src-tauri/target',
     'src-tauri/gen',
-    'src-landing/dist',
-    'src-landing/node_modules',
+    'src-landing/**',
+    'apps/api/**',
+    'src/generated/**',
   ]),
   {
     files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'],

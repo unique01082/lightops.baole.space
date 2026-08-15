@@ -94,25 +94,28 @@ export function LogPanel({ entries, isDryRun, stats, onClear }: LogPanelProps) {
   // Table mode: filter to only rows with source/destination; sections become group headers
   const tableRows = visibleEntries.filter((e) => e.type !== 'section');
 
-  const PathCell = useCallback(({ path }: { path?: string }) => {
-    if (!path) return <span style={{ color: 'var(--text-muted)' }}>—</span>;
-    return (
-      <button
-        onClick={() => openPath(path)}
-        title={t('shared.openFolder', { path })}
-        className="text-left w-full truncate hover:underline decoration-dotted underline-offset-2 transition-opacity hover:opacity-80"
-        style={{
-          color: 'var(--text-primary)',
-          fontFamily: 'var(--font-mono)',
-          fontSize: '0.7rem',
-          wordBreak: 'break-all',
-          whiteSpace: 'normal',
-        }}
-      >
-        {path}
-      </button>
-    );
-  }, [t]);
+  const PathCell = useCallback(
+    ({ path }: { path?: string }) => {
+      if (!path) return <span style={{ color: 'var(--text-muted)' }}>—</span>;
+      return (
+        <button
+          onClick={() => openPath(path)}
+          title={t('shared.openFolder', { path })}
+          className="text-left w-full truncate hover:underline decoration-dotted underline-offset-2 transition-opacity hover:opacity-80"
+          style={{
+            color: 'var(--text-primary)',
+            fontFamily: 'var(--font-mono)',
+            fontSize: '0.7rem',
+            wordBreak: 'break-all',
+            whiteSpace: 'normal',
+          }}
+        >
+          {path}
+        </button>
+      );
+    },
+    [t],
+  );
 
   return (
     <div

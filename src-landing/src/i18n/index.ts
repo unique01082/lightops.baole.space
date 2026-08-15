@@ -14,6 +14,14 @@ const savedLang = (() => {
 const browserLang =
   typeof navigator !== 'undefined' && navigator.language.startsWith('vi') ? 'vi' : 'en';
 
+const applyDocumentLanguage = (language: string) => {
+  if (typeof document !== 'undefined') {
+    document.documentElement.lang = language.startsWith('vi') ? 'vi' : 'en';
+  }
+};
+
+i18n.on('languageChanged', applyDocumentLanguage);
+
 i18n.use(initReactI18next).init({
   resources: {
     en: { translation: en },
@@ -23,5 +31,7 @@ i18n.use(initReactI18next).init({
   fallbackLng: 'en',
   interpolation: { escapeValue: false },
 });
+
+applyDocumentLanguage(i18n.language);
 
 export default i18n;
