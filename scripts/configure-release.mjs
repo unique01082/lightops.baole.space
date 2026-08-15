@@ -64,7 +64,7 @@ export function validateReleaseSidecars({
   }
   if (!encoders.includes(encoder))
     throw new Error(`${basename(ffmpeg)} does not provide ${encoder}`);
-  if (/libx264|--enable-gpl/i.test(ffmpegVersion)) {
+  if (/--enable-(?:gpl|libx264)(?:\s|$)/i.test(ffmpegVersion)) {
     throw new Error('FFmpeg bundle contains GPL/libx264 components; an LGPL build is required');
   }
   return { ffmpegVersion, exiftoolVersion, jpegtranVersion, encoder };

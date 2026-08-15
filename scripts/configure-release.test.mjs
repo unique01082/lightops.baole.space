@@ -28,6 +28,25 @@ function executor(platform, { gpl = false, encoder = true } = {}) {
   };
 }
 
+test('accepts LGPL FFmpeg builds that explicitly disable libx264', () => {
+  const binDirectory = fixture('win32');
+  const execute = (path, args) => {
+    if (path.includes('ffmpeg') && args.includes('-version')) {
+      return 'ffmpeg configuration: --disable-gpl --disable-libx264';
+    }
+    return executor('win32')(path, args);
+  };
+  assert.doesNotThrow(() =>
+    validateReleaseSidecars({
+      binDirectory,
+      expectedHash: hashDirectory(binDirectory),
+      updaterPublicKey: 'fixture-public-key',
+      platform: 'win32',
+      execute,
+    }),
+  );
+});
+
 test('validates macOS and Windows sidecar bundles and required H.264 encoders', () => {
   for (const platform of ['darwin', 'win32']) {
     const binDirectory = fixture(platform);
