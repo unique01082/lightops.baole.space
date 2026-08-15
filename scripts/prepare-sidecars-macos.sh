@@ -69,4 +69,5 @@ cp "$BUILD_DIR/Image-ExifTool-${EXIFTOOL_VERSION}/exiftool" "$OUTPUT_DIR/exiftoo
 cp -R "$BUILD_DIR/Image-ExifTool-${EXIFTOOL_VERSION}/lib" "$OUTPUT_DIR/lib"
 chmod +x "$OUTPUT_DIR/ffmpeg" "$OUTPUT_DIR/jpegtran" "$OUTPUT_DIR/exiftool"
 
-lipo -verify_arch x86_64 arm64 "$OUTPUT_DIR/ffmpeg" "$OUTPUT_DIR/jpegtran"
+lipo "$OUTPUT_DIR/ffmpeg" -verify_arch x86_64 arm64
+lipo "$OUTPUT_DIR/jpegtran" -verify_arch x86_64 arm64

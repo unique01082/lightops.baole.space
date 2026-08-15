@@ -45,7 +45,7 @@ if (-not $JpegTran) { throw 'jpegtran.exe was not produced by the native build' 
 Copy-Item $JpegTran.FullName (Join-Path $OutputDir 'jpegtran.exe')
 
 $ExifArchive = Join-Path $BuildDir "exiftool-$ExifToolVersion.zip"
-Invoke-WebRequest "https://sourceforge.net/projects/exiftool/files/exiftool-$($ExifToolVersion)_64.zip/download" -OutFile $ExifArchive
+curl.exe --fail --location --proto '=https' "https://sourceforge.net/projects/exiftool/files/exiftool-$($ExifToolVersion)_64.zip/download" --output $ExifArchive
 Expand-Archive $ExifArchive (Join-Path $BuildDir 'exiftool')
 $ExifTool = Get-ChildItem (Join-Path $BuildDir 'exiftool') -Filter 'exiftool*.exe' -Recurse | Select-Object -First 1
 if (-not $ExifTool) { throw 'exiftool.exe was not found in the vendor archive' }
