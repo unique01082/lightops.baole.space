@@ -39,8 +39,8 @@ tar -xf $JpegArchive -C $BuildDir
 $JpegSourceDir = Join-Path $BuildDir "libjpeg-turbo-$JpegTurboVersion"
 $JpegBuildDir = Join-Path $BuildDir 'jpeg-build'
 cmake -S $JpegSourceDir -B $JpegBuildDir -DCMAKE_BUILD_TYPE=Release -DENABLE_SHARED=FALSE -DWITH_TOOLS=TRUE
-cmake --build $JpegBuildDir --config Release --target jpegtran --parallel
-$JpegTran = Get-ChildItem $JpegBuildDir -Filter jpegtran.exe -Recurse | Select-Object -First 1
+cmake --build $JpegBuildDir --config Release --target jpegtran-static --parallel
+$JpegTran = Get-ChildItem $JpegBuildDir -Filter jpegtran-static.exe -Recurse | Select-Object -First 1
 if (-not $JpegTran) { throw 'jpegtran.exe was not produced by the native build' }
 Copy-Item $JpegTran.FullName (Join-Path $OutputDir 'jpegtran.exe')
 

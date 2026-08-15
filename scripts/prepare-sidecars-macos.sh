@@ -47,7 +47,7 @@ for architecture in x86_64 arm64; do
     -DCMAKE_OSX_ARCHITECTURES="$architecture" \
     -DENABLE_SHARED=FALSE \
     -DWITH_TOOLS=TRUE
-  cmake --build "$BUILD_DIR/libjpeg-$architecture" --config Release --target jpegtran --parallel
+  cmake --build "$BUILD_DIR/libjpeg-$architecture" --config Release --target jpegtran-static --parallel
 done
 
 curl --fail --location --proto '=https' \
@@ -62,8 +62,8 @@ lipo -create \
   "$BUILD_DIR/ffmpeg-arm64/ffmpeg" \
   -output "$OUTPUT_DIR/ffmpeg"
 lipo -create \
-  "$BUILD_DIR/libjpeg-x86_64/jpegtran" \
-  "$BUILD_DIR/libjpeg-arm64/jpegtran" \
+  "$BUILD_DIR/libjpeg-x86_64/jpegtran-static" \
+  "$BUILD_DIR/libjpeg-arm64/jpegtran-static" \
   -output "$OUTPUT_DIR/jpegtran"
 cp "$BUILD_DIR/Image-ExifTool-${EXIFTOOL_VERSION}/exiftool" "$OUTPUT_DIR/exiftool"
 cp -R "$BUILD_DIR/Image-ExifTool-${EXIFTOOL_VERSION}/lib" "$OUTPUT_DIR/lib"
