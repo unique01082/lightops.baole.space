@@ -50,7 +50,6 @@ export function createSyncMutation(
 
 export async function exchangeSync(options: {
   apiBaseUrl: string;
-  accessToken: string;
   deviceId: string;
   cursor?: string;
   mutations: SyncMutation[];
@@ -62,7 +61,7 @@ export async function exchangeSync(options: {
       cursor: options.cursor,
       mutations: options.mutations as LightOpsSyncAPI.SyncMutationDto[],
     },
-    { apiBaseUrl: options.apiBaseUrl, accessToken: options.accessToken },
+    { apiBaseUrl: options.apiBaseUrl },
   );
 }
 import { syncControllerExchange } from '../generated/lightops-api/api/sync';

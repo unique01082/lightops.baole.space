@@ -23,11 +23,13 @@
 ### Task 1: Central native OIDC service
 
 **Files:**
+
 - Modify: `src/lib/auth-client.ts`
 - Modify: `src/lib/auth-client.test.ts`
 - Modify: `src/vite-env.d.ts`
 
 **Interfaces:**
+
 - Produces: `getSafeReturnTo(value, fallback)`, `configureAuthClient()`, `loadSignedInUser()`, `signIn(returnTo)`, `signOut()`, `globalSignOut()`, and `getAccessToken()`.
 
 - [ ] Add failing tests for configuration, safe redirects, public principal shape, duplicate operations, callback completion, logout, and token lookup.
@@ -38,6 +40,7 @@
 ### Task 2: Central React auth state and sync hydration
 
 **Files:**
+
 - Create: `src/app/auth/auth-context.tsx`
 - Create: `src/app/auth/auth-context.test.tsx`
 - Modify: `src/main.tsx`
@@ -45,6 +48,7 @@
 - Modify: `src/lib/sync-outbox.ts`
 
 **Interfaces:**
+
 - Produces: `LightOpsAuthProvider` and `useLightOpsAuth()` with tri-state status and token-free user data.
 - Consumes: native OIDC service from Task 1 and sync outbox lifecycle.
 
@@ -56,11 +60,13 @@
 ### Task 3: Request authentication recovery
 
 **Files:**
+
 - Modify: `src/lib/sync-request.ts`
 - Create: `src/lib/sync-request.test.ts`
 - Modify: `src/lib/sync-outbox.ts`
 
 **Interfaces:**
+
 - Consumes: `getAccessToken()` and `clearLocalSession()`.
 - Produces: bearer requests with one-shot 401 cleanup.
 
@@ -71,6 +77,7 @@
 ### Task 4: Issuer-keyed API verification
 
 **Files:**
+
 - Modify: `apps/api/package.json`
 - Modify: `pnpm-lock.yaml`
 - Modify: `apps/api/src/auth/jwt.strategy.ts`
@@ -80,6 +87,7 @@
 - Modify: `apps/api/scripts/generate-openapi.ts`
 
 **Interfaces:**
+
 - Produces: `OIDC_TRUSTED_ISSUERS_JSON` fixed mappings and normalized `AuthUser`.
 
 - [ ] Add failing JWT tests for the negative/confusion/rotation matrix and complete claims.
@@ -90,10 +98,12 @@
 ### Task 5: Verification and production handoff
 
 **Files:**
+
 - Create: `docs/auth-production-preflight.md`
 - Modify: `docs/superpowers/specs/2026-08-21-id-baole-space-auth-migration-design.md`
 
 **Interfaces:**
+
 - Produces: exact provider/env preflight, compatibility order, rollback, and evidence ledger.
 
 - [ ] Run `pnpm test`, `pnpm test:api`, `pnpm typecheck`, `pnpm lint`, `pnpm build:frontend`, `pnpm build:api`, `cargo test`, and `cargo check`.

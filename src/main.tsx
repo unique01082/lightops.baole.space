@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { createRoot, type Root as ReactRoot } from 'react-dom/client';
 import App from './app/LightOpsApp.tsx';
+import { LightOpsAuthProvider } from './app/auth/auth-context.tsx';
 import { ErrorBoundary } from './app/components/error-boundary.tsx';
 import './i18n';
 import './styles/index.css';
@@ -18,9 +19,11 @@ function Root() {
   };
 
   return (
-    <ErrorBoundary onReset={handleReset}>
-      <App key={appKey} />
-    </ErrorBoundary>
+    <LightOpsAuthProvider>
+      <ErrorBoundary onReset={handleReset}>
+        <App key={appKey} />
+      </ErrorBoundary>
+    </LightOpsAuthProvider>
   );
 }
 

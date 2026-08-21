@@ -56,4 +56,3 @@ Before deployment, operators must verify the LightOps discovery document, issuer
 ## Related
 
 - [Implementation plan](../plans/2026-08-21-id-baole-space-auth-migration.md)
-

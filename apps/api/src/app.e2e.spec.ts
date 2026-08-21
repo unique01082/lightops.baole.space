@@ -28,14 +28,15 @@ describe('LightOps API HTTP acceptance', () => {
     const keys = generateKeyPairSync('rsa', { modulusLength: 2048 });
     privateKey = keys.privateKey;
     const publicJwk = keys.publicKey.export({ format: 'jwk' });
-    process.env.OIDC_ISSUER = 'https://auth.baole.space/application/o/lightops/';
+    const jwks = { keys: [{ ...publicJwk, kid: 'lightops-test', alg: 'RS256', use: 'sig' }] };
+    process.env.OIDC_TRUSTED_ISSUERS_JSON = JSON.stringify([
+      { issuer: 'https://id.baole.space/application/o/lightops/', jwks },
+      { issuer: 'https://auth.baole.space/application/o/lightops/', jwks },
+    ]);
     process.env.OIDC_AUDIENCE = 'lightops';
-    process.env.OIDC_JWKS_JSON = JSON.stringify({
-      keys: [{ ...publicJwk, kid: 'lightops-test', alg: 'RS256', use: 'sig' }],
-    });
     validClaims = {
       sub: 'user-1',
-      iss: process.env.OIDC_ISSUER,
+      iss: 'https://id.baole.space/application/o/lightops/',
       aud: process.env.OIDC_AUDIENCE,
       permissions: ['app:lightops:sync'],
       iat: Math.floor(Date.now() / 1000),
@@ -74,12 +75,40 @@ describe('LightOps API HTTP acceptance', () => {
   it.each([
     ['wrong issuer', { iss: 'https://attacker.invalid/' }],
     ['wrong audience', { aud: 'another-client' }],
+    ['expired token', { exp: Math.floor(Date.now() / 1000) - 60 }],
   ])('rejects a token with %s', async (_label, replacement) => {
     const response = await syncRequest(jwt(privateKey, { ...validClaims, ...replacement }), {
       deviceId: 'desktop-1',
       mutations: [],
     });
     expect(response.status).toBe(401);
+  });
+
+  it('accepts the exact legacy issuer during the migration window', async () => {
+    const token = jwt(privateKey, {
+      ...validClaims,
+      iss: 'https://auth.baole.space/application/o/lightops/',
+    });
+    expect((await syncRequest(token, { deviceId: 'legacy-device', mutations: [] })).status).toBe(
+      201,
+    );
+  });
+
+  it('rejects malformed tokens, wrong algorithms, and unknown key ids', async () => {
+    expect((await syncRequest('not-a-jwt', { deviceId: 'desktop-1', mutations: [] })).status).toBe(
+      401,
+    );
+    const encode = (value: unknown) => Buffer.from(JSON.stringify(value)).toString('base64url');
+    const none = `${encode({ alg: 'none', kid: 'lightops-test' })}.${encode(validClaims)}.`;
+    expect((await syncRequest(none, { deviceId: 'desktop-1', mutations: [] })).status).toBe(401);
+    expect(
+      (
+        await syncRequest(jwt(privateKey, validClaims, 'unknown-kid'), {
+          deviceId: 'desktop-1',
+          mutations: [],
+        })
+      ).status,
+    ).toBe(401);
   });
 
   it('rejects an invalid signature and missing permission', async () => {

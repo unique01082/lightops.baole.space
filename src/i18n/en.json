@@ -238,7 +238,8 @@
   },
   "account": {
     "signIn": "Sign in",
-    "signOut": "Sign out"
+    "signOut": "Sign out",
+    "globalSignOut": "Log out of baole.space"
   },
   "sourceFolders": {
     "title": "SOURCE FOLDERS",

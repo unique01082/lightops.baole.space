@@ -8,12 +8,16 @@ import { AppModule } from '../src/app.module';
 
 async function generate() {
   process.env.SKIP_DATABASE_CONNECT = '1';
-  process.env.OIDC_ISSUER ??= 'https://auth.baole.space/application/o/lightops/';
   process.env.OIDC_AUDIENCE ??= 'lightops';
   const { publicKey } = generateKeyPairSync('rsa', { modulusLength: 2048 });
-  process.env.OIDC_JWKS_JSON ??= JSON.stringify({
-    keys: [{ ...publicKey.export({ format: 'jwk' }), kid: 'openapi-build-only' }],
-  });
+  process.env.OIDC_TRUSTED_ISSUERS_JSON ??= JSON.stringify([
+    {
+      issuer: 'https://id.baole.space/application/o/lightops/',
+      jwks: {
+        keys: [{ ...publicKey.export({ format: 'jwk' }), kid: 'openapi-build-only', alg: 'RS256' }],
+      },
+    },
+  ]);
   const app = await NestFactory.create(AppModule, { logger: ['error'], abortOnError: false });
   app.setGlobalPrefix('api/v1');
   app.useGlobalPipes(

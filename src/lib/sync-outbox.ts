@@ -1,5 +1,4 @@
 import { invoke } from '@tauri-apps/api/core';
-import type { LightOpsUser } from './auth-client';
 import { exchangeSync, type SyncMutation } from './sync-client';
 
 type OutboxMutation = SyncMutation & { attempts: number };
@@ -17,7 +16,7 @@ type SyncResponse = {
 let timer: ReturnType<typeof setTimeout> | undefined;
 let generation = 0;
 
-async function flush(user: LightOpsUser, activeGeneration: number): Promise<void> {
+async function flush(activeGeneration: number): Promise<void> {
   if (activeGeneration !== generation) return;
   let mutations: OutboxMutation[] = [];
   try {
@@ -29,7 +28,6 @@ async function flush(user: LightOpsUser, activeGeneration: number): Promise<void
     mutations = queuedMutations;
     const response = (await exchangeSync({
       apiBaseUrl: import.meta.env.VITE_LIGHTOPS_API_URL ?? 'https://lightops.baole.space',
-      accessToken: user.accessToken,
       deviceId,
       cursor: cursor ?? undefined,
       mutations,
@@ -40,10 +38,7 @@ async function flush(user: LightOpsUser, activeGeneration: number): Promise<void
       nextCursor: response.nextCursor,
     });
     if (activeGeneration === generation) {
-      timer = setTimeout(
-        () => void flush(user, activeGeneration),
-        mutations.length ? 2_000 : 60_000,
-      );
+      timer = setTimeout(() => void flush(activeGeneration), mutations.length ? 2_000 : 60_000);
     }
   } catch {
     await invoke('record_sync_failure', {
@@ -52,15 +47,15 @@ async function flush(user: LightOpsUser, activeGeneration: number): Promise<void
     const attempts = Math.max(0, ...mutations.map((mutation) => mutation.attempts + 1));
     const delay = Math.min(300_000, 1_000 * 2 ** Math.min(attempts, 8));
     if (activeGeneration === generation) {
-      timer = setTimeout(() => void flush(user, activeGeneration), delay);
+      timer = setTimeout(() => void flush(activeGeneration), delay);
     }
   }
 }
 
-export function startSyncOutbox(user: LightOpsUser): void {
+export function startSyncOutbox(): Promise<void> {
   stopSyncOutbox();
   const activeGeneration = generation;
-  void flush(user, activeGeneration);
+  return flush(activeGeneration);
 }
 
 export function stopSyncOutbox(): void {

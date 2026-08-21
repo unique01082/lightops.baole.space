@@ -238,7 +238,8 @@
   },
   "account": {
     "signIn": "Đăng nhập",
-    "signOut": "Đăng xuất"
+    "signOut": "Đăng xuất",
+    "globalSignOut": "Đăng xuất khỏi baole.space"
   },
   "sourceFolders": {
     "title": "THƯ MỤC NGUỒN",

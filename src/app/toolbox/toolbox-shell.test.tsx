@@ -1,7 +1,11 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
+import { LightOpsAuthProvider } from '../auth/auth-context';
 import { ToolboxShell } from './toolbox-shell';
+
+vi.mock('../../lib/auth-client', () => ({ loadSignedInUser: vi.fn().mockResolvedValue(null) }));
+vi.mock('../../lib/sync-outbox', () => ({ startSyncOutbox: vi.fn(), stopSyncOutbox: vi.fn() }));
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
@@ -11,9 +15,16 @@ vi.mock('react-i18next', () => ({
 }));
 
 describe('ToolboxShell', () => {
+  const renderShell = () =>
+    render(
+      <LightOpsAuthProvider>
+        <ToolboxShell renderIngest={() => <div>Legacy workflow</div>} />
+      </LightOpsAuthProvider>,
+    );
+
   it('opens a tool and returns to the toolbox', async () => {
     const user = userEvent.setup();
-    render(<ToolboxShell renderIngest={() => <div>Legacy workflow</div>} />);
+    renderShell();
 
     expect(screen.getAllByRole('button', { name: /toolbox\.tools\./ })).toHaveLength(6);
     await user.click(screen.getByRole('button', { name: /toolbox\.tools\.resize\.title/ }));
@@ -26,7 +37,7 @@ describe('ToolboxShell', () => {
 
   it('opens the shared settings dialog', async () => {
     const user = userEvent.setup();
-    render(<ToolboxShell renderIngest={() => <div>Legacy workflow</div>} />);
+    renderShell();
 
     const settingsButton = screen.getByRole('button', { name: 'titleBar.settings' });
     await user.click(settingsButton);
